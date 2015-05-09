@@ -17,8 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.samwagg.gravity.Constants;
 
 public class MovingWall extends GameObject {
-
-	public final static Texture WALL_TEXT = new Texture(Gdx.files.internal("wall.png"));
 	
 	public float speed;
 	
@@ -26,7 +24,6 @@ public class MovingWall extends GameObject {
 	private final Vector2 minMaxY;
 	private final Vector2 minMaxX; 
 	
-	private boolean movingPos; // whether this objects is currently moving in the positive direction
 	
 	TextureRegion texReg;
 	TiledDrawable tiledTex;
@@ -36,20 +33,15 @@ public class MovingWall extends GameObject {
 		super(startScreenX, startScreenY, screenWidth, screenHeight);
 		AtlasRegion texReg = Constants.WALL_REGION;
 		texReg.getRegionHeight();
-		tiledTex = new TiledDrawable(texReg);
-		
+		tiledTex = new TiledDrawable(texReg);	
 		
 		this.speed = speed;
 		this.isVert = isVert;
-		movingPos = true;
 		this.minMaxY = minMaxY;
 		this.minMaxX = minMaxX;
 		
-		
-		//float verts[] = {physX, physY, physX, physY + screenHeight*Constants.PHYS_SCALE, physX + screenWidth*Constants.PHYS_SCALE, physY + screenHeight*Constants.PHYS_SCALE, physX + screenWidth*Constants.PHYS_SCALE, physY}; 
 		float physWidth = screenWidth * Constants.PHYS_SCALE;
 		float physHeight = screenHeight * Constants.PHYS_SCALE;
-		//float verts[] = {physX, physY, physX, physY + screenHeight*Constants.PHYS_SCALE, physX + screenWidth*Constants.PHYS_SCALE, physY + screenHeight*Constants.PHYS_SCALE, physX + screenWidth*Constants.PHYS_SCALE, physY}; 
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;

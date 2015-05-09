@@ -110,6 +110,8 @@ public class LevelSelectScreen implements Screen {
 	    	if (Gdx.input.justTouched() && levels.get(i).getBoundingRectangle().contains(touchInput.x, touchInput.y) && i+1 <= state.maxLevelReached) {
 	    		if (i == currentSelection) {
 	    			game.setScreen(new GravityGameScreen(game, currentSelection+1));
+		    		return;
+	   
 	    		} else {
 	    			System.out.println(state.maxLevelReached);
 	    		    System.out.println("currentSelection = " + currentSelection);
@@ -142,12 +144,15 @@ public class LevelSelectScreen implements Screen {
 
 	@Override
 	public void hide() {
+		dispose();
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void dispose() {
+		background.dispose();
+		atlas.dispose();
 		// TODO Auto-generated method stub
 		
 	}

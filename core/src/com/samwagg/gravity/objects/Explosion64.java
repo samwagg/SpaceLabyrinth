@@ -65,4 +65,8 @@ public class Explosion64 {
 		if (currentFrame < 7) return true;
 		else return false;
 	}
+	
+	public void dispose() {
+		explosionPack.dispose();
+	}
 }

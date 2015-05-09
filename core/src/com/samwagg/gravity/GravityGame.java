@@ -12,6 +12,7 @@ import java.io.OutputStream;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -37,8 +38,7 @@ public class GravityGame extends Game {
 	
 	@Override
 	public void create() {
-
-		
+	
 		FileHandle file = Gdx.files.local("gamestate.bin");
 		
 		InputStream stream = null;
@@ -71,14 +71,8 @@ public class GravityGame extends Game {
 			
 		}
 
-		
-
 		System.out.println(gameState.maxLevelReached);
-		
-		
-
-		
-		
+			
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
@@ -87,10 +81,10 @@ public class GravityGame extends Game {
 		Constants.initConstants();
 		
 		setScreen(new MainMenu(this));
-		
-		//setScreen(new GravityGameScreen(this, 1));
-		
-		
+	}
+	
+	public void setScreenAndDispose(Screen screen, Screen oldScreen) {
+		setScreen(screen);
 		
 	}
 	
@@ -98,7 +92,7 @@ public class GravityGame extends Game {
 		gameState = new GameState();
 	}
 	
-	public void mainMenuStartPressed() {
+	public void mainMenuStartPressed(Screen oldScreen) {
 		setScreen(new LevelSelectScreen(this, gameState));
 	}
 	

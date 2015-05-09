@@ -5,9 +5,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.utils.Disposable;
 import com.samwagg.gravity.Constants;
 
-public class GameObject {
+public class GameObject implements Disposable {
 
 	protected float screenX;
 	protected float screenY;
@@ -108,6 +109,12 @@ public class GameObject {
 	
 	public Body getBody() {
 		return body;
+	}
+
+	@Override
+	public void dispose() {
+		
+		
 	}
 	
 	

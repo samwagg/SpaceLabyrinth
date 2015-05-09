@@ -44,7 +44,7 @@ public class MainMenu implements Screen {
 		camera.unproject(touchInput);
 		
 		if (touchInput.x < 500 && touchInput.x > 300 && touchInput.y < 200 && touchInput.y > 100 ) {
-			game.mainMenuStartPressed(); 
+			game.mainMenuStartPressed(this); 
 		}
 		
 		if (touchInput.x < 450 && touchInput.x > 350 &&  touchInput.y > camera.viewportHeight - 50 ) {

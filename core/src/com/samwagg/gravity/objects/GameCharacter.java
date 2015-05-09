@@ -16,16 +16,9 @@ import com.samwagg.gravity.Constants;
 
 public class GameCharacter extends GameObject implements Steerable<Vector2> {
 	
-	public static final Texture CHAR_TEXT = new Texture(Gdx.files.internal("Ship.png"));
-	
-	
 	public GameCharacter(float screenX, float screenY, World world) {
-		super(screenX+CHAR_TEXT.getWidth(), screenY+CHAR_TEXT.getHeight(), Constants.CHAR_SPRITE);
-		
-
-		
-
-		
+		super(screenX+Constants.TILE_SIZE, screenY+Constants.TILE_SIZE, Constants.CHAR_SPRITE);
+				
 		BodyDef bodyDef = new BodyDef();
 	    bodyDef.type = BodyType.DynamicBody;
 	    bodyDef.allowSleep = false;
@@ -147,8 +140,6 @@ public class GameCharacter extends GameObject implements Steerable<Vector2> {
         return (float)Math.atan2(-vector.x, vector.y);
     }
 
-    // Actual implementation depends on your coordinate system.
-    // Here we assume the y-axis is pointing upwards.
     @Override
     public Vector2 angleToVector (Vector2 outVector, float angle) {
         outVector.x = -(float)Math.sin(angle);

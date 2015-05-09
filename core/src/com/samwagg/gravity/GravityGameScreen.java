@@ -60,7 +60,6 @@ import com.samwagg.gravity.objects.Wall;
 
 public class GravityGameScreen implements Screen {
 
-	private Texture img;
 	private OrthographicCamera camera;
 	private OrthographicCamera staticCamera;
 	private VectorSetter vSetter;
@@ -79,17 +78,14 @@ public class GravityGameScreen implements Screen {
 
 	private final GravityGame game;
 
-	private float vDirection = 0;
 
 	private float accumulator = 0;
 
 	private Vector2 gravVect;
 	
 	private List<GravField> currentGravFields;
-	private boolean inGravField = false;
 	
 	private float score;
-	private boolean explosionOver;
 	private boolean explosionBegun;
 	private boolean levelFinished;
 	private int level;
@@ -108,18 +104,16 @@ public class GravityGameScreen implements Screen {
 	private boolean shipGone;
 	
 	private final float startScore;
-	
-	private float shipRotation;
-	
+		
 	private Stage stage;
 	private Table table;
 	
 	private float countDown = 3;
 	Label countDownLabel;
 	
-	InputMultiplexer multiPlex;
+	private InputMultiplexer multiPlex;
 	
-	Skin skin;
+	private Skin skin;
 	
 	private boolean displayDialog;
 	private boolean optionsClicked;
@@ -161,7 +155,6 @@ public class GravityGameScreen implements Screen {
 		vSetter = new VectorSetter(staticCamera);
 		
 		shipGone = false;
-		shipRotation = 0;
 		
 		multiPlex = new InputMultiplexer();
 		multiPlex.addProcessor(vSetter.getInputProcessor());
@@ -425,25 +418,10 @@ public class GravityGameScreen implements Screen {
 				}
 				
 			});
-			//continueButton.add("Continue");
 			finishedDialog.add(continueButton);
 			table.add(finishedDialog);
 			
-//		    Label headLabel = new Label("Level Complete", skin);
-//		    Label scoreLabel = new Label("Score: " + score, skin);
-//		    Label hScoreLabel = new Label("High Score = " + game.readHighScore(level), skin);
-//		    
-//		    
-//		    table.add(headLabel);
-//		    table.row();
-//		    table.add(scoreLabel);
-//		    table.row();
-//		    table.add(hScoreLabel);
-
-			//finishedDialog.text(label);
-			//stage.addActor(finishedDialog);
 			displayDialog = true;
-			//dispose();
 		}
 		
 		if (optionsClicked) {
@@ -452,8 +430,6 @@ public class GravityGameScreen implements Screen {
 			Container<HorizontalGroup> container = new Container<HorizontalGroup>();
 			Gdx.input.setInputProcessor(stage);
 
-			//Table table = new Table();
-			//table.setFillParent(true);
 			container.setFillParent(true);
 			HorizontalGroup group = new HorizontalGroup();
 			
@@ -482,10 +458,10 @@ public class GravityGameScreen implements Screen {
 			});
 			
 			menuButton.addListener(new EventListener() {
-
+				
 				@Override
 				public boolean handle(Event event) {
-					game.mainMenuStartPressed();
+					game.mainMenuStartPressed(getInstance());
 					return true;
 				}
 				
@@ -511,11 +487,7 @@ public class GravityGameScreen implements Screen {
 			displayDialog = true;
 			
 		}
-		
-		
-		
-
-		
+				
 			game.batch.setProjectionMatrix(camera.combined);
 			game.batch.begin();
 			
@@ -524,28 +496,20 @@ public class GravityGameScreen implements Screen {
 	
 			for (GravField field : gravFields) {
 				field.getSprite().draw(game.batch);
-	//				      game.batch.draw(field.getTexture(), field.getScreenX(), field.getScreenY(), field.getTexture().getWidth()*.5f, field.getTexture().getHeight()*.5f, 
-	//						field.getTexture().getWidth(), field.getTexture().getHeight(), 1, 1, field.getRotation(), 0, 0, field.getTexture().getWidth(), field.getTexture().getHeight(), false, false);
 			}
 			
-	//		if (!shipGone) game.batch.draw(character.getTexture(), character.getScreenX(),
-	//				character.getScreenY());
+
 			 if (!shipGone) {
 				 character.getSprite().draw(game.batch);
 				 character.getSprite().rotate(.2f);
-	//			 game.batch.draw(character.getSprite().getTexture(), character.getScreenX(), character.getScreenY(), character.getSprite().getWidth()*.5f, character.getSprite().getHeight()*.5f, 
-	//					 character.getSprite().getWidth(), character.getSprite().getHeight(), 1, 1, shipRotation, 0, 0,  character.getSprite().getTexture().getWidth(), character.getSprite().getTexture().getHeight(), false, false);
 			 }
 			
-			for (Wall wall : walls) {
-				
+			for (Wall wall : walls) {				
 				wall.draw(game.batch, camera);
 	
 			} 
 	
 			for (MovingWall wall : movingWalls) {
-
-				//game.batch.draw(wall.getTexture(), wall.getScreenX(), wall.getScreenY());
 				wall.draw(game.batch, camera);
 			}
 			
@@ -576,11 +540,7 @@ public class GravityGameScreen implements Screen {
 			}
 			
 			game.batch.setProjectionMatrix(staticCamera.combined);
-			game.batch.draw(optionsTex, staticCamera.viewportWidth - optionsTex.getWidth(), staticCamera.viewportHeight - optionsTex.getHeight());
-	
-	
-			//debugRenderer.render(WORLD, camera.combined);
-	
+			game.batch.draw(optionsTex, staticCamera.viewportWidth - optionsTex.getWidth(), staticCamera.viewportHeight - optionsTex.getHeight());	
 			
 			game.batch.end();
 			
@@ -593,7 +553,6 @@ public class GravityGameScreen implements Screen {
 			
 			if (score == 0 && explosions.isEmpty() || restart) {
 				game.setScreen(new GravityGameScreen(game, level));
-				dispose();
 				return;
 			}
 			
@@ -610,11 +569,6 @@ public class GravityGameScreen implements Screen {
 			
 			game.shapeRenderer.end();
 			Gdx.gl.glDisable(GL20.GL_BLEND);
-			
-	//		debugRenderer.render(
-	//				game.WORLD,
-	//				camera.combined.cpy().scale(1 / Constants.PHYS_SCALE,
-	//						1 / Constants.PHYS_SCALE, 0));
 	
 			gravVect.x = vSetter.getXComponent() * .05f;
 			gravVect.y = vSetter.getYComponent() * .05f;
@@ -624,11 +578,8 @@ public class GravityGameScreen implements Screen {
 			for (GravField field : currentGravFields) {
 				gravFieldDirection = field.getRotation()*(float)Math.PI/180;
 				character.getBody().applyForceToCenter((float)(200*Math.cos(gravFieldDirection)), (float)(200*Math.sin(gravFieldDirection)), true);
-			}
-			// System.out.println(gravVect);
-			
+			}			
 		
-			
 			if (countDown > 0) {
 				countDown -= delta;
 			} else if (!levelFinished && !displayDialog) {
@@ -650,17 +601,12 @@ public class GravityGameScreen implements Screen {
 				}
 			}
 	
-			
-			//vSetter.translate(character.getScreenX() - camera.position.x,
-			//		character.getScreenY() - camera.position.y);
 			camera.translate(character.getScreenX() - camera.position.x,
 					character.getScreenY() - camera.position.y);
 		
 	}
 
 	private void doPhysicsStep(float deltaTime) {
-		// fixed time step
-		// max frame time to avoid spiral of death (on slow devices)
 		float frameTime = Math.min(deltaTime, 0.25f);
 		accumulator += frameTime;
 		while (accumulator >= 1 / 45f) {
@@ -686,7 +632,20 @@ public class GravityGameScreen implements Screen {
 	}
 
 	public void dispose() {
+		for (Explosion64 exp : explosions) {
+			exp.dispose();
+		}
+		this.background.dispose();
+		System.out.println("disposed");
+		//WORLD.dispose();
+		//optionsTex.dispose();
+		//stage.dispose();
+		//skin.dispose();
 		
+	}
+	
+	public GravityGameScreen getInstance() {
+		return this;
 	}
 
 	@Override
@@ -715,6 +674,7 @@ public class GravityGameScreen implements Screen {
 
 	@Override
 	public void hide() {
+		dispose();
 		// TODO Auto-generated method stub
 
 	}
@@ -783,15 +743,9 @@ public class GravityGameScreen implements Screen {
 			field.light();
 			currentGravFields.add(field);
 			
-//			switch((GameTile) forceFix.getBody().getUserData()) {
-//			case FORCE_LEFT:  leftForce = true; break;
-//			case FORCE_RIGHT: rightForce = true; break;
-//			case FORCE_UP:    upForce = true; break;
-//			case FORCE_DOWN:  downForce = true; break;
-//			default:  break;
-//			}
-
 		}
+		
+
 
 		@Override
 		public void preSolve(Contact contact, Manifold oldManifold)
