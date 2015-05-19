@@ -39,12 +39,12 @@ public class GravField extends GameObject {
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-	    bodyDef.position.set(this.physX+.5f*texture.getWidth()*Constants.PHYS_SCALE, this.physY+.5f*texture.getHeight()*Constants.PHYS_SCALE);
+	    bodyDef.position.set(this.physX+.5f*Constants.TILE_SIZE*2*Constants.PHYS_SCALE, this.physY+.5f*Constants.TILE_SIZE*2*Constants.PHYS_SCALE);
 	    Body body = world.createBody(bodyDef);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.isSensor = true;
 		PolygonShape box = new PolygonShape();
-		box.setAsBox(texture.getWidth()*Constants.PHYS_SCALE*.5f, texture.getHeight()*Constants.PHYS_SCALE*.5f);
+		box.setAsBox(Constants.TILE_SIZE*2*Constants.PHYS_SCALE*.5f, Constants.TILE_SIZE*2*Constants.PHYS_SCALE*.5f);
 		fixtureDef.shape = box;
 		Fixture fixture = body.createFixture(fixtureDef);	
 		

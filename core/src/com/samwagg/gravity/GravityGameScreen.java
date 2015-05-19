@@ -139,7 +139,7 @@ public class GravityGameScreen implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		staticCamera = new OrthographicCamera();
-		staticCamera.setToOrtho(false, 800, 480);
+		staticCamera.setToOrtho(false, 960, 576);
 		
 		currentGravFields = new LinkedList<GravField>();
 		enemies = new LinkedList<EnemySteeringAgent>();
@@ -248,6 +248,10 @@ public class GravityGameScreen implements Screen {
 		}
 		backgroundReg = new TextureRegion(background, background.getWidth(), background.getHeight());
 		tiledBackground = new TiledDrawable(backgroundReg);
+		
+		camera.translate(character.getScreenX() - camera.position.x,
+				character.getScreenY() - camera.position.y);
+		camera.update();
 	}
 	
 	private void makeMovBlock(int i, int j, int width, int height, float speed, float wallWidth, float wallHeight) {
@@ -379,8 +383,7 @@ public class GravityGameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		
-		camera.update();
+
 		Gdx.gl.glClearColor(0, 0, .3f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
@@ -504,7 +507,8 @@ public class GravityGameScreen implements Screen {
 				 character.getSprite().rotate(.2f);
 			 }
 			
-			for (Wall wall : walls) {				
+			for (Wall wall : walls) {
+				
 				wall.draw(game.batch, camera);
 	
 			} 
@@ -601,8 +605,8 @@ public class GravityGameScreen implements Screen {
 				}
 			}
 	
-			camera.translate(character.getScreenX() - camera.position.x,
-					character.getScreenY() - camera.position.y);
+
+
 		
 	}
 
@@ -626,6 +630,11 @@ public class GravityGameScreen implements Screen {
 			accumulator -= 1 / 45f;
 		}
 		character.updatePosition();
+//		camera.translate(character.getScreenX() - camera.position.x,
+//				character.getScreenY() - camera.position.y);
+		camera.position.set(character.getScreenX(), character.getScreenY(), 0);
+		camera.update();
+
 		for (EnemySteeringAgent enemy : enemies) {
 			enemy.getGameObject().updatePosition();
 		}

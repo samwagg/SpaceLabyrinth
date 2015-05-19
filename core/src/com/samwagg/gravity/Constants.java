@@ -20,16 +20,26 @@ public class Constants {
 
 	
 	public static Sprite createArrowLit() {
-		return ATLAS.createSprite("arrow_lit");
+		Sprite sprite = ATLAS.createSprite("arrow_lit");
+		sprite.setSize(TILE_SIZE*2, TILE_SIZE*2);
+		sprite.setOriginCenter();
+
+		return sprite;
 	}
 	
 	public static Sprite createArrowUnlit() {
-		return ATLAS.createSprite("arrow_unlit");
+		Sprite sprite = ATLAS.createSprite("arrow_unlit");
+		sprite.setSize(TILE_SIZE*2, TILE_SIZE*2);
+		sprite.setOriginCenter();
+		return sprite;
+		
 	}
 	
 	public static void initConstants() {
 		WALL_REGION.setRegionHeight(WALL_REGION.originalHeight);
 		WALL_REGION.setRegionWidth(WALL_REGION.originalWidth);
+		
+		
 	}
 
 	

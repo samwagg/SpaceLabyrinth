@@ -19,8 +19,9 @@ public class Wall extends GameObject {
 
 	public final static Texture WALL_TEXT = new Texture(Gdx.files.internal("wall.png"));
 	
-	TextureRegion texReg;
-	TiledDrawable tiledTex;
+	private TextureRegion texReg;
+	private TiledDrawable tiledTex;
+	
 	
 	public Wall(float screenX, float screenY, float screenWidth, float screenHeight, World world) {
 		super(screenX, screenY, screenWidth, screenHeight);
@@ -49,7 +50,33 @@ public class Wall extends GameObject {
 	}
 	
 	public void draw(SpriteBatch batch, Camera camera) {
-		tiledTex.draw(batch, screenX, screenY, screenWidth, screenHeight);
+		//test
+		// Only draw if all or part of object is within the viewport
+		if ( screenX <= camera.position.x + camera.viewportWidth*.5f &&
+				screenX + screenWidth > camera.position.x - camera.viewportWidth*.5f &&
+				screenY <= camera.position.y + camera.viewportHeight*.5f &&
+				screenY + screenHeight > camera.position.y - camera.viewportHeight*.5f) {
+			
+			int xLowLimit = (int) (camera.position.x - camera.viewportWidth*.5f);
+			int xHighLimit = (int) (camera.position.x + camera.viewportWidth*.5f);
+			int yLowLimit = (int) (camera.position.y - camera.viewportHeight*.5f);
+			int yHighLimit = (int) (camera.position.y + camera.viewportHeight*.5f);	
+			
+			System.out.println(screenX);
+			System.out.println(screenY);
+			
+			int xStart = screenX >= xLowLimit ? (int)screenX : xLowLimit - (xLowLimit % 128);  
+			int yStart = screenY >= yLowLimit ? (int)screenY : yLowLimit - (yLowLimit % 128)-1;
+
+			int xEnd = screenX + screenWidth < xHighLimit ? (int) (screenX + screenWidth) : xHighLimit+128; 
+			int yEnd = screenY + screenHeight < yHighLimit? (int) (screenY + screenHeight) : yHighLimit+128;
+			
+			tiledTex.draw(batch, xStart, yStart, 128, 128);
+
+		}
+		
+		
+		
 	}
 
 }

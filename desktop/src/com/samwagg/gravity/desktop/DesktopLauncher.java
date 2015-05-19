@@ -13,7 +13,7 @@ public class DesktopLauncher {
 //        Settings settings = new Settings();
 //        settings.maxWidth = 1024;
 //        settings.maxHeight = 1024;
-//        TexturePacker.process(settings, "menu_images", "menu_images", "menu_pack");
+//        TexturePacker.process(settings, "images", "images", "pack");
         
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new GravityGame(), config);
