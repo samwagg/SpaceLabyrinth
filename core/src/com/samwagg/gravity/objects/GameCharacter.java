@@ -29,7 +29,7 @@ public class GameCharacter extends GameObject implements Steerable<Vector2> {
 	    charFixtureDef.shape = circle;
 	    charFixtureDef.density = 10f;
 	    charFixtureDef.friction = 0f;
-	    charFixtureDef.restitution = .9f;
+	    charFixtureDef.restitution = .4f;
 	    
 		body = world.createBody(bodyDef);
 		Fixture fixture = body.createFixture(charFixtureDef);

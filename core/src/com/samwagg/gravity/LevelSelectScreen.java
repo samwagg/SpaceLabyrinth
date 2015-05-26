@@ -24,6 +24,9 @@ public class LevelSelectScreen implements Screen {
 	private final Sprite level2;
 	private final Sprite level3;
 	private final Sprite level4;
+	private final Sprite level5;
+	private final Sprite level6;
+	private final Sprite level7;
 	
 	private final Sprite ship;
 	
@@ -59,18 +62,33 @@ public class LevelSelectScreen implements Screen {
 		
 		level2 = state.maxLevelReached >= 2 ? atlas.createSprite("Dots2") : atlas.createSprite("Dotsr2");
 		level2.setScale(.25f);
-		level2.setCenter(camera.viewportWidth*.3f, camera.viewportHeight*.5f);
+		level2.setCenter(camera.viewportWidth*.2f, camera.viewportHeight*.5f);
 		levels.add(level2);
 
 		level3 = state.maxLevelReached >= 3 ? atlas.createSprite("Dots3") : atlas.createSprite("Dotsr3");
 		level3.setScale(.25f);
-		level3.setCenter(camera.viewportWidth*.7f, camera.viewportHeight*.4f);
+		level3.setCenter(camera.viewportWidth*.4f, camera.viewportHeight*.4f);
 		levels.add(level3);
 		
 		level4 = state.maxLevelReached >= 4 ? atlas.createSprite("Dots4") : atlas.createSprite("Dotsr4");
 		level4.setScale(.25f);
-		level4.setCenter(camera.viewportWidth*.9f, camera.viewportHeight*.75f);
+		level4.setCenter(camera.viewportWidth*.6f, camera.viewportHeight*.75f);
 		levels.add(level4);
+		
+		level5 = state.maxLevelReached >= 4 ? atlas.createSprite("Dots4") : atlas.createSprite("Dotsr4");
+		level5.setScale(.25f);
+		level5.setCenter(camera.viewportWidth*.7f, camera.viewportHeight*.75f);
+		levels.add(level5);
+		
+		level6 = state.maxLevelReached >= 4 ? atlas.createSprite("Dots4") : atlas.createSprite("Dotsr4");
+		level6.setScale(.25f);
+		level6.setCenter(camera.viewportWidth*.8f, camera.viewportHeight*.75f);
+		levels.add(level6);
+		
+		level7 = state.maxLevelReached >= 4 ? atlas.createSprite("Dots4") : atlas.createSprite("Dotsr4");
+		level7.setScale(.25f);
+		level7.setCenter(camera.viewportWidth*.9f, camera.viewportHeight*.75f);
+		levels.add(level7);
 		
 		Sprite currentLevel = levels.get(currentSelection);
 		ship = atlas.createSprite("menu_ship");
@@ -96,10 +114,9 @@ public class LevelSelectScreen implements Screen {
 	    game.batch.setProjectionMatrix(camera.combined);
 	    game.batch.begin();
 	    game.batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
-	    level1.draw(game.batch);
-	    level2.draw(game.batch);
-	    level3.draw(game.batch);
-	    level4.draw(game.batch);
+	    for (Sprite level : levels) {
+	    	level.draw(game.batch);
+	    }
 	    ship.draw(game.batch);
 	    game.batch.end();
 	    

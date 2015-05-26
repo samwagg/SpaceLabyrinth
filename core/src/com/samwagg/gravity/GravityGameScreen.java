@@ -9,6 +9,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -43,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
@@ -119,6 +121,10 @@ public class GravityGameScreen implements Screen {
 	private boolean optionsClicked;
 	
 	private boolean restart;
+	
+	private ExtendViewport extViewport;
+	
+	private FPSLogger logger = new FPSLogger();
 
 
 		
@@ -137,7 +143,9 @@ public class GravityGameScreen implements Screen {
 		WORLD = new World(new Vector2(0,0), true);
 		
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 480);
+		camera.setToOrtho(false, 1000, 600);
+		extViewport = new ExtendViewport(1000,600,camera);
+		
 		staticCamera = new OrthographicCamera();
 		staticCamera.setToOrtho(false, 960, 576);
 		
@@ -218,7 +226,7 @@ public class GravityGameScreen implements Screen {
 			for (int j = 0; j < mapWidth; j++) {
 
 				xPos = j * wallWidth;
-				yPos = camera.viewportHeight - (i + 1) * wallHeight;
+				yPos = - i * wallHeight;
 				System.out.println("xpos = " + xPos + " and ypos = " + yPos);
 				currTile = map.getTileArray()[i][j];
 				if (currTile == null) continue;
@@ -289,7 +297,7 @@ public class GravityGameScreen implements Screen {
 				k++;
 			}
 			
-			movingWalls.add(new MovingWall(j*wallWidth, camera.viewportHeight-(i+1)*wallHeight-(height-1)*wallHeight, width*wallWidth, height*wallHeight,  new Vector2(0,0), new Vector2(camera.viewportHeight-((i+1)*wallHeight + rangeBelow * wallHeight),camera.viewportHeight - ((i+1)*wallHeight - rangeAbove * wallHeight) ), WORLD, true, speed));					
+			movingWalls.add(new MovingWall(j*wallWidth, -i*wallHeight-(height-1)*wallHeight, width*wallWidth, height*wallHeight,  new Vector2(0,0), new Vector2(-i*wallHeight - rangeBelow * wallHeight -(height-1)*wallHeight,-i*wallHeight + rangeAbove * wallHeight - (height-1)*wallHeight ), WORLD, true, speed));					
 
 			
 			
@@ -328,7 +336,7 @@ public class GravityGameScreen implements Screen {
 				k++;
 			}
 			
-			movingWalls.add(new MovingWall(j*wallWidth, camera.viewportHeight - (i+1)*wallHeight - (height-1)*wallHeight, width*wallWidth, height*wallHeight,  new Vector2(j*wallWidth - rangeLeft * wallWidth, j*wallWidth + rangeRight  * wallWidth), new Vector2(0,0), WORLD, false, speed));					
+			movingWalls.add(new MovingWall(j*wallWidth, -i*wallHeight - (height-1)*wallHeight, width*wallWidth, height*wallHeight,  new Vector2(j*wallWidth - rangeLeft * wallWidth, j*wallWidth + rangeRight  * wallWidth), new Vector2(0,0), WORLD, false, speed));					
 			
 		}
 		
@@ -384,7 +392,9 @@ public class GravityGameScreen implements Screen {
 	@Override
 	public void render(float delta) {
 
-		Gdx.gl.glClearColor(0, 0, .3f, 1);
+		logger.log();
+		
+		//Gdx.gl.glClearColor(0, 0, .3f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		if (levelFinished) {
@@ -665,7 +675,7 @@ public class GravityGameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
+		extViewport.update(width, height);
 
 	}
 

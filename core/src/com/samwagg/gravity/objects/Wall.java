@@ -46,7 +46,9 @@ public class Wall extends GameObject {
 		Fixture fixture = body.createFixture(fixDef);
 		fixture.setUserData(this);
 		
-		brickBox.dispose();	
+		brickBox.dispose();
+		
+		
 	}
 	
 	public void draw(SpriteBatch batch, Camera camera) {
@@ -62,16 +64,17 @@ public class Wall extends GameObject {
 			int yLowLimit = (int) (camera.position.y - camera.viewportHeight*.5f);
 			int yHighLimit = (int) (camera.position.y + camera.viewportHeight*.5f);	
 			
-			System.out.println(screenX);
-			System.out.println(screenY);
-			
 			int xStart = screenX >= xLowLimit ? (int)screenX : xLowLimit - (xLowLimit % 128);  
-			int yStart = screenY >= yLowLimit ? (int)screenY : yLowLimit - (yLowLimit % 128)-1;
+			int yStart = screenY >= yLowLimit ? (int)screenY : yLowLimit - (yLowLimit % 128 + 128);
+			
+			
 
 			int xEnd = screenX + screenWidth < xHighLimit ? (int) (screenX + screenWidth) : xHighLimit+128; 
 			int yEnd = screenY + screenHeight < yHighLimit? (int) (screenY + screenHeight) : yHighLimit+128;
 			
-			tiledTex.draw(batch, xStart, yStart, 128, 128);
+			tiledTex.draw(batch, xStart, yStart, xEnd-xStart, yEnd-yStart);
+			tiledTex.draw(batch, xStart, yStart, xEnd-xStart, yEnd-yStart);
+
 
 		}
 		

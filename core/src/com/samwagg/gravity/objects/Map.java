@@ -15,7 +15,7 @@ public class Map {
 	
 	private GameTile[][] tileArray;
 	
-	private final int initScores[] = {2500, 2000, 1000,3750}; 
+	private final int initScores[] = {2500, 2000, 10000,3750,5000, 5000, 5000}; 
 	
 	public Map(int level) throws FileNotFoundException {
 		MapReader reader = new MapReader("level" + level);
