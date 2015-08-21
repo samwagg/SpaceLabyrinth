@@ -1,41 +1,41 @@
 
 pack.png
-size: 1024,512
+size: 1024,1024
 format: RGBA8888
-filter: MipMapLinearLinear,Linear
-repeat: none
-GravityFields
-  rotate: false
-  xy: 2, 68
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
+filter: Linear,Linear
+repeat: xy
 Ship
   rotate: false
-  xy: 2, 2
+  xy: 260, 452
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 arrow_lit
   rotate: false
-  xy: 2, 198
+  xy: 2, 260
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 arrow_unlit
   rotate: false
-  xy: 260, 198
+  xy: 516, 582
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
+pediatric_danger
+  rotate: false
+  xy: 2, 518
+  size: 512, 320
+  orig: 512, 320
+  offset: 0, 0
+  index: -1
 wall
   rotate: false
-  xy: 518, 326
-  size: 128, 128
-  orig: 128, 128
+  xy: 2, 2
+  size: 256, 256
+  orig: 256, 256
   offset: 0, 0
   index: -1

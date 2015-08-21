@@ -13,6 +13,8 @@ import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -126,6 +128,9 @@ public class GravityGameScreen implements Screen {
 	
 	private FPSLogger logger = new FPSLogger();
 
+	private Texture wallTex;
+	private float x;
+	private float y;
 
 		
 
@@ -140,7 +145,12 @@ public class GravityGameScreen implements Screen {
 	public GravityGameScreen(final GravityGame game, int level) {
 		this.game = game;
 		
+		Gdx.graphics.setVSync(true);
+		
 		WORLD = new World(new Vector2(0,0), true);
+		
+		wallTex = new Texture(Gdx.files.internal("wall.png"));
+		wallTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 1000, 600);
@@ -257,9 +267,13 @@ public class GravityGameScreen implements Screen {
 		backgroundReg = new TextureRegion(background, background.getWidth(), background.getHeight());
 		tiledBackground = new TiledDrawable(backgroundReg);
 		
-		camera.translate(character.getScreenX() - camera.position.x,
-				character.getScreenY() - camera.position.y);
+		
+		camera.position.x = character.getScreenX();
+		camera.position.y = character.getScreenY();
 		camera.update();
+		
+		x = character.getScreenX();
+		y = character.getScreenY();
 	}
 	
 	private void makeMovBlock(int i, int j, int width, int height, float speed, float wallWidth, float wallHeight) {
@@ -391,49 +405,52 @@ public class GravityGameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-
-		logger.log();
 		
-		//Gdx.gl.glClearColor(0, 0, .3f, 1);
+		logger.log();
+		Gdx.gl.glClearColor(0, 0, .3f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		
+
+		
 		if (levelFinished) {
-			stage = new Stage();
-			Table table = new Table();
-			table.setFillParent(true);
-
-			stage.addActor(table);
-		 
-			//game.setScreen(new LevelCompleteMenu(game, level, (int)score));	
-			Gdx.input.setInputProcessor(stage);
-			Label label = new Label("Level Complete",skin);
-			label.scaleBy(.5f);
-			Table finishedDialog = new Table(skin);
-			finishedDialog.add("Level Complete");
-			finishedDialog.row();
-			finishedDialog.add("Score: " + (int)score);
-			finishedDialog.row();
-			finishedDialog.add("Best: " + game.readHighScore(level));
-			finishedDialog.row();
-			Button continueButton = new Button(skin);
-			continueButton.add("Continue");
 			
-			game.writeHighScore(level, (int) score);
-			
-			
-			continueButton.addListener(new EventListener() {
-
-				@Override
-				public boolean handle(Event event) {
-					// TODO Auto-generated method stub
-					game.setScreen(new GravityGameScreen(game, level + 1));					
-					return true;
-				}
-				
-			});
-			finishedDialog.add(continueButton);
-			table.add(finishedDialog);
-			
+//			stage = new Stage();
+//			Table table = new Table();
+//			table.setFillParent(true);
+//
+//			stage.addActor(table);
+//		 
+//			//game.setScreen(new LevelCompleteMenu(game, level, (int)score));	
+//			Gdx.input.setInputProcessor(stage);
+//			Label label = new Label("Level Complete",skin);
+//			label.scaleBy(.5f);
+//			Table finishedDialog = new Table(skin);
+//			finishedDialog.add("Level Complete");
+//			finishedDialog.row();
+//			finishedDialog.add("Score: " + (int)score);
+//			finishedDialog.row();
+//			finishedDialog.add("Best: " + game.readHighScore(level));
+//			finishedDialog.row();
+//			Button continueButton = new Button(skin);
+//			continueButton.add("Continue");
+//			
+//			game.writeHighScore(level, (int) score);
+//			
+//			
+//			continueButton.addListener(new EventListener() {
+//
+//				@Override
+//				public boolean handle(Event event) {
+//					// TODO Auto-generated method stub
+//					game.setScreen(new GravityGameScreen(game, level + 1));					
+//					return true;
+//				}
+//				
+//			});
+//			finishedDialog.add(continueButton);
+//			table.add(finishedDialog);
+			game.setScreen( new  LevelCompleteMenu(game, level, (int) score) );
 			displayDialog = true;
 		}
 		
@@ -503,6 +520,8 @@ public class GravityGameScreen implements Screen {
 				
 			game.batch.setProjectionMatrix(camera.combined);
 			game.batch.begin();
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 			
 			
 			tiledBackground.draw(game.batch, -camera.viewportWidth, -worldHeight - camera.viewportHeight, worldWidth+2*camera.viewportWidth, worldHeight + 2*camera.viewportHeight );
@@ -511,8 +530,7 @@ public class GravityGameScreen implements Screen {
 				field.getSprite().draw(game.batch);
 			}
 			
-
-			 if (!shipGone) {
+			if (!shipGone) {
 				 character.getSprite().draw(game.batch);
 				 character.getSprite().rotate(.2f);
 			 }
@@ -553,6 +571,8 @@ public class GravityGameScreen implements Screen {
 				explosions.remove(exp);
 			}
 			
+
+			//game.batch.draw(wallTex, this.x, this.y);
 			game.batch.setProjectionMatrix(staticCamera.combined);
 			game.batch.draw(optionsTex, staticCamera.viewportWidth - optionsTex.getWidth(), staticCamera.viewportHeight - optionsTex.getHeight());	
 			
@@ -614,7 +634,10 @@ public class GravityGameScreen implements Screen {
 					else optionsClicked = true;
 				}
 			}
-	
+			
+			//camera.update();
+			camera.position.set(character.getScreenX(), character.getScreenY(), 0);
+			camera.update();
 
 
 		
@@ -642,8 +665,7 @@ public class GravityGameScreen implements Screen {
 		character.updatePosition();
 //		camera.translate(character.getScreenX() - camera.position.x,
 //				character.getScreenY() - camera.position.y);
-		camera.position.set(character.getScreenX(), character.getScreenY(), 0);
-		camera.update();
+
 
 		for (EnemySteeringAgent enemy : enemies) {
 			enemy.getGameObject().updatePosition();

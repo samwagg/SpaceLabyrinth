@@ -77,8 +77,9 @@ public class GameObject implements Disposable {
 		this.screenX = body.getPosition().x / Constants.PHYS_SCALE - screenWidth/2;
 		this.screenY = body.getPosition().y / Constants.PHYS_SCALE - screenHeight/2;
 		if (sprite != null) {
-		sprite.setX(screenX);
-		sprite.setY(screenY);}
+			sprite.setX(screenX);
+			sprite.setY(screenY);
+		}
 	}
 	
 	public Sprite getSprite() {

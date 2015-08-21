@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -60,8 +62,79 @@ public class MovingWall extends GameObject {
 	}
 	
 	public void draw(SpriteBatch batch, Camera camera) {
-		tiledTex.draw(batch, screenX, screenY, screenWidth, screenHeight);
+		//test
+		
+		Vector3 screenCoords = new Vector3(screenX, screenY, 0);
+		Vector3 screenDims = new Vector3(screenWidth, screenHeight, 0);
+		camera.project(screenCoords);		
+		
+		// Only draw if all or part of object is within the viewport
+//		if ( screenX <= camera.position.x + camera.viewportWidth*.5f &&
+//				screenX + screenWidth > camera.position.x - camera.viewportWidth*.5f &&
+//				screenY <= camera.position.y + camera.viewportHeight*.5f &&
+//				screenY + screenHeight > camera.position.y - camera.viewportHeight*.5f) {
+			
+		BoundingBox testBox = new BoundingBox(new Vector3(screenX, screenY, 0), new Vector3(screenX + screenWidth, screenY + screenHeight, 0));
+		if ( camera.frustum.boundsInFrustum(testBox)) {
+			
+//			System.out.println("screenX = " + screenCoords.x + ", screenY = " + screenCoords.y);
+//			System.out.println("screenHeight = " + screenHeight + " and screenDims.y = " + screenDims.y );
+//			System.out.println("viewport width = " + camera.viewportWidth + ", viewport height = " + camera.viewportHeight);
+			
+//			int xLowLimit = 0;
+//			int xHighLimit = (int) camera.viewportWidth;
+//			int yLowLimit = 0;
+//			int yHighLimit = (int) camera.viewportHeight;
+//	
+//			
+//			int xStart = screenCoords.x >= xLowLimit ? (int)screenCoords.x : xLowLimit - (xLowLimit % 128);  
+//			int yStart = screenCoords.y >= yLowLimit ? (int)screenCoords.y : yLowLimit - ((yLowLimit % 128));
+//			
+//			System.out.println("xStart = " + xStart);
+//			System.out.println("yStart = " + yStart);
+//			
+//			int xEnd = screenCoords.x + screenWidth < xHighLimit ? (int) (screenCoords.x + screenWidth) : xHighLimit+128; 
+//			int yEnd = screenCoords.y + screenHeight < yHighLimit? (int) (screenCoords.y + screenHeight) : yHighLimit+128;
+//			
+//			tiledTex.draw(batch, xStart-64, yStart+64, xEnd-xStart, yEnd-yStart);
+//			tiledTex.draw(batch, xStart+64, yStart+64, xEnd-xStart, yEnd-yStart);
+//			tiledTex.draw(batch, xStart-64, yStart-64, xEnd-xStart, yEnd-yStart);
+//			tiledTex.draw(batch, xStart+64, yStart-64, xEnd-xStart, yEnd-yStart);			
+//			
+//			int xLowLimit = (int) (camera.position.x - camera.viewportWidth*.5f);
+//			int xHighLimit = (int) (camera.position.x + camera.viewportWidth*.5f);
+//			int yLowLimit = (int) (camera.position.y - camera.viewportHeight*.5f);
+//			int yHighLimit = (int) (camera.position.y + camera.viewportHeight*.5f);
+//			
+//			System.out.println("viewportwidth = " + camera.viewportWidth);
+//			System.out.println("viewportheight = " + camera.viewportHeight);
+//			
+//			camera.frustum.
+			
+//			int xStart = screenX >= xLowLimit ? (int)screenX : xLowLimit - (xLowLimit % 128);  
+//			int yStart = screenY >= yLowLimit ? (int)screenY : yLowLimit - ((yLowLimit % 128));
+//			
+//			int xEnd = screenX + screenWidth < xHighLimit ? (int) (screenX + screenWidth) : xHighLimit+128; 
+//			int yEnd = screenY + screenHeight < yHighLimit? (int) (screenY + screenHeight) : yHighLimit+128;
+			
+			int xStart = (int) screenX;
+			int yStart = (int) screenY;
+			int xEnd = (int) (screenX + screenWidth);
+			int yEnd = (int) (screenY + screenHeight);
+			
+			
+			tiledTex.draw(batch, xStart-64, yStart+64, xEnd-xStart+64, yEnd-yStart-64 );
+			tiledTex.draw(batch, xStart+64, yStart+64, xEnd-xStart-64, yEnd-yStart-64);
+			tiledTex.draw(batch, xStart-64, yStart-64, xEnd-xStart+64, yEnd-yStart+64);
+			tiledTex.draw(batch, xStart+64, yStart-64, xEnd-xStart-64, yEnd-yStart+64);
+		}	
 	}
+
+	
+	
+//	public void draw(SpriteBatch batch, Camera camera) {
+//		tiledTex.draw(batch, screenX, screenY, screenWidth, screenHeight);
+//	}
 	
 	public void move() {
 		

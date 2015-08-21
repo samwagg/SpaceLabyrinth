@@ -2,57 +2,57 @@
 menu_pack.png
 size: 1024,1024
 format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-Dots1
+filter: Linear,Linear
+repeat: xy
+Dots
   rotate: false
   xy: 2, 518
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
-  index: -1
-Dots2
+  index: 1
+Dots
   rotate: false
   xy: 2, 260
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
-  index: -1
-Dots3
+  index: 2
+Dots
   rotate: false
   xy: 260, 518
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
-  index: -1
-Dots4
+  index: 3
+Dots
   rotate: false
   xy: 2, 2
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
-  index: -1
-Dotsr2
+  index: 4
+Dotsr
   rotate: false
   xy: 260, 260
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
-  index: -1
-Dotsr3
+  index: 2
+Dotsr
   rotate: false
   xy: 518, 518
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
-  index: -1
-Dotsr4
+  index: 3
+Dotsr
   rotate: false
   xy: 260, 2
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
-  index: -1
+  index: 4
 menu_ship
   rotate: false
   xy: 518, 260
