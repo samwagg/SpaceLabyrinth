@@ -30,8 +30,8 @@ public class Wall extends GameObject {
 		this.texture = WALL_TEXT;
 		
 		AtlasRegion texReg = Constants.WALL_REGION;
-		texReg.offsetX = 64;
-		texReg.offsetY = 64;
+//		texReg.offsetX = 64;
+//		texReg.offsetY = 64;
 		tiledTex = new TiledDrawable(texReg);
 		
 
@@ -117,10 +117,10 @@ public class Wall extends GameObject {
 			int xEnd = (int) (screenX + screenWidth);
 			int yEnd = (int) (screenY + screenHeight);
 			
-			tiledTex.draw(batch, xStart-64, yStart+64, xEnd-xStart+65, yEnd-yStart-64);
-			tiledTex.draw(batch, xStart+64, yStart+64, xEnd-xStart-63, yEnd-yStart-64);
-			tiledTex.draw(batch, xStart-64, yStart-64, xEnd-xStart+65, yEnd-yStart+64);
-			tiledTex.draw(batch, xStart+64, yStart-64, xEnd-xStart-63, yEnd-yStart+64);
+			tiledTex.draw(batch, xStart-64, yStart+64, screenWidth%256 == 0? screenWidth+64 : screenWidth+128, screenHeight%256 == 0? screenHeight : screenHeight-64);
+			tiledTex.draw(batch, xStart+64, yStart+64, screenWidth%256 == 0? screenWidth : screenWidth-64, screenHeight%256 == 0? screenHeight : screenHeight-64);
+			tiledTex.draw(batch, xStart-64, yStart-64, screenWidth%256 == 0? screenWidth+64 : screenWidth+128, screenHeight%256 == 0? screenHeight+64 : screenHeight+128);
+			tiledTex.draw(batch, xStart+64, yStart-64, screenWidth%256 == 0? screenWidth : screenWidth-64, screenHeight%256 == 0? screenHeight+64 : screenHeight+128);
 		}	
 	}
 }

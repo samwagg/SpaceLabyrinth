@@ -16,7 +16,7 @@ public class DesktopLauncher {
         settings.maxWidth = 1024;
         settings.maxHeight = 1024;
 
-        //settings.duplicatePadding = true;
+//        settings.duplicatePadding = true;
        
 //        settings.wrapX = TextureWrap.ClampToEdge;
         settings.wrapY = TextureWrap.Repeat;
@@ -25,11 +25,11 @@ public class DesktopLauncher {
         settings.alphaThreshold=30;
         //float scales[] = {.5f};
         //settings.scale = scales; 
-        //settings.edgePadding = true;
+//        settings.edgePadding = true;
         settings.filterMag = TextureFilter.Linear;
         settings.filterMin = TextureFilter.Linear;
         settings.useIndexes = true;
-        TexturePacker.process(settings, "menu_images", "../android/assets", "menu_pack");
+        TexturePacker.process(settings, "images", "../android/assets", "pack");
        
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new GravityGame(), config);

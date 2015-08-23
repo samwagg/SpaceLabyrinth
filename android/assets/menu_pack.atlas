@@ -32,30 +32,126 @@ Dots
   orig: 256, 256
   offset: 0, 0
   index: 4
-Dotsr
+Dots
   rotate: false
   xy: 260, 260
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 5
+Dots
+  rotate: false
+  xy: 518, 518
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 6
+Dots
+  rotate: false
+  xy: 260, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 7
+Dots
+  rotate: false
+  xy: 518, 260
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 8
+Dots
+  rotate: false
+  xy: 518, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 9
+
+menu_pack2.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: xy
+Dots
+  rotate: false
+  xy: 2, 518
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 10
+Dotsr
+  rotate: false
+  xy: 2, 260
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 2
 Dotsr
   rotate: false
-  xy: 518, 518
+  xy: 260, 518
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 3
 Dotsr
   rotate: false
-  xy: 260, 2
+  xy: 2, 2
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: 4
-menu_ship
+Dotsr
+  rotate: false
+  xy: 260, 260
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 5
+Dotsr
+  rotate: false
+  xy: 518, 518
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 6
+Dotsr
+  rotate: false
+  xy: 260, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 7
+Dotsr
   rotate: false
   xy: 518, 260
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 8
+Dotsr
+  rotate: false
+  xy: 518, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 9
+
+menu_pack3.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: xy
+Dotsr
+  rotate: false
+  xy: 2, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 10
+menu_ship
+  rotate: false
+  xy: 260, 2
   size: 256, 256
   orig: 256, 256
   offset: 0, 0

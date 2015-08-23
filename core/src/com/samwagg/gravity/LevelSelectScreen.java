@@ -61,7 +61,7 @@ public class LevelSelectScreen implements Screen {
 			System.out.println("Making icon for level " + i);
 			Sprite leveli = state.maxLevelReached >= i ? atlas.createSprite("Dots", i) : atlas.createSprite("Dotsr", i);
 			leveli.setScale(.25f);
-			leveli.setCenter(camera.viewportWidth*(i-.5f)*1/4,  camera.viewportHeight* icon_pos[i-1]);
+			leveli.setCenter(camera.viewportWidth*(i-.5f)*1/Constants.N_LEVELS,  camera.viewportHeight* icon_pos[i-1]);
 			levels.add(leveli);
 		}
 		

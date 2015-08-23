@@ -79,9 +79,7 @@ public class GravityGameScreen implements Screen {
 	private List<Explosion64> explosions; 
 	private List<Explosion64> finishedExplosions;
 	
-
 	private final GravityGame game;
-
 
 	private float accumulator = 0;
 
@@ -277,8 +275,8 @@ public class GravityGameScreen implements Screen {
 	}
 	
 	private void makeMovBlock(int i, int j, int width, int height, float speed, float wallWidth, float wallHeight) {
-		if (	map.getTileArray()[i+height][j] == Map.GameTile.RANGE
-				|| map.getTileArray()[i-1][j] == Map.GameTile.RANGE
+		if (	map.getTileArray()[i+height][j] == Map.GameTile.RANGE_VERT
+				|| map.getTileArray()[i-1][j] == Map.GameTile.RANGE_VERT
 				|| map.getTileArray()[i+height][j] == Map.GameTile.END_RANGE
 				|| map.getTileArray()[i-1][j] == Map.GameTile.END_RANGE) {
 			
@@ -287,7 +285,7 @@ public class GravityGameScreen implements Screen {
 			
 			int k = 1;
 			while (true) {
-				if (map.getTileArray()[i+height-1+k][j] == Map.GameTile.RANGE) {
+				if (map.getTileArray()[i+height-1+k][j] == Map.GameTile.RANGE_VERT) {
 					rangeBelow += 1;
 				}
 				else if (map.getTileArray()[i+height-1+k][j] == Map.GameTile.END_RANGE) {
@@ -300,7 +298,7 @@ public class GravityGameScreen implements Screen {
 			
 			k = 1;
 			while (true) {
-				if (map.getTileArray()[i-k][j] == Map.GameTile.RANGE) {
+				if (map.getTileArray()[i-k][j] == Map.GameTile.RANGE_VERT) {
 					rangeAbove += 1;
 				}
 				else if (map.getTileArray()[i-k][j] == Map.GameTile.END_RANGE) {
@@ -317,8 +315,8 @@ public class GravityGameScreen implements Screen {
 			
 		}
 		
-		if (	map.getTileArray()[i][j+width] == Map.GameTile.RANGE
-				|| map.getTileArray()[i][j-1] == Map.GameTile.RANGE
+		if (	map.getTileArray()[i][j+width] == Map.GameTile.RANGE_HOR
+				|| map.getTileArray()[i][j-1] == Map.GameTile.RANGE_HOR
 				|| map.getTileArray()[i][j+width] == Map.GameTile.END_RANGE
 				|| map.getTileArray()[i][j-1] == Map.GameTile.END_RANGE) {
 			int rangeRight = 0;
@@ -326,7 +324,7 @@ public class GravityGameScreen implements Screen {
 			
 			int k = 1;
 			while (true) {
-				if (map.getTileArray()[i][j+width-1+k] == Map.GameTile.RANGE) {
+				if (map.getTileArray()[i][j+width-1+k] == Map.GameTile.RANGE_HOR) {
 					rangeRight += 1;
 				}
 				else if (map.getTileArray()[i][j+width-1+k] == Map.GameTile.END_RANGE) {
@@ -339,7 +337,7 @@ public class GravityGameScreen implements Screen {
 			
 			k = 1;
 			while (true) {
-				if (map.getTileArray()[i][j-k] == Map.GameTile.RANGE) {
+				if (map.getTileArray()[i][j-k] == Map.GameTile.RANGE_HOR) {
 					rangeLeft += 1;
 				}
 				else if (map.getTileArray()[i][j-k] == Map.GameTile.END_RANGE) {
@@ -410,9 +408,6 @@ public class GravityGameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, .3f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		
-
-		
 		if (levelFinished) {
 			
 //			stage = new Stage();
@@ -456,7 +451,7 @@ public class GravityGameScreen implements Screen {
 		
 		if (optionsClicked) {
 			
-			stage = new Stage();
+			stage = new Stage(new ExtendViewport(1800,900));
 			Container<HorizontalGroup> container = new Container<HorizontalGroup>();
 			Gdx.input.setInputProcessor(stage);
 
@@ -506,11 +501,6 @@ public class GravityGameScreen implements Screen {
 			group.addActor(menuButton);
 			menuButton.padRight(20);
 
-//			Label label = new Label("Game Paused",skin);
-//			label.scaleBy(.5f);
-//			Table finishedDialog = new Table(skin);
-//			finishedDialog.add("Game Paused");
-
 			container.setActor(group);
 			container.bottom();
 		    optionsClicked = false;
@@ -535,6 +525,9 @@ public class GravityGameScreen implements Screen {
 				 character.getSprite().rotate(.2f);
 			 }
 			
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+			
 			for (Wall wall : walls) {
 				
 				wall.draw(game.batch, camera);
@@ -545,6 +538,7 @@ public class GravityGameScreen implements Screen {
 				wall.draw(game.batch, camera);
 			}
 			
+			Gdx.gl.glDisable(GL20.GL_BLEND);
 			
 			for (EnemySteeringAgent enemy : enemies) {
 				game.batch.draw(enemy.getGameObject().getTexture(), enemy.getGameObject().getScreenX(), enemy.getGameObject().getScreenY());

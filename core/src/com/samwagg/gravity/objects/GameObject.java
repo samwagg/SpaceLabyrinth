@@ -90,8 +90,6 @@ public class GameObject implements Disposable {
 		return texture;
 	}
 	
-
-	
 	public float getScreenX() {
 		return screenX;
 	}

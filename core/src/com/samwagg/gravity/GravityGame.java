@@ -1,12 +1,8 @@
 package com.samwagg.gravity;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
@@ -18,11 +14,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import com.samwagg.gravity.objects.GameState;
-import com.samwagg.gravity.objects.HighScores;
-import com.sun.corba.se.pept.encoding.InputObject;
+
 
 public class GravityGame extends Game {
 
@@ -68,7 +61,6 @@ public class GravityGame extends Game {
 
 		} else {
 			gameState = new GameState();
-			
 		}
 
 		System.out.println(gameState.maxLevelReached);
@@ -81,6 +73,7 @@ public class GravityGame extends Game {
 		Constants.initConstants();
 		
 		setScreen(new MainMenu(this));
+//		setScreen(new LevelCompleteMenu(this, 1, 100));
 	}
 	
 	public void setScreenAndDispose(Screen screen, Screen oldScreen) {
@@ -103,6 +96,10 @@ public class GravityGame extends Game {
 	public void dispose() {
 		batch.dispose();
 		shapeRenderer.dispose();
+	}
+	
+	public GameState getGameState() {
+		return this.gameState;
 	}
 	
 	public int readHighScore(int level) {

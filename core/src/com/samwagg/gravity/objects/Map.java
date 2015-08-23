@@ -15,7 +15,7 @@ public class Map {
 	
 	private GameTile[][] tileArray;
 	
-	private final int initScores[] = {1000, 1000, 1000, 1000, 500, 5000, 5000}; 
+	private final int initScores[] = {3000, 1500, 3000, 2000, 550, 5000, 5000}; 
 	
 	public Map(int level) throws FileNotFoundException {
 		MapReader reader = new MapReader("level" + level);
@@ -84,7 +84,8 @@ public class Map {
 					case '8': gameMap[i][j] = GameTile.MOV_BLOCK8; break;
 					case '9': gameMap[i][j] = GameTile.MOV_BLOCK9; break;
 					case '-': gameMap[i][j] = GameTile.END_RANGE; break;
-					case '|': gameMap[i][j] = GameTile.RANGE; break;
+					case '|': gameMap[i][j] = GameTile.RANGE_VERT; break;
+					case '#': gameMap[i][j] = GameTile.RANGE_HOR; break;
 					case 's': gameMap[i][j] = GameTile.START; break;
 					case 'e': gameMap[i][j] = GameTile.END; break;
 					case 'a': gameMap[i][j] = GameTile.AI_START; break;
@@ -110,13 +111,14 @@ public class Map {
 		MOV_BLOCK1(true, 1),
 		MOV_BLOCK2(true, 2),
 		MOV_BLOCK3(true, 3),
-		MOV_BLOCK4(true, 4),
+		MOV_BLOCK4(true, 5),
 		MOV_BLOCK5(true, 5),
 		MOV_BLOCK6(true, 6),
 		MOV_BLOCK7(true, 7),
 		MOV_BLOCK8(true, 8),
 		MOV_BLOCK9(true, 9),
-		RANGE, 
+		RANGE_HOR,
+		RANGE_VERT,
 		END_RANGE, 
 		START, 
 		END, 
