@@ -107,6 +107,16 @@ public class VectorSetter {
 		return inputProcessor;
 	}
 	
+	/**
+	 * If input is changed while this object is in a
+	 * intermediate state, this must be called to reset state
+	 */
+	public void onInputTurnedOff() {
+		magnitude = 0;
+		direction = 0;
+		onScreen = false;
+	}
+	
 	
 	/**
 	 * Custom input processor associated with VectorSetter that

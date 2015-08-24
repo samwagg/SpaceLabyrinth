@@ -62,6 +62,10 @@ public class GravityGame extends Game {
 		} else {
 			gameState = new GameState();
 		}
+		
+		if (gameState.hs.highScores.length != Constants.N_LEVELS) {
+			gameState = new GameState();
+		}
 
 		System.out.println(gameState.maxLevelReached);
 			

@@ -117,7 +117,7 @@ public class GravityGameScreen implements Screen {
 	
 	private Skin skin;
 	
-	private boolean displayDialog;
+	private boolean displayDialog = true;
 	private boolean optionsClicked;
 	
 	private boolean restart;
@@ -129,6 +129,9 @@ public class GravityGameScreen implements Screen {
 	private Texture wallTex;
 	private float x;
 	private float y;
+	
+    PauseMenu pauseMenu;
+
 
 		
 
@@ -142,6 +145,7 @@ public class GravityGameScreen implements Screen {
 	 */
 	public GravityGameScreen(final GravityGame game, int level) {
 		this.game = game;
+		
 		
 		Gdx.graphics.setVSync(true);
 		
@@ -172,8 +176,8 @@ public class GravityGameScreen implements Screen {
 		
 		shipGone = false;
 		
-		multiPlex = new InputMultiplexer();
-		multiPlex.addProcessor(vSetter.getInputProcessor());
+//		multiPlex = new InputMultiplexer();
+//		multiPlex.addProcessor(vSetter.getInputProcessor());
 
 		try {
 			map = new Map(level);
@@ -192,8 +196,8 @@ public class GravityGameScreen implements Screen {
 		levelFinished = false;
 		
 		//ScalingViewport viewport = new ScalingViewport(Scaling.fill,800,480);
-	    stage = new Stage();
-	    
+	    stage = new Stage(new ExtendViewport(1800,900));
+
 	    Gdx.input.setInputProcessor(stage);
 	    
 	    table = new Table();
@@ -201,6 +205,8 @@ public class GravityGameScreen implements Screen {
 	    stage.addActor(table);
 	    skin = new Skin(Gdx.files.internal("uiskin.json"));
 	    table.setSkin(skin); 
+	    
+		pauseMenu = new PauseMenu(stage);
 	    
 	    countDownLabel = new Label(Integer.toString((int)countDown),skin);
 	    countDownLabel.setHeight(500);
@@ -404,7 +410,7 @@ public class GravityGameScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		
-		logger.log();
+		//logger.log();
 		Gdx.gl.glClearColor(0, 0, .3f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
@@ -449,64 +455,7 @@ public class GravityGameScreen implements Screen {
 			displayDialog = true;
 		}
 		
-		if (optionsClicked) {
-			
-			stage = new Stage(new ExtendViewport(1800,900));
-			Container<HorizontalGroup> container = new Container<HorizontalGroup>();
-			Gdx.input.setInputProcessor(stage);
 
-			container.setFillParent(true);
-			HorizontalGroup group = new HorizontalGroup();
-			
-			ImageButton resumeButton = new ImageButton(new Image(new Texture(Gdx.files.internal("resume.png"))).getDrawable());
-			ImageButton restartButton = new ImageButton(new Image(new Texture(Gdx.files.internal("restart.png"))).getDrawable());
-			ImageButton menuButton = new ImageButton(new Image(new Texture(Gdx.files.internal("menu.png"))).getDrawable());
-			
-			resumeButton.addListener(new EventListener() {
-
-				@Override
-				public boolean handle(Event event) {
-					displayDialog = false;
-					return true;
-				}
-				
-			});
-			
-			restartButton.addListener(new EventListener() {
-
-				@Override
-				public boolean handle(Event event) {
-					restart = true;
-					return true;
-				}
-				
-			});
-			
-			menuButton.addListener(new EventListener() {
-				
-				@Override
-				public boolean handle(Event event) {
-					game.mainMenuStartPressed(getInstance());
-					return true;
-				}
-				
-			});
-
-			stage.addActor(container);
-			group.addActor(resumeButton);
-			resumeButton.padRight(20);
-			group.addActor(restartButton);
-			restartButton.padRight(20);
-
-			group.addActor(menuButton);
-			menuButton.padRight(20);
-
-			container.setActor(group);
-			container.bottom();
-		    optionsClicked = false;
-			displayDialog = true;
-			
-		}
 				
 			game.batch.setProjectionMatrix(camera.combined);
 			game.batch.begin();
@@ -577,7 +526,29 @@ public class GravityGameScreen implements Screen {
 				stage.draw();
 				countDownLabel.setText(Integer.toString((int) countDown+1));
 			}
-			else if (!displayDialog) Gdx.input.setInputProcessor(multiPlex);
+			
+			if (optionsClicked) {
+				
+				Gdx.input.setInputProcessor(stage);
+				
+				switch (pauseMenu.displayIfPaused()) {
+				case RESUME:	pauseMenu.reset();
+								optionsClicked = false;
+								System.out.println("resume pressed");
+								Gdx.input.setInputProcessor(vSetter.getInputProcessor());
+								break;
+
+				case RESTART:	restart = true;
+								break;
+
+				case MAIN_MENU: System.out.println("Here at switch mainmenu");
+								game.mainMenuStartPressed(this);
+								break;
+				
+				case REMAIN: ;
+				}
+			}
+//			else if (!displayDialog) 
 			
 			if (score == 0 && explosions.isEmpty() || restart) {
 				game.setScreen(new GravityGameScreen(game, level));
@@ -593,7 +564,8 @@ public class GravityGameScreen implements Screen {
 			game.shapeRenderer.set(ShapeType.Filled);
 	
 			game.shapeRenderer.rect(0, 0,  (score/startScore) * staticCamera.viewportWidth, 20);
-			vSetter.render(game.shapeRenderer, camera);
+			
+			if (!optionsClicked) vSetter.render(game.shapeRenderer, camera);
 			
 			game.shapeRenderer.end();
 			Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -609,23 +581,27 @@ public class GravityGameScreen implements Screen {
 			}			
 		
 			if (countDown > 0) {
+				displayDialog = true;
 				countDown -= delta;
-			} else if (!levelFinished && !displayDialog) {
+			} else if (!levelFinished && !optionsClicked) {
+				Gdx.input.setInputProcessor(vSetter.getInputProcessor());
 				doPhysicsStep(delta);
 			}
 			
-			if (displayDialog) {
-				stage.act();
-				stage.draw();
-			} 
+
 			
 			if (Gdx.input.justTouched()) {
 				Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(),0);
 				staticCamera.unproject(touchPos);
 
 				if (touchPos.x > staticCamera.viewportWidth - optionsTex.getWidth() && touchPos.y > staticCamera.viewportHeight - optionsTex.getHeight()) {
-					if (displayDialog) displayDialog = false;
-					else optionsClicked = true;
+					if (optionsClicked) {
+						pauseMenu.resume();
+						System.out.println("Resumed by options click");
+					} else {
+						optionsClicked = true;
+						vSetter.onInputTurnedOff();
+					}
 				}
 			}
 			

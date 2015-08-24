@@ -28,7 +28,7 @@ public class LevelSelectScreen implements Screen {
 //	private final Sprite level6;
 //	private final Sprite level7;
 	
-	private float icon_pos[] = { .1f, .3f, .5f, .4f, .5f, .8f };
+	private float icon_pos[] = { .1f, .3f, .5f, .3f, .4f, .7f, .4f, .5f, .75f  };
 	
 	private final Sprite ship;
 	

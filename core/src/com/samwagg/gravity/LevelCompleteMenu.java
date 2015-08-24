@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.samwagg.gravity.objects.GameState;
 
@@ -32,6 +34,7 @@ public class LevelCompleteMenu implements Screen {
     private final String NEXT_LEVEL_BUT_TEXT = "Next Level";
     private final String RETRY_BUT_TEXT = "Retry";
     private final String MENU_BUT_TEXT = "Menu";
+    private final String FINISH_TEXT = "Finish";
     
     private final float BUT_WIDTH = 500;
 
@@ -51,45 +54,34 @@ public class LevelCompleteMenu implements Screen {
 	    Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 	    table.setSkin(skin);
 
-		Button nextLevelButton = new TextButton(NEXT_LEVEL_BUT_TEXT ,skin);
+		Button nextLevelButton = new TextButton(level == Constants.N_LEVELS? FINISH_TEXT : NEXT_LEVEL_BUT_TEXT ,skin);
 		Button retryLevelButton = new TextButton(RETRY_BUT_TEXT ,skin);
 		Button menuButton = new TextButton(MENU_BUT_TEXT, skin);
 	    
-	    nextLevelButton.addListener(new EventListener() {
+	    nextLevelButton.addListener(new ClickListener() {
 
+	    	
 			@Override
-			public boolean handle(Event event) {
-				// TODO Auto-generated method stub
-				if (!buttonClicked) {
-					buttonClicked = true;
-					toNextLevel();
-				}
-				return true;
+			public void clicked(InputEvent event, float x, float y) { 				
+				toNextLevel();
+			
 			}
 	    	
 	    });
 	    
-	    retryLevelButton.addListener(new EventListener() {
+	    retryLevelButton.addListener(new ClickListener() {
 
 			@Override
-			public boolean handle(Event event) {
-				if (!buttonClicked) {
-					buttonClicked = true;
-				retryLevel();
-				}
-				return true;
+			public void clicked(InputEvent event, float x, float y) { 				
+				buttonClicked = true;
 			}
 	    	
 	    });
 	    
-	    menuButton.addListener(new EventListener() {
+	    menuButton.addListener(new ClickListener() {
 	    	@Override
-	    	public boolean handle(Event event) {
-	    		if (!buttonClicked) {
-	    			buttonClicked = true;
-	    			toMenu();
-	    		}
-	    		return true;
+			public void clicked(InputEvent event, float x, float y) { 				
+	    		toMenu();
 	    	}
 	    });
 	    
@@ -117,7 +109,8 @@ public class LevelCompleteMenu implements Screen {
 	}
 	
 	private void toNextLevel() {
-		game.setScreen(new GravityGameScreen(game, level + 1));
+		if (Constants.N_LEVELS == level) game.setScreen(new GalaxyCompleteScreen(game));
+		else game.setScreen(new GravityGameScreen(game, level + 1));
 	}
 	
 	private void retryLevel() {

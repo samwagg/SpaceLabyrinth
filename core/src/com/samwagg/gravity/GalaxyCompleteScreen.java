@@ -5,10 +5,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
-public class MainMenu implements Screen {
+
+public class GalaxyCompleteScreen implements Screen {
 
 	private Texture texture;
 	
@@ -18,7 +18,7 @@ public class MainMenu implements Screen {
 	
 	private Vector3 touchInput;
 	
-	public MainMenu(GravityGame game) {
+	public GalaxyCompleteScreen(GravityGame game) {
 		this.game = game;
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
@@ -27,7 +27,7 @@ public class MainMenu implements Screen {
 	
 	@Override
 	public void show() {
-		texture = new Texture(Gdx.files.internal("Start.png"));
+		texture = new Texture(Gdx.files.internal("galaxy_complete.png"));
 		// TODO Auto-generated method stub
 		
 	}
@@ -40,25 +40,15 @@ public class MainMenu implements Screen {
 		game.batch.draw(texture,0,0,camera.viewportWidth,camera.viewportHeight);
 		game.batch.end();
 		
-		touchInput = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 		camera.unproject(touchInput);
 		
-		if (touchInput.x < 500 && touchInput.x > 300 && touchInput.y < 200 && touchInput.y > 100 ) {
-			game.mainMenuStartPressed(this); 
-		}
+		if (Gdx.input.justTouched()) game.setScreen(new MainMenu(game));
 		
-		if (touchInput.x < 450 && touchInput.x > 350 &&  touchInput.y > camera.viewportHeight - 50 ) {
-			game.resetGameProgress(); 
-			System.out.println("here");
-		}
-		
-		if (touchInput.x < 300 && touchInput.y < 300 ) {
-			game.getGameState().maxLevelReached = Constants.N_LEVELS;
-		}
 		
 		// TODO Auto-generated method stub
 		
 	}
+
 
 	@Override
 	public void resize(int width, int height) {
