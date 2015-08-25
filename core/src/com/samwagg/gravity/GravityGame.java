@@ -2,6 +2,7 @@ package com.samwagg.gravity;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -14,6 +15,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.samwagg.gravity.controller.GravityGameController;
+import com.samwagg.gravity.controller.MenusController;
 import com.samwagg.gravity.objects.GameState;
 
 
@@ -24,6 +27,8 @@ public class GravityGame extends Game {
 	public BitmapFont font;
 	public TextureAtlas atlas;
 	
+	private GravityGameController controller;
+	
 	
 	public static final int CONTACT_DECREMENT = 100;
 
@@ -31,6 +36,8 @@ public class GravityGame extends Game {
 	
 	@Override
 	public void create() {
+		
+		controller = new MenusController(this);
 	
 		FileHandle file = Gdx.files.local("gamestate.bin");
 		
@@ -44,6 +51,8 @@ public class GravityGame extends Game {
 				objStream = new ObjectInputStream(stream);
 
 				gameState = (GameState) objStream.readObject();
+			} catch (InvalidClassException e) {
+				gameState = new GameState();
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -76,8 +85,9 @@ public class GravityGame extends Game {
 		
 		Constants.initConstants();
 		
-		setScreen(new MainMenu(this));
-//		setScreen(new LevelCompleteMenu(this, 1, 100));
+		
+		
+		setScreen(new MainMenu(controller, this));
 	}
 	
 	public void setScreenAndDispose(Screen screen, Screen oldScreen) {
@@ -90,7 +100,7 @@ public class GravityGame extends Game {
 	}
 	
 	public void mainMenuStartPressed(Screen oldScreen) {
-		setScreen(new LevelSelectScreen(this, gameState));
+		//setScreen(new LevelSelectScreen(this, gameState));
 	}
 	
 	public void render() {

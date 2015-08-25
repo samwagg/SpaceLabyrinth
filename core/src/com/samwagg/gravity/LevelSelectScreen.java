@@ -8,10 +8,16 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.samwagg.gravity.controller.GravityGameController;
 import com.samwagg.gravity.objects.GameState;
 
 public class LevelSelectScreen implements Screen {
@@ -19,6 +25,11 @@ public class LevelSelectScreen implements Screen {
 	private GravityGame game;
 	GameState state;
 	private final Texture background;
+	GravityGameController controller;
+	
+	int galaxy;
+	
+	Stage stage;
 	
 //	private final Sprite level1;
 //	private final Sprite level2;
@@ -30,7 +41,7 @@ public class LevelSelectScreen implements Screen {
 	
 	private float icon_pos[] = { .1f, .3f, .5f, .3f, .4f, .7f, .4f, .5f, .75f  };
 	
-	private final Sprite ship;
+	private final Actor ship;
 	
 	private final TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("menu_pack.atlas"));
 	
@@ -42,9 +53,13 @@ public class LevelSelectScreen implements Screen {
 	
 	private int currentSelection;
 	
-	public LevelSelectScreen(GravityGame game, GameState state) {
+	private final float SHIP_ANIM_DUR = .5f;
+	
+	public LevelSelectScreen(GravityGameController controller, int galaxy) {
 		this.game = game;
 		this.state = state;
+		this.galaxy = galaxy;
+		this.controller = controller;
 		
 		currentSelection = state.currentLevel-1;
 		
@@ -56,6 +71,9 @@ public class LevelSelectScreen implements Screen {
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
+		
+	    stage = new Stage(new ExtendViewport(800,400));
+
 
 		for (int i = 1; i <= Constants.N_LEVELS; i++) {
 			System.out.println("Making icon for level " + i);
@@ -101,9 +119,8 @@ public class LevelSelectScreen implements Screen {
 //		levels.add(level7);
 		
 		Sprite currentLevel = levels.get(currentSelection);
-		ship = atlas.createSprite("menu_ship");
+		ship = new ShipActor(currentLevel.getX() + currentLevel.getWidth()*.5f, currentLevel.getY() + .75f*currentLevel.getHeight());
 		ship.setScale(.5f);
-		ship.setCenter(currentLevel.getX() + currentLevel.getWidth()*.5f, currentLevel.getY() + .75f*currentLevel.getHeight());
 		
 
 		
@@ -127,7 +144,9 @@ public class LevelSelectScreen implements Screen {
 	    for (Sprite level : levels) {
 	    	level.draw(game.batch);
 	    }
-	    ship.draw(game.batch);
+	    
+	    ship.act(delta);
+	    ship.draw(game.batch, .5f);
 	    game.batch.end();
 	    
 	    touchInput.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -136,20 +155,45 @@ public class LevelSelectScreen implements Screen {
 	    for (int i = 0; i < levels.size(); i++) {
 	    	if (Gdx.input.justTouched() && levels.get(i).getBoundingRectangle().contains(touchInput.x, touchInput.y) && i+1 <= state.maxLevelReached) {
 	    		if (i == currentSelection) {
-	    			game.setScreen(new GravityGameScreen(game, currentSelection+1));
-		    		return;
+	    			
+	    			// only allow level select if ship is done moving
+	    			if (ship.getActions().size == 0) {
+	    				controller.levelSelected(currentSelection);
+		    			return;
+	    			}
 	   
 	    		} else {
 	    			System.out.println(state.maxLevelReached);
 	    		    System.out.println("currentSelection = " + currentSelection);
 
 	    			currentSelection = i;
-	    			ship.setCenter(levels.get(i).getX() + levels.get(i).getWidth()*.5f, levels.get(i).getY() + .75f*levels.get(i).getHeight());
+	    			
+	    			MoveToAction moveAction = new MoveToAction();
+	    			moveAction.setDuration(SHIP_ANIM_DUR);
+	    			moveAction.setPosition(levels.get(i).getX() + levels.get(i).getWidth()*.5f, levels.get(i).getY() + .75f*levels.get(i).getHeight());
+	    			ship.addAction(moveAction);
+	    			//ship.setCenter(levels.get(i).getX() + levels.get(i).getWidth()*.5f, levels.get(i).getY() + .75f*levels.get(i).getHeight());
 	    		}
 	    	}
 	    }
 		
 	}
+	
+	public class ShipActor extends Actor {
+		private Sprite sprite = atlas.createSprite("menu_ship");
+		
+		public ShipActor(float x, float y) {
+			sprite.setScale(.5f);
+			this.setPosition(x, y);
+		}
+		
+		@Override
+		public void draw(Batch batch, float alpha) {
+			sprite.setCenter(getX(), getY());
+			sprite.draw(batch);
+		}
+	}
+	
 
 	@Override
 	public void resize(int width, int height) {

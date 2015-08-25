@@ -52,6 +52,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.samwagg.gravity.ai.EnemySteeringAgent;
+import com.samwagg.gravity.controller.GravityGameController;
 import com.samwagg.gravity.objects.AntiGravButton;
 import com.samwagg.gravity.objects.Explosion64;
 import com.samwagg.gravity.objects.FinishSensor;
@@ -80,6 +81,7 @@ public class GravityGameScreen implements Screen {
 	private List<Explosion64> finishedExplosions;
 	
 	private final GravityGame game;
+	private final GravityGameController controller;
 
 	private float accumulator = 0;
 
@@ -143,9 +145,9 @@ public class GravityGameScreen implements Screen {
 	 * 
 	 * @param game the game instance
 	 */
-	public GravityGameScreen(final GravityGame game, int level) {
+	public GravityGameScreen(GravityGameController controller, final GravityGame game, int galaxy, int level) {
 		this.game = game;
-		
+		this.controller = controller;
 		
 		Gdx.graphics.setVSync(true);
 		
@@ -451,7 +453,7 @@ public class GravityGameScreen implements Screen {
 //			});
 //			finishedDialog.add(continueButton);
 //			table.add(finishedDialog);
-			game.setScreen( new  LevelCompleteMenu(game, level, (int) score) );
+			//game.setScreen( new  LevelCompleteMenu(game, level, (int) score) );
 			displayDialog = true;
 		}
 		
@@ -551,7 +553,7 @@ public class GravityGameScreen implements Screen {
 //			else if (!displayDialog) 
 			
 			if (score == 0 && explosions.isEmpty() || restart) {
-				game.setScreen(new GravityGameScreen(game, level));
+				controller.healthDepleted();
 				return;
 			}
 			

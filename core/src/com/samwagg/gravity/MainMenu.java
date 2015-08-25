@@ -7,19 +7,22 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.samwagg.gravity.controller.GravityGameController;
 
 public class MainMenu implements Screen {
 
 	private Texture texture;
 	
 	private GravityGame game;
+	private GravityGameController controller;
 	
 	private OrthographicCamera camera;
 	
 	private Vector3 touchInput;
 	
-	public MainMenu(GravityGame game) {
+	public MainMenu(GravityGameController controller, GravityGame game) {
 		this.game = game;
+		this.controller = controller;
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		touchInput = new Vector3(0,0,0);
@@ -44,7 +47,7 @@ public class MainMenu implements Screen {
 		camera.unproject(touchInput);
 		
 		if (touchInput.x < 500 && touchInput.x > 300 && touchInput.y < 200 && touchInput.y > 100 ) {
-			game.mainMenuStartPressed(this); 
+			controller.mainMenuStartClicked();
 		}
 		
 		if (touchInput.x < 450 && touchInput.x > 350 &&  touchInput.y > camera.viewportHeight - 50 ) {

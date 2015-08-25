@@ -29,7 +29,8 @@ public class DesktopLauncher {
         settings.filterMag = TextureFilter.Linear;
         settings.filterMin = TextureFilter.Linear;
         settings.useIndexes = true;
-        TexturePacker.process(settings, "images", "../android/assets", "pack");
+        TexturePacker.process(settings, "galaxy_images_locked", "../android/assets", "galaxy_locked_pack");
+        TexturePacker.process(settings, "galaxy_images_unlocked", "../android/assets", "galaxy_unlocked_pack");
        
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new GravityGame(), config);
