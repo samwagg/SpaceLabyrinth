@@ -4,27 +4,18 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.scenes.scene2d.actions.RotateByAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.samwagg.gravity.controller.GravityGameController;
@@ -33,7 +24,9 @@ public class GalaxySelectScreen implements Screen {
 
 	GravityGameController controller;
 	
-	private final TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("galaxy_unlocked_pack.atlas"));
+	private final TextureAtlas unlockedAtlas = new TextureAtlas(Gdx.files.internal("galaxy_unlocked_pack.atlas"));
+	private final TextureAtlas lockedAtlas = new TextureAtlas(Gdx.files.internal("galaxy_locked_pack.atlas"));
+
 	Array<Sprite> galaxySprites;
 	
 	List<Integer> unlockedGalaxies;
@@ -60,11 +53,11 @@ public class GalaxySelectScreen implements Screen {
 	    pane = new ScrollPane(group);
 		container = new Container<ScrollPane>();
 
-		
-		
 		int i = 1;
 		
-		AtlasRegion galaxyRegion = atlas.findRegion("galaxy_unlocked",i);
+		AtlasRegion galaxyRegion = 	unlockedGalaxies.contains(i)? 
+									unlockedAtlas.findRegion("galaxy_unlocked", i) :
+									lockedAtlas.findRegion("galaxy_locked", i);
 
 		while (galaxyRegion != null) {
 			ImageButton button = new ImageButton(new Image(galaxyRegion).getDrawable());
@@ -75,9 +68,8 @@ public class GalaxySelectScreen implements Screen {
 	
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					controller.galaxySelected(buttonLevel);
+					if (unlockedGalaxies.contains(buttonLevel)) controller.galaxySelected(buttonLevel);
 				}
-				
 			});
 			
 			group.addActor(button);
@@ -87,8 +79,11 @@ public class GalaxySelectScreen implements Screen {
 			
 			System.out.println("Adding button");
 			
-			i++;					
-			galaxyRegion = atlas.findRegion("galaxy_unlocked", i);
+			i++;	
+			
+			galaxyRegion = 	unlockedGalaxies.contains(i)? 
+							unlockedAtlas.findRegion("galaxy_unlocked", i) :
+							lockedAtlas.findRegion("galaxy_locked", i);
 		}
 		
 		stage.addActor(container);
@@ -165,7 +160,8 @@ public class GalaxySelectScreen implements Screen {
 	@Override
 	public void dispose() {
 		stage.dispose();
-		atlas.dispose();
+		lockedAtlas.dispose();
+		unlockedAtlas.dispose();
 	}
 
 }

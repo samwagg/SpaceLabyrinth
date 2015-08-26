@@ -11,8 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.samwagg.gravity.controller.GravityGameController;
 
 public class PauseMenu {
+	
+	private GravityGameController controller;
 	
 	private Stage stage;
 	Container<HorizontalGroup> container;
@@ -20,8 +23,9 @@ public class PauseMenu {
 	private PauseMenuReturn currPauseState = PauseMenuReturn.REMAIN;
 	private boolean justPaused;
 	
-	public PauseMenu(Stage stage) {
+	public PauseMenu(GravityGameController menuController, Stage stage) {
 		this.stage = stage;
+		this.controller = menuController;
 		
 		justPaused = true;
 		
@@ -49,7 +53,7 @@ public class PauseMenu {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				restart();
+				controller.pauseMenuLevelRestart();
 			}
 			
 		});
@@ -58,8 +62,7 @@ public class PauseMenu {
 			
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				menu();
-				System.out.println("Main menu button pressed");
+				controller.pauseMenuMenu();
 			}
 			
 		});

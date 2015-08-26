@@ -56,7 +56,9 @@ public class MainMenu implements Screen {
 		}
 		
 		if (touchInput.x < 300 && touchInput.y < 300 ) {
-			game.getGameState().maxLevelReached = Constants.N_LEVELS;
+			for (int i = 0; i < game.getGameState().totalGalaxies; i++ ) {
+				game.getGameState().maxLevelReachedByGalaxy.add(i, Constants.N_LEVELS);
+			}
 		}
 		
 		// TODO Auto-generated method stub

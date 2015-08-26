@@ -71,12 +71,6 @@ public class GravityGame extends Game {
 		} else {
 			gameState = new GameState();
 		}
-		
-		if (gameState.hs.highScores.length != Constants.N_LEVELS) {
-			gameState = new GameState();
-		}
-
-		System.out.println(gameState.maxLevelReached);
 			
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
@@ -116,20 +110,20 @@ public class GravityGame extends Game {
 		return this.gameState;
 	}
 	
-	public int readHighScore(int level) {
-		return gameState.hs.highScores[level-1];
-	}
-	
-	public void writeHighScore(int level, int score) {
+	public void updateGameState(int galaxy, int level, int score) {
 		
-		gameState.currentLevel = level + 1;
+		gameState.currentLevelByGalaxy.add(galaxy-1, level);
 		
-		if (gameState.maxLevelReached < level + 1) {
-			gameState.maxLevelReached = level + 1;
+		if (gameState.maxLevelReachedByGalaxy.get(galaxy-1) < level + 1) {
+			gameState.maxLevelReachedByGalaxy.add(galaxy-1, level + 1);
 		}
 		
-		if (gameState.hs.highScores[level-1] < score) { 	
-			gameState.hs.highScores[level-1] = score;
+		if (!gameState.galaxiesUnlocked.contains(galaxy+1)) {
+			gameState.galaxiesUnlocked.add(galaxy+1);
+		}
+		
+		if (gameState.hs.galaxies.get(galaxy-1)[level-1] < score) { 	
+			gameState.hs.galaxies.get(galaxy-1)[level-1] = score;
 			FileHandle file = Gdx.files.local("gamestate.bin");
 			OutputStream stream = file.write(false, 100000);
 			ObjectOutputStream objStream = null;

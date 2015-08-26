@@ -11,11 +11,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.samwagg.gravity.controller.GravityGameController;
 import com.samwagg.gravity.objects.GameState;
@@ -23,7 +30,7 @@ import com.samwagg.gravity.objects.GameState;
 public class LevelSelectScreen implements Screen {
 
 	private GravityGame game;
-	GameState state;
+
 	private final Texture background;
 	GravityGameController controller;
 	
@@ -44,6 +51,9 @@ public class LevelSelectScreen implements Screen {
 	private final Actor ship;
 	
 	private final TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("menu_pack.atlas"));
+	private final TextureAtlas backAtlas = new TextureAtlas(Gdx.files.internal("galaxy_unlocked_pack.atlas"));
+	
+	private ImageButton backButton;
 	
 	private final List<Sprite> levels;
 
@@ -52,16 +62,17 @@ public class LevelSelectScreen implements Screen {
 	private Vector3 touchInput;
 	
 	private int currentSelection;
+	private int maxLevelReached;
 	
 	private final float SHIP_ANIM_DUR = .5f;
 	
-	public LevelSelectScreen(GravityGameController controller, int galaxy) {
+	public LevelSelectScreen(GravityGameController menuController, GravityGame game, int galaxy, int currentLevel, int maxLevelReached) {
 		this.game = game;
-		this.state = state;
 		this.galaxy = galaxy;
-		this.controller = controller;
+		this.controller = menuController;
 		
-		currentSelection = state.currentLevel-1;
+		currentSelection = currentLevel;
+		this.maxLevelReached = maxLevelReached;
 		
 		touchInput = new Vector3(0,0,0);
 		
@@ -72,12 +83,11 @@ public class LevelSelectScreen implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		
-	    stage = new Stage(new ExtendViewport(800,400));
-
+	    stage = new Stage(new ExtendViewport(1600,800));
 
 		for (int i = 1; i <= Constants.N_LEVELS; i++) {
 			System.out.println("Making icon for level " + i);
-			Sprite leveli = state.maxLevelReached >= i ? atlas.createSprite("Dots", i) : atlas.createSprite("Dotsr", i);
+			Sprite leveli = maxLevelReached >= i ? atlas.createSprite("Dots", i) : atlas.createSprite("Dotsr", i);
 			leveli.setScale(.25f);
 			leveli.setCenter(camera.viewportWidth*(i-.5f)*1/Constants.N_LEVELS,  camera.viewportHeight* icon_pos[i-1]);
 			levels.add(leveli);
@@ -118,15 +128,33 @@ public class LevelSelectScreen implements Screen {
 //		level7.setCenter(camera.viewportWidth*.9f, camera.viewportHeight*.75f);
 //		levels.add(level7);
 		
-		Sprite currentLevel = levels.get(currentSelection);
-		ship = new ShipActor(currentLevel.getX() + currentLevel.getWidth()*.5f, currentLevel.getY() + .75f*currentLevel.getHeight());
+		Container<ImageButton> container = new Container<ImageButton>();
+		
+		Image backImage = new Image(backAtlas.findRegion("galaxy_unlocked", 1));
+		backButton = new ImageButton(backImage.getDrawable());
+		backButton.addListener(new ClickListener() {
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				controller.levelSelectBackSelected();
+			}
+			
+		});			
+	
+		//backButton.getImage().scaleBy(-.5f);
+		//backButton.setPosition(0, stage.getViewport().getScreenHeight() - backButton.getImage().getHeight() );
+		
+		stage.addActor(container);
+		Gdx.input.setInputProcessor(stage);
+		container.setFillParent(true);
+		container.setActor(backButton);
+		container.top();
+		container.left();
+
+		
+		Sprite currentLevelSprite = levels.get(currentSelection-1);
+		ship = new ShipActor(currentLevelSprite.getX() + currentLevelSprite.getWidth()*.5f, currentLevelSprite.getY() + .75f*currentLevelSprite.getHeight());
 		ship.setScale(.5f);
-		
-
-		
-
-				
-		
 	}
 	
 	@Override
@@ -153,20 +181,20 @@ public class LevelSelectScreen implements Screen {
 	    camera.unproject(touchInput);
 	    
 	    for (int i = 0; i < levels.size(); i++) {
-	    	if (Gdx.input.justTouched() && levels.get(i).getBoundingRectangle().contains(touchInput.x, touchInput.y) && i+1 <= state.maxLevelReached) {
-	    		if (i == currentSelection) {
+	    	if (Gdx.input.justTouched() && levels.get(i).getBoundingRectangle().contains(touchInput.x, touchInput.y) && i+1 <= maxLevelReached) {
+	    		if (i == currentSelection-1) {
 	    			
 	    			// only allow level select if ship is done moving
 	    			if (ship.getActions().size == 0) {
-	    				controller.levelSelected(currentSelection);
+	    				controller.levelSelected(galaxy, currentSelection);
 		    			return;
 	    			}
 	   
 	    		} else {
-	    			System.out.println(state.maxLevelReached);
+	    			System.out.println(maxLevelReached);
 	    		    System.out.println("currentSelection = " + currentSelection);
 
-	    			currentSelection = i;
+	    			currentSelection = i+1;
 	    			
 	    			MoveToAction moveAction = new MoveToAction();
 	    			moveAction.setDuration(SHIP_ANIM_DUR);
@@ -176,6 +204,9 @@ public class LevelSelectScreen implements Screen {
 	    		}
 	    	}
 	    }
+	    
+	    stage.act();
+	    stage.draw();
 		
 	}
 	
@@ -197,8 +228,9 @@ public class LevelSelectScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
+		stage.getViewport().update(width, height, true);
+		//backButton.setPosition(0, stage.getHeight() - backButton.getImage().getHeight() );
+
 	}
 
 	@Override
@@ -229,7 +261,7 @@ public class LevelSelectScreen implements Screen {
 	}
 	
 	private static class Level {
-
+		
 	}
 
 }

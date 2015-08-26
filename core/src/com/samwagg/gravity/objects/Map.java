@@ -17,8 +17,8 @@ public class Map {
 	
 	private final int initScores[] = {3000, 3500, 3000, 2000, 3000, 5000, 5000}; 
 	
-	public Map(int level) throws FileNotFoundException {
-		MapReader reader = new MapReader("level" + level);
+	public Map(int galaxy, int level) throws FileNotFoundException {
+		MapReader reader = new MapReader("galaxy" + galaxy + "-" + "level" + level);
 		tileArray = reader.readMap();
 	}
 	

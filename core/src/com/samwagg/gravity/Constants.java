@@ -12,6 +12,7 @@ public class Constants {
 	public static final float PHYS_SCALE = .05f;
 	public static final int TILE_SIZE = 64;
 	public static final int N_LEVELS = 7;
+
 	
 	public static final TextureAtlas ATLAS = new TextureAtlas(Gdx.files.internal("pack.atlas"));
 //

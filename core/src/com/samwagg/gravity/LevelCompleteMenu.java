@@ -31,6 +31,8 @@ public class LevelCompleteMenu implements Screen {
 	private GravityGame game;
 	private final GravityGameController controller;
 	
+	private boolean finalLevel;
+	
     private boolean buttonClicked = false;
     
     private final String NEXT_LEVEL_BUT_TEXT = "Next Level";
@@ -40,16 +42,15 @@ public class LevelCompleteMenu implements Screen {
     
     private final float BUT_WIDTH = 500;
 
-	public LevelCompleteMenu (final GravityGame game, GravityGameController menuController, int level, int score) {
-		game.writeHighScore(level, score);
+	public LevelCompleteMenu (final GravityGame game, GravityGameController menuController, int score, int highScore, boolean isFinalLevel) {
 		
 		this.controller = menuController;
+		finalLevel = isFinalLevel;
 		
 	    stage = new Stage(new ExtendViewport(1800,900));
 	    
 	    Gdx.input.setInputProcessor(stage);
 	    
-	    this.level = level;
 	    this.game = game;
 	    
 	    table = new Table();
@@ -58,7 +59,7 @@ public class LevelCompleteMenu implements Screen {
 	    Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 	    table.setSkin(skin);
 
-		Button nextLevelButton = new TextButton(level == Constants.N_LEVELS? FINISH_TEXT : NEXT_LEVEL_BUT_TEXT , skin);
+		Button nextLevelButton = new TextButton(finalLevel? FINISH_TEXT : NEXT_LEVEL_BUT_TEXT , skin);
 		Button retryLevelButton = new TextButton(RETRY_BUT_TEXT ,skin);
 		Button menuButton = new TextButton(MENU_BUT_TEXT, skin);
 	    
@@ -67,7 +68,8 @@ public class LevelCompleteMenu implements Screen {
 	    	
 			@Override
 			public void clicked(InputEvent event, float x, float y) { 				
-				controller.levCompleteNextLevel();
+				if (finalLevel) controller.levCompleteFinishGalaxy(); 
+				else controller.levCompleteNextLevel();
 			}
 	    	
 	    });
@@ -90,7 +92,7 @@ public class LevelCompleteMenu implements Screen {
 	    
 	    Label headLabel = new Label("Level Complete", skin);
 	    Label scoreLabel = new Label("Score: " + score, skin);
-	    Label hScoreLabel = new Label("High Score = " + game.readHighScore(level), skin);
+	    Label hScoreLabel = new Label("High Score = " + highScore, skin);
 	    
 	    table.add(headLabel);
 	    table.row();

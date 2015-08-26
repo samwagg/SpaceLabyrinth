@@ -182,7 +182,7 @@ public class GravityGameScreen implements Screen {
 //		multiPlex.addProcessor(vSetter.getInputProcessor());
 
 		try {
-			map = new Map(level);
+			map = new Map(galaxy, level);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -208,7 +208,7 @@ public class GravityGameScreen implements Screen {
 	    skin = new Skin(Gdx.files.internal("uiskin.json"));
 	    table.setSkin(skin); 
 	    
-		pauseMenu = new PauseMenu(stage);
+		pauseMenu = new PauseMenu(controller, stage);
 	    
 	    countDownLabel = new Label(Integer.toString((int)countDown),skin);
 	    countDownLabel.setHeight(500);
@@ -455,6 +455,7 @@ public class GravityGameScreen implements Screen {
 //			table.add(finishedDialog);
 			//game.setScreen( new  LevelCompleteMenu(game, level, (int) score) );
 			displayDialog = true;
+			controller.levComplete((int) score);
 		}
 		
 
