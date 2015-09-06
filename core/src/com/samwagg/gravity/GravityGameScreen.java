@@ -60,6 +60,7 @@ import com.samwagg.gravity.objects.GameCharacter;
 import com.samwagg.gravity.objects.GravField;
 import com.samwagg.gravity.objects.Map;
 import com.samwagg.gravity.objects.Map.GameTile;
+import com.samwagg.gravity.objects.Map.MapFormatException;
 import com.samwagg.gravity.objects.MovingWall;
 import com.samwagg.gravity.objects.Wall;
 
@@ -153,8 +154,8 @@ public class GravityGameScreen implements Screen {
 		
 		WORLD = new World(new Vector2(0,0), true);
 		
-		wallTex = new Texture(Gdx.files.internal("wall.png"));
-		wallTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+//		wallTex = new Texture(Gdx.files.internal("wall.png"));
+//		wallTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 1000, 600);
@@ -185,14 +186,18 @@ public class GravityGameScreen implements Screen {
 			map = new Map(galaxy, level);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+		} catch (MapFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		background = new Texture(Gdx.files.internal("Space-02.png"));
+		background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		genGameObjects();
 		WORLD.setContactListener(new ForceListener());
 		
-		score = map.getInitScore(level);
+		score = map.getInitScore();
 		startScore = score;
 		this.level = level;
 		levelFinished = false;
@@ -222,8 +227,8 @@ public class GravityGameScreen implements Screen {
 	}
 
 	private void genGameObjects() {
-		float wallWidth = Wall.WALL_TEXT.getWidth();
-		float wallHeight = Wall.WALL_TEXT.getHeight();
+		float wallWidth = 128;
+		float wallHeight = 128;
 		walls = new ArrayList<Wall>();
 		gravFields = new ArrayList<GravField>();
 		endSensors = new ArrayList<FinishSensor>();
@@ -243,21 +248,21 @@ public class GravityGameScreen implements Screen {
 
 				xPos = j * wallWidth;
 				yPos = - i * wallHeight;
-				System.out.println("xpos = " + xPos + " and ypos = " + yPos);
+				//System.out.println("xpos = " + xPos + " and ypos = " + yPos);
 				currTile = map.getTileArray()[i][j];
 				if (currTile == null) continue;
 
 				switch (currTile) {
 				case WALL: 
 					Rectangle block = extendTile(i, i, j, j, currTile, map.getTileArray()); 
-					walls.add(new Wall(xPos, yPos - wallHeight*(block.height-1), block.width*wallWidth, block.height*wallHeight, WORLD));
+					walls.add(new Wall(xPos, yPos - wallHeight*(block.height-1), block.width*wallWidth, block.height*wallHeight, WORLD, game.constants));
 					break;
-				case START: character = new GameCharacter(xPos, yPos, WORLD); System.out.println("i = " + i + " and j = " + j);character.updatePosition(); System.out.println("here at char"); break;
-				case FORCE_RIGHT: gravFields.add(new GravField(xPos, yPos, 0, WORLD)); break;
-				case FORCE_UP: gravFields.add(new GravField(xPos, yPos, 90, WORLD)); break;
-				case FORCE_LEFT: gravFields.add(new GravField(xPos, yPos, 180, WORLD)); break;
-				case FORCE_DOWN: gravFields.add(new GravField(xPos, yPos, 270, WORLD)); break;
-				case END: endSensors.add(new FinishSensor(xPos, yPos, WORLD)); break;
+				case START: character = new GameCharacter(xPos, yPos, WORLD, game.constants); System.out.println("i = " + i + " and j = " + j);character.updatePosition(); System.out.println("here at char"); break;
+				case FORCE_RIGHT: gravFields.add(new GravField(xPos, yPos, 0, WORLD, game.constants)); break;
+				case FORCE_UP: gravFields.add(new GravField(xPos, yPos, 90, WORLD, game.constants)); break;
+				case FORCE_LEFT: gravFields.add(new GravField(xPos, yPos, 180, WORLD, game.constants)); break;
+				case FORCE_DOWN: gravFields.add(new GravField(xPos, yPos, 270, WORLD, game.constants)); break;
+				case END: endSensors.add(new FinishSensor(xPos, yPos, WORLD, game.constants)); break;
 				case AI_START: enemies.add(new EnemySteeringAgent(xPos, yPos, WORLD, character)); break;
 				default: ;// Do nothing
 				}
@@ -317,7 +322,7 @@ public class GravityGameScreen implements Screen {
 				k++;
 			}
 			
-			movingWalls.add(new MovingWall(j*wallWidth, -i*wallHeight-(height-1)*wallHeight, width*wallWidth, height*wallHeight,  new Vector2(0,0), new Vector2(-i*wallHeight - rangeBelow * wallHeight -(height-1)*wallHeight,-i*wallHeight + rangeAbove * wallHeight - (height-1)*wallHeight ), WORLD, true, speed));					
+			movingWalls.add(new MovingWall(j*wallWidth, -i*wallHeight-(height-1)*wallHeight, width*wallWidth, height*wallHeight,  new Vector2(0,0), new Vector2(-i*wallHeight - rangeBelow * wallHeight -(height-1)*wallHeight,-i*wallHeight + rangeAbove * wallHeight - (height-1)*wallHeight ), WORLD, true, speed, game.constants));
 
 			
 			
@@ -356,7 +361,7 @@ public class GravityGameScreen implements Screen {
 				k++;
 			}
 			
-			movingWalls.add(new MovingWall(j*wallWidth, -i*wallHeight - (height-1)*wallHeight, width*wallWidth, height*wallHeight,  new Vector2(j*wallWidth - rangeLeft * wallWidth, j*wallWidth + rangeRight  * wallWidth), new Vector2(0,0), WORLD, false, speed));					
+			movingWalls.add(new MovingWall(j*wallWidth, -i*wallHeight - (height-1)*wallHeight, width*wallWidth, height*wallHeight,  new Vector2(j*wallWidth - rangeLeft * wallWidth, j*wallWidth + rangeRight  * wallWidth), new Vector2(0,0), WORLD, false, speed, game.constants));
 			
 		}
 		
@@ -415,7 +420,9 @@ public class GravityGameScreen implements Screen {
 		//logger.log();
 		Gdx.gl.glClearColor(0, 0, .3f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+//		Gdx.gl.glEnable(GL20.GL_BLEND);
+//		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
 		if (levelFinished) {
 			
 //			stage = new Stage();
@@ -462,8 +469,8 @@ public class GravityGameScreen implements Screen {
 				
 			game.batch.setProjectionMatrix(camera.combined);
 			game.batch.begin();
-			Gdx.gl.glEnable(GL20.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+//			Gdx.gl.glEnable(GL20.GL_BLEND);
+//			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 			
 			
 			tiledBackground.draw(game.batch, -camera.viewportWidth, -worldHeight - camera.viewportHeight, worldWidth+2*camera.viewportWidth, worldHeight + 2*camera.viewportHeight );
@@ -688,22 +695,20 @@ public class GravityGameScreen implements Screen {
 
 	@Override
 	public void hide() {
-		dispose();
+		//dispose();
 		// TODO Auto-generated method stub
 
 	}
 	
 	public class ForceListener implements ContactListener {
+		
 		@Override
 		public void endContact(Contact contact) {
 			Fixture forceFix;
-			Fixture charFix;
 			if (contact.getFixtureA().isSensor()) {
 				forceFix = contact.getFixtureA();
-				charFix = contact.getFixtureB();
 			} else if (contact.getFixtureB().isSensor()){
 				forceFix = contact.getFixtureB();
-				charFix = contact.getFixtureA();
 			} else return;
 
 			GravField field = (GravField) forceFix.getUserData();
@@ -720,31 +725,12 @@ public class GravityGameScreen implements Screen {
 			Fixture fixB = contact.getFixtureB();
 			
 			Fixture forceFix;
-			Fixture charFix;
 			
 			if (fixA.getUserData().getClass().equals(GravField.class)) {
 				forceFix = contact.getFixtureA();
-				charFix = contact.getFixtureB();
 			} else if (fixB.getUserData().getClass().equals(GravField.class)){
 				forceFix = contact.getFixtureB();
-				charFix = contact.getFixtureA();
-			} else if (fixA.getUserData().getClass().equals(GameCharacter.class) &&
-						fixB.getUserData().getClass().equals(Wall.class) ||
-						fixA.getUserData().getClass().equals(Wall.class) &&
-						fixB.getUserData().getClass().equals(GameCharacter.class)) {
-				score = score - GravityGame.CONTACT_DECREMENT < 0? 0 : score - GravityGame.CONTACT_DECREMENT;
-				return;
-			}else if (fixA.getUserData().getClass().equals(GameCharacter.class) &&
-					fixB.getUserData().getClass().equals(MovingWall.class) ||
-					fixA.getUserData().getClass().equals(MovingWall.class) &&
-					fixB.getUserData().getClass().equals(GameCharacter.class)) {
-			score = score - GravityGame.CONTACT_DECREMENT < 0? 0 : score - GravityGame.CONTACT_DECREMENT;
-			return;
-		} 
-			
-			
-			
-			else if (fixA.getUserData().getClass().equals(FinishSensor.class) ||
+			} else if (fixA.getUserData().getClass().equals(FinishSensor.class) ||
 						fixB.getUserData().getClass().equals(FinishSensor.class)) {
 				levelFinished = true;
 				return;
@@ -764,15 +750,30 @@ public class GravityGameScreen implements Screen {
 		@Override
 		public void preSolve(Contact contact, Manifold oldManifold)
 		{
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void postSolve(Contact contact, ContactImpulse impulse)
 		{
-			// TODO Auto-generated method stub
-
+			Fixture fixA = contact.getFixtureA();
+			Fixture fixB = contact.getFixtureB();
+			
+			float forceStren = impulse.getNormalImpulses()[0];
+			
+			if (fixA.getUserData().getClass().equals(GameCharacter.class) &&
+					fixB.getUserData().getClass().equals(Wall.class) ||
+					fixA.getUserData().getClass().equals(Wall.class) &&
+					fixB.getUserData().getClass().equals(GameCharacter.class)) {
+				
+				score = score - GravityGame.CONTACT_DECREMENT * forceStren < 0? 0 : score - GravityGame.CONTACT_DECREMENT * forceStren;
+				
+			} else if (fixA.getUserData().getClass().equals(GameCharacter.class) &&
+				fixB.getUserData().getClass().equals(MovingWall.class) ||
+				fixA.getUserData().getClass().equals(MovingWall.class) &&
+				fixB.getUserData().getClass().equals(GameCharacter.class)) {
+					score = score - GravityGame.CONTACT_DECREMENT * forceStren < 0? 0 : score - GravityGame.CONTACT_DECREMENT * forceStren;
+			} 
 		}
 	}
 	

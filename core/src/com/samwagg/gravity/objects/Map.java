@@ -12,41 +12,56 @@ import com.badlogic.gdx.files.FileHandle;
 
 public class Map {
 	
-	
 	private GameTile[][] tileArray;
-	
-	private final int initScores[] = {3000, 3500, 3000, 2000, 3000, 5000, 5000}; 
-	
-	public Map(int galaxy, int level) throws FileNotFoundException {
+	private int startHealth;
+		
+	public Map(int galaxy, int level) throws FileNotFoundException, MapFormatException {
 		MapReader reader = new MapReader("galaxy" + galaxy + "-" + "level" + level);
-		tileArray = reader.readMap();
+		reader.readMap();
+		tileArray = reader.getGameMap();
+		startHealth = reader.getStartHealth();
+		
 	}
 	
 	public GameTile[][] getTileArray() {
 		return tileArray;
 	}
 	
-	public int getInitScore(int level) {
-		return initScores[level-1];
+	public int getInitScore() {
+		return startHealth;
 	}
 	
+
 	private class MapReader
 	{
 		
 		private List<String> strList = new ArrayList<String>();
+		private int levelScore;
 		private GameTile[][] gameMap;
 		private File textLevel;
 		private FileHandle mapFileHandle;
 		
 		private MapReader(String fileName) throws FileNotFoundException {
 			mapFileHandle = Gdx.files.internal(fileName);
-			
 		}
 		
-		private GameTile[][] readMap() {
+		private void readMap() throws MapFormatException {
 			String line;
 			BufferedReader textReader = mapFileHandle.reader(200);
 			try {
+				
+				
+				String splitLine[];
+				line = textReader.readLine();
+				splitLine = line.split(" ");
+				
+				if (splitLine.length != 2 || !splitLine[0].trim().equals("health")) {
+					throw new MapFormatException("First line of map file must have format: health [int]");
+				}
+				
+				levelScore = Integer.parseInt(splitLine[1].trim());
+				
+				
 				while ((line = textReader.readLine()) != null) {
 					strList.add(line);
 				}
@@ -93,14 +108,30 @@ public class Map {
 					}
 				}
 			}
-			return gameMap;
+		
 			
+		}
+		
+		public GameTile[][] getGameMap() {
+			return gameMap;
+		}
+		
+		public int getStartHealth() {
+			return levelScore;
 		}
 
 	}
 	
-
-
+	public static class MapFormatException extends Exception {
+		public MapFormatException() {
+			super();
+		}
+		
+		public MapFormatException(String message) {
+			super(message);
+		}
+	}
+	
 	public static enum GameTile {
 		WALL, 
 		EMPTY, 
@@ -156,5 +187,7 @@ public class Map {
 		}
 
 	}
+	
+
 
 }

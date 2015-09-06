@@ -27,7 +27,7 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
     private GameCharacter gameObject;
     
     public EnemySteeringAgent(float screenX, float screenY, World world, GameCharacter player) {
-    	gameObject = new GameCharacter(screenX, screenY, world);
+//    	gameObject = new GameCharacter(screenX, screenY, world);
     	Pursue<Vector2> pursue = new Pursue<Vector2>(this, player);
     	steeringBehavior = pursue;
     	

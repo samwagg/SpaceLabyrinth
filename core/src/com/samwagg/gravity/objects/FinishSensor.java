@@ -10,15 +10,15 @@ import com.samwagg.gravity.Constants;
 
 public class FinishSensor extends GameObject {
 	
-	public FinishSensor(float x, float y, World world) {
+	public FinishSensor(float x, float y, World world, Constants constants) {
 
-		super(x, y);
+		super(x, y, constants);
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(this.physX + .5f * Wall.WALL_TEXT.getWidth() * Constants.PHYS_SCALE, this.physY + .5f * Wall.WALL_TEXT.getHeight() *Constants.PHYS_SCALE);
+		bodyDef.position.set(this.physX + .5f * Wall.WALL_TEXT.getWidth() * constants.PHYS_SCALE, this.physY + .5f * Wall.WALL_TEXT.getHeight() *constants.PHYS_SCALE);
 		PolygonShape brickBox = new PolygonShape();
-		brickBox.setAsBox(Wall.WALL_TEXT.getWidth()*Constants.PHYS_SCALE*.5f, Wall.WALL_TEXT.getHeight()*Constants.PHYS_SCALE*.5f);
+		brickBox.setAsBox(Wall.WALL_TEXT.getWidth()*constants.PHYS_SCALE*.5f, Wall.WALL_TEXT.getHeight()*constants.PHYS_SCALE*.5f);
 		//ystem.out.println("brickBox " + brickBox.ge + " " + brickBox.height);
 		FixtureDef fixDef = new FixtureDef();
 		fixDef.shape = brickBox;

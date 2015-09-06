@@ -42,22 +42,25 @@ public class MainMenu implements Screen {
 	    game.batch.begin();
 		game.batch.draw(texture,0,0,camera.viewportWidth,camera.viewportHeight);
 		game.batch.end();
-		
-		touchInput = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-		camera.unproject(touchInput);
-		
-		if (touchInput.x < 500 && touchInput.x > 300 && touchInput.y < 200 && touchInput.y > 100 ) {
-			controller.mainMenuStartClicked();
-		}
-		
-		if (touchInput.x < 450 && touchInput.x > 350 &&  touchInput.y > camera.viewportHeight - 50 ) {
-			game.resetGameProgress(); 
-			System.out.println("here");
-		}
-		
-		if (touchInput.x < 300 && touchInput.y < 300 ) {
-			for (int i = 0; i < game.getGameState().totalGalaxies; i++ ) {
-				game.getGameState().maxLevelReachedByGalaxy.add(i, Constants.N_LEVELS);
+
+
+		if (Gdx.input.justTouched()) {
+			touchInput = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+			camera.unproject(touchInput);
+
+			if (touchInput.x < 500 && touchInput.x > 300 && touchInput.y < 200 && touchInput.y > 100) {
+				controller.mainMenuStartClicked();
+			}
+
+			if (touchInput.x < 450 && touchInput.x > 350 && touchInput.y > camera.viewportHeight - 50) {
+//				game.resetGameProgress();
+//				System.out.println("here");
+			}
+
+			if (touchInput.x < 300 && touchInput.y < 300) {
+				for (int i = 0; i < game.getGameState().totalGalaxies; i++) {
+//					game.getGameState().maxLevelReachedByGalaxy.add(i, Constants.N_LEVELS);
+				}
 			}
 		}
 		

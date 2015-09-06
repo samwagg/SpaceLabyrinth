@@ -14,6 +14,8 @@ public class GameObject implements Disposable {
 	protected float screenY;
 	protected float screenWidth;
 	protected float screenHeight;
+
+	protected Constants constants;
 	
 	protected float physX;
 	protected float physY;
@@ -24,58 +26,61 @@ public class GameObject implements Disposable {
 	protected Sprite sprite;
 
 	
-	public GameObject(float screenX, float screenY, float screenWidth, float screenHeight, Sprite sprite) {
+	public GameObject(float screenX, float screenY, float screenWidth, float screenHeight, Sprite sprite, Constants constants) {
 		this.screenX = screenX;
 		this.screenY = screenY;
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
-		physX = screenX * Constants.PHYS_SCALE;
-		physY = screenY * Constants.PHYS_SCALE;
+		this.constants = constants;
+		physX = screenX * constants.PHYS_SCALE;
+		physY = screenY * constants.PHYS_SCALE;
 		
 		this.sprite = sprite;
 		sprite.setX(screenX);
 		sprite.setY(screenY);
 	}
 	
-	public GameObject(float screenX, float screenY, float screenWidth, float screenHeight) {
+	public GameObject(float screenX, float screenY, float screenWidth, float screenHeight, Constants constants) {
 		this.screenX = screenX;
 		this.screenY = screenY;
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
-		physX = screenX * Constants.PHYS_SCALE;
-		physY = screenY * Constants.PHYS_SCALE;
+		this.constants = constants;
+		physX = screenX * constants.PHYS_SCALE;
+		physY = screenY * constants.PHYS_SCALE;
 
 	}
 	
-	public GameObject(float screenX, float screenY, Sprite sprite) {
+	public GameObject(float screenX, float screenY, Sprite sprite, Constants constants) {
 		this.screenX = screenX;
 		this.screenY = screenY;
-		physX = screenX * Constants.PHYS_SCALE;
-		physY = screenY * Constants.PHYS_SCALE;
-		screenWidth = Constants.TILE_SIZE;
-		screenHeight = Constants.TILE_SIZE;
-		
+		this.constants = constants;
+		physX = screenX * constants.PHYS_SCALE;
+		physY = screenY * constants.PHYS_SCALE;
+		screenWidth = constants.TILE_SIZE;
+		screenHeight = constants.TILE_SIZE;
 		this.sprite = sprite;
 		sprite.setX(screenX);
 		sprite.setY(screenY);
 		
 	}
 	
-	public GameObject(float screenX, float screenY) {
+	public GameObject(float screenX, float screenY, Constants constants) {
+		this.constants = constants;
 		this.screenX = screenX;
 		this.screenY = screenY;
-		physX = screenX * Constants.PHYS_SCALE;
-		physY = screenY * Constants.PHYS_SCALE;
-		screenWidth = Constants.TILE_SIZE;
-		screenHeight = Constants.TILE_SIZE;		
+		physX = screenX * constants.PHYS_SCALE;
+		physY = screenY * constants.PHYS_SCALE;
+		screenWidth = constants.TILE_SIZE;
+		screenHeight = constants.TILE_SIZE;
 	}
 	
 	
 	
 	public void updatePosition() {
 		
-		this.screenX = body.getPosition().x / Constants.PHYS_SCALE - screenWidth/2;
-		this.screenY = body.getPosition().y / Constants.PHYS_SCALE - screenHeight/2;
+		this.screenX = body.getPosition().x / constants.PHYS_SCALE - screenWidth/2;
+		this.screenY = body.getPosition().y / constants.PHYS_SCALE - screenHeight/2;
 		if (sprite != null) {
 			sprite.setX(screenX);
 			sprite.setY(screenY);

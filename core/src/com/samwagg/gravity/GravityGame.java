@@ -30,29 +30,32 @@ public class GravityGame extends Game {
 	private GravityGameController controller;
 	
 	
-	public static final int CONTACT_DECREMENT = 100;
+	public static final float CONTACT_DECREMENT = .1f;
 
 	private GameState gameState;
+
+	public Constants constants;
 	
 	@Override
 	public void create() {
-		
+
+		constants = new Constants();
 		controller = new MenusController(this);
-	
+
 		FileHandle file = Gdx.files.local("gamestate.bin");
-		
+
 		InputStream stream = null;
 		if (file.exists()) {
 			System.out.println("here");
 			stream = file.read();
 			ObjectInputStream objStream = null;
-			
+
 			try {
 				objStream = new ObjectInputStream(stream);
 
 				gameState = (GameState) objStream.readObject();
 			} catch (InvalidClassException e) {
-				gameState = new GameState();
+				gameState = new GameState(constants);
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -69,18 +72,14 @@ public class GravityGame extends Game {
 			}
 
 		} else {
-			gameState = new GameState();
+			gameState = new GameState(constants);
 		}
-			
+
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
 		font = new BitmapFont();
-		
-		Constants.initConstants();
-		
-		
-		
+
 		setScreen(new MainMenu(controller, this));
 	}
 	
@@ -90,13 +89,13 @@ public class GravityGame extends Game {
 	}
 	
 	public void resetGameProgress() {
-		gameState = new GameState();
+		gameState = new GameState(constants);
 	}
 	
 	public void mainMenuStartPressed(Screen oldScreen) {
 		//setScreen(new LevelSelectScreen(this, gameState));
 	}
-	
+	 
 	public void render() {
 		super.render();
 	}
@@ -118,7 +117,7 @@ public class GravityGame extends Game {
 			gameState.maxLevelReachedByGalaxy.add(galaxy-1, level + 1);
 		}
 		
-		if (!gameState.galaxiesUnlocked.contains(galaxy+1)) {
+		if (gameState.maxLevelReachedByGalaxy.get(0) == 7 && !gameState.galaxiesUnlocked.contains(1)) {
 			gameState.galaxiesUnlocked.add(galaxy+1);
 		}
 		
@@ -141,7 +140,7 @@ public class GravityGame extends Game {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 			}
 			
 		}

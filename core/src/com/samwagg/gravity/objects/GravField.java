@@ -22,14 +22,14 @@ public class GravField extends GameObject {
 	private final Sprite LIT_SPRITE;
 	private final Sprite UNLIT_SPRITE;
 	
-	public GravField(float screenX, float screenY, float rotation, World world) {
-		super(screenX, screenY, Constants.createArrowUnlit());
+	public GravField(float screenX, float screenY, float rotation, World world, Constants constants) {
+		super(screenX, screenY, constants.createArrowUnlit(), constants);
 		UNLIT_SPRITE = sprite;
 		UNLIT_SPRITE.setX(screenX);
 		UNLIT_SPRITE.setY(screenY);
 		UNLIT_SPRITE.setRotation(rotation);
 		
-		LIT_SPRITE = Constants.createArrowLit();
+		LIT_SPRITE = constants.createArrowLit();
 		LIT_SPRITE.setX(screenX);
 		LIT_SPRITE.setY(screenY);
 		LIT_SPRITE.setRotation(rotation);
@@ -39,12 +39,12 @@ public class GravField extends GameObject {
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-	    bodyDef.position.set(this.physX+.5f*Constants.TILE_SIZE*2*Constants.PHYS_SCALE, this.physY+.5f*Constants.TILE_SIZE*2*Constants.PHYS_SCALE);
+	    bodyDef.position.set(this.physX+.5f*constants.TILE_SIZE*2*constants.PHYS_SCALE, this.physY+.5f*constants.TILE_SIZE*2*constants.PHYS_SCALE);
 	    Body body = world.createBody(bodyDef);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.isSensor = true;
 		PolygonShape box = new PolygonShape();
-		box.setAsBox(Constants.TILE_SIZE*2*Constants.PHYS_SCALE*.5f, Constants.TILE_SIZE*2*Constants.PHYS_SCALE*.5f);
+		box.setAsBox(constants.TILE_SIZE*2*constants.PHYS_SCALE*.5f, constants.TILE_SIZE*2*constants.PHYS_SCALE*.5f);
 		fixtureDef.shape = box;
 		Fixture fixture = body.createFixture(fixtureDef);	
 		

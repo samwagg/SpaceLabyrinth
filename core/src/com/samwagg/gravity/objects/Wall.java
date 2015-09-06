@@ -25,18 +25,17 @@ public class Wall extends GameObject {
 	private TiledDrawable tiledTex;
 	
 	
-	public Wall(float screenX, float screenY, float screenWidth, float screenHeight, World world) {
-		super(screenX, screenY, screenWidth, screenHeight);
+	public Wall(float screenX, float screenY, float screenWidth, float screenHeight, World world, Constants constants) {
+		super(screenX, screenY, screenWidth, screenHeight, constants);
 		this.texture = WALL_TEXT;
 		
-		AtlasRegion texReg = Constants.WALL_REGION;
+		AtlasRegion texReg = constants.WALL_REGION;
 //		texReg.offsetX = 64;
 //		texReg.offsetY = 64;
 		tiledTex = new TiledDrawable(texReg);
-		
 
-		float physWidth = screenWidth * Constants.PHYS_SCALE;
-		float physHeight = screenHeight * Constants.PHYS_SCALE;
+		float physWidth = screenWidth * constants.PHYS_SCALE;
+		float physHeight = screenHeight * constants.PHYS_SCALE;
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;

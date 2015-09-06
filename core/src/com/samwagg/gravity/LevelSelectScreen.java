@@ -66,7 +66,7 @@ public class LevelSelectScreen implements Screen {
 	
 	private final float SHIP_ANIM_DUR = .5f;
 	
-	public LevelSelectScreen(GravityGameController menuController, GravityGame game, int galaxy, int currentLevel, int maxLevelReached) {
+	public LevelSelectScreen(GravityGameController menuController, GravityGame game, int galaxy, int currentLevel, int maxLevelReached, Constants constants) {
 		this.game = game;
 		this.galaxy = galaxy;
 		this.controller = menuController;
@@ -85,11 +85,11 @@ public class LevelSelectScreen implements Screen {
 		
 	    stage = new Stage(new ExtendViewport(1600,800));
 
-		for (int i = 1; i <= Constants.N_LEVELS; i++) {
+		for (int i = 1; i <= constants.N_LEVELS; i++) {
 			System.out.println("Making icon for level " + i);
 			Sprite leveli = maxLevelReached >= i ? atlas.createSprite("Dots", i) : atlas.createSprite("Dotsr", i);
 			leveli.setScale(.25f);
-			leveli.setCenter(camera.viewportWidth*(i-.5f)*1/Constants.N_LEVELS,  camera.viewportHeight* icon_pos[i-1]);
+			leveli.setCenter(camera.viewportWidth*(i-.5f)*1/constants.N_LEVELS,  camera.viewportHeight* icon_pos[i-1]);
 			levels.add(leveli);
 		}
 		

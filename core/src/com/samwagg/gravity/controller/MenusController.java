@@ -1,8 +1,5 @@
 package com.samwagg.gravity.controller;
 
-import java.util.List;
-
-import com.badlogic.gdx.Screen;
 import com.samwagg.gravity.Constants;
 import com.samwagg.gravity.GalaxyCompleteScreen;
 import com.samwagg.gravity.GalaxySelectScreen;
@@ -36,7 +33,7 @@ public class MenusController implements GravityGameController {
 		game.getScreen().dispose();
 		game.setScreen(new LevelSelectScreen(this, game, galaxy, 
 				game.getGameState().currentLevelByGalaxy.get(galaxy-1), 
-				game.getGameState().maxLevelReachedByGalaxy.get(galaxy-1)));
+				game.getGameState().maxLevelReachedByGalaxy.get(galaxy-1), game.constants));
 	}
 
 	@Override
@@ -109,7 +106,7 @@ public class MenusController implements GravityGameController {
 		game.updateGameState(currentGalaxy, currentLevel, score);
 		game.setScreen(new LevelCompleteMenu(game, this, score, 
 				game.getGameState().hs.galaxies.get(currentGalaxy-1)[currentLevel-1].intValue(), 
-				currentLevel == Constants.N_LEVELS));
+				currentLevel == game.constants.N_LEVELS));
 	}
 
 	@Override

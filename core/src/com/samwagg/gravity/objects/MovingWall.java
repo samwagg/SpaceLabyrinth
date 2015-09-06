@@ -31,9 +31,9 @@ public class MovingWall extends GameObject {
 	TiledDrawable tiledTex;
 	
 	
-	public MovingWall(float startScreenX, float startScreenY, float screenWidth, float screenHeight, Vector2 minMaxX, Vector2 minMaxY,  World world, Boolean isVert, float speed) {
-		super(startScreenX, startScreenY, screenWidth, screenHeight);
-		AtlasRegion texReg = Constants.WALL_REGION;
+	public MovingWall(float startScreenX, float startScreenY, float screenWidth, float screenHeight, Vector2 minMaxX, Vector2 minMaxY,  World world, Boolean isVert, float speed, Constants constants) {
+		super(startScreenX, startScreenY, screenWidth, screenHeight, constants);
+		AtlasRegion texReg = constants.WALL_REGION;
 		texReg.getRegionHeight();
 		tiledTex = new TiledDrawable(texReg);	
 		
@@ -42,8 +42,8 @@ public class MovingWall extends GameObject {
 		this.minMaxY = minMaxY;
 		this.minMaxX = minMaxX;
 		
-		float physWidth = screenWidth * Constants.PHYS_SCALE;
-		float physHeight = screenHeight * Constants.PHYS_SCALE;
+		float physWidth = screenWidth * constants.PHYS_SCALE;
+		float physHeight = screenHeight * constants.PHYS_SCALE;
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
@@ -76,57 +76,16 @@ public class MovingWall extends GameObject {
 			
 		BoundingBox testBox = new BoundingBox(new Vector3(screenX, screenY, 0), new Vector3(screenX + screenWidth, screenY + screenHeight, 0));
 		if ( camera.frustum.boundsInFrustum(testBox)) {
-			
-//			System.out.println("screenX = " + screenCoords.x + ", screenY = " + screenCoords.y);
-//			System.out.println("screenHeight = " + screenHeight + " and screenDims.y = " + screenDims.y );
-//			System.out.println("viewport width = " + camera.viewportWidth + ", viewport height = " + camera.viewportHeight);
-			
-//			int xLowLimit = 0;
-//			int xHighLimit = (int) camera.viewportWidth;
-//			int yLowLimit = 0;
-//			int yHighLimit = (int) camera.viewportHeight;
-//	
-//			
-//			int xStart = screenCoords.x >= xLowLimit ? (int)screenCoords.x : xLowLimit - (xLowLimit % 128);  
-//			int yStart = screenCoords.y >= yLowLimit ? (int)screenCoords.y : yLowLimit - ((yLowLimit % 128));
-//			
-//			System.out.println("xStart = " + xStart);
-//			System.out.println("yStart = " + yStart);
-//			
-//			int xEnd = screenCoords.x + screenWidth < xHighLimit ? (int) (screenCoords.x + screenWidth) : xHighLimit+128; 
-//			int yEnd = screenCoords.y + screenHeight < yHighLimit? (int) (screenCoords.y + screenHeight) : yHighLimit+128;
-//			
-//			tiledTex.draw(batch, xStart-64, yStart+64, xEnd-xStart, yEnd-yStart);
-//			tiledTex.draw(batch, xStart+64, yStart+64, xEnd-xStart, yEnd-yStart);
-//			tiledTex.draw(batch, xStart-64, yStart-64, xEnd-xStart, yEnd-yStart);
-//			tiledTex.draw(batch, xStart+64, yStart-64, xEnd-xStart, yEnd-yStart);			
-//			
-//			int xLowLimit = (int) (camera.position.x - camera.viewportWidth*.5f);
-//			int xHighLimit = (int) (camera.position.x + camera.viewportWidth*.5f);
-//			int yLowLimit = (int) (camera.position.y - camera.viewportHeight*.5f);
-//			int yHighLimit = (int) (camera.position.y + camera.viewportHeight*.5f);
-//			
-//			System.out.println("viewportwidth = " + camera.viewportWidth);
-//			System.out.println("viewportheight = " + camera.viewportHeight);
-//			
-//			camera.frustum.
-			
-//			int xStart = screenX >= xLowLimit ? (int)screenX : xLowLimit - (xLowLimit % 128);  
-//			int yStart = screenY >= yLowLimit ? (int)screenY : yLowLimit - ((yLowLimit % 128));
-//			
-//			int xEnd = screenX + screenWidth < xHighLimit ? (int) (screenX + screenWidth) : xHighLimit+128; 
-//			int yEnd = screenY + screenHeight < yHighLimit? (int) (screenY + screenHeight) : yHighLimit+128;
-			
+						
 			int xStart = (int) screenX;
 			int yStart = (int) screenY;
 			int xEnd = (int) (screenX + screenWidth);
 			int yEnd = (int) (screenY + screenHeight);
 			
-			
-			tiledTex.draw(batch, xStart-64, yStart+64, xEnd-xStart+64, yEnd-yStart-64 );
-			tiledTex.draw(batch, xStart+64, yStart+64, xEnd-xStart-64, yEnd-yStart-64);
-			tiledTex.draw(batch, xStart-64, yStart-64, xEnd-xStart+64, yEnd-yStart+64);
-			tiledTex.draw(batch, xStart+64, yStart-64, xEnd-xStart-64, yEnd-yStart+64);
+			tiledTex.draw(batch, xStart-64, yStart+64, screenWidth%256 == 0? screenWidth+64 : screenWidth+128, screenHeight%256 == 0? screenHeight : screenHeight-64);
+			tiledTex.draw(batch, xStart+64, yStart+64, screenWidth%256 == 0? screenWidth : screenWidth-64, screenHeight%256 == 0? screenHeight : screenHeight-64);
+			tiledTex.draw(batch, xStart-64, yStart-64, screenWidth%256 == 0? screenWidth+64 : screenWidth+128, screenHeight%256 == 0? screenHeight+64 : screenHeight+128);
+			tiledTex.draw(batch, xStart+64, yStart-64, screenWidth%256 == 0? screenWidth : screenWidth-64, screenHeight%256 == 0? screenHeight+64 : screenHeight+128);
 		}	
 	}
 

@@ -12,8 +12,8 @@ import com.samwagg.gravity.Constants;
 
 public class GameCharacter extends GameObject implements Steerable<Vector2> {
 	
-	public GameCharacter(float screenX, float screenY, World world) {
-		super(screenX+Constants.TILE_SIZE, screenY+Constants.TILE_SIZE, Constants.CHAR_SPRITE);
+	public GameCharacter(float screenX, float screenY, World world, Constants constants) {
+		super(screenX+constants.TILE_SIZE, screenY+constants.TILE_SIZE, constants.CHAR_SPRITE, constants);
 				
 		BodyDef bodyDef = new BodyDef();
 	    bodyDef.type = BodyType.DynamicBody;
@@ -21,7 +21,7 @@ public class GameCharacter extends GameObject implements Steerable<Vector2> {
 	    bodyDef.position.set(this.physX, this.physY);
 	    FixtureDef charFixtureDef = new FixtureDef();
 	    CircleShape circle = new CircleShape();
-	    circle.setRadius(Constants.CHAR_SPRITE.getHeight()/2*Constants.PHYS_SCALE);
+	    circle.setRadius(constants.CHAR_SPRITE.getHeight()/2*constants.PHYS_SCALE);
 	    charFixtureDef.shape = circle;
 	    charFixtureDef.density = 10f;
 	    charFixtureDef.friction = 0f;
