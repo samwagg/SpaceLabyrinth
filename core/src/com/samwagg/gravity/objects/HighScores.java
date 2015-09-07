@@ -9,7 +9,6 @@ import com.samwagg.gravity.Constants;
 public class HighScores implements Serializable {
 
 	public List<Integer[]> galaxies = new ArrayList<Integer[]>();
-	
 	public HighScores(GameState state, Constants constants) {
 		
 		for (int i = 0; i < state.totalGalaxies; i++) {

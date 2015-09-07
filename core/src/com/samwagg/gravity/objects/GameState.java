@@ -13,7 +13,7 @@ public class GameState implements Serializable {
 	public List<Integer> maxLevelReachedByGalaxy;
 	public List<Integer> currentLevelByGalaxy;
 
-	public int totalGalaxies = 2;
+	public int totalGalaxies = 3;
 	public List<Integer> galaxiesUnlocked;
 	
 	public GameState(Constants constants) {
@@ -23,10 +23,15 @@ public class GameState implements Serializable {
 		currentLevelByGalaxy = new ArrayList<Integer>();
 		for (int i = 0; i < totalGalaxies; i++) {
 			currentLevelByGalaxy.add(i, 1);
-			maxLevelReachedByGalaxy.add(i, 1);
+			//maxLevelReachedByGalaxy.add(i, 1);
 		}
+		maxLevelReachedByGalaxy.add(0,7);
+		maxLevelReachedByGalaxy.add(1,1);
+		maxLevelReachedByGalaxy.add(2,2);
 		
 		galaxiesUnlocked = new ArrayList<Integer>();
 		galaxiesUnlocked.add(1);
+		galaxiesUnlocked.add(2);
+		galaxiesUnlocked.add(3);
 	}
 }

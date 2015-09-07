@@ -111,14 +111,20 @@ public class GravityGame extends Game {
 	
 	public void updateGameState(int galaxy, int level, int score) {
 		
-		gameState.currentLevelByGalaxy.add(galaxy-1, level);
-		
+		gameState.currentLevelByGalaxy.set(galaxy-1, level);
+
+		System.out.println("galaxy = " + galaxy);
+		System.out.println("level = " + level);
+
 		if (gameState.maxLevelReachedByGalaxy.get(galaxy-1) < level + 1) {
-			gameState.maxLevelReachedByGalaxy.add(galaxy-1, level + 1);
+			gameState.maxLevelReachedByGalaxy.set(galaxy-1, level + 1);
 		}
-		
-		if (gameState.maxLevelReachedByGalaxy.get(0) == 7 && !gameState.galaxiesUnlocked.contains(1)) {
+
+		System.out.println("maxLevel = " + gameState.maxLevelReachedByGalaxy.get(0) + " and galaxiesUnlocked = " + gameState.galaxiesUnlocked.contains(2));
+		if (gameState.maxLevelReachedByGalaxy.get(0) == 8 && !gameState.galaxiesUnlocked.contains(2)) {
 			gameState.galaxiesUnlocked.add(galaxy+1);
+			gameState.maxLevelReachedByGalaxy.set(galaxy, 1);
+			gameState.currentLevelByGalaxy.set(galaxy, 1);
 		}
 		
 		if (gameState.hs.galaxies.get(galaxy-1)[level-1] < score) { 	

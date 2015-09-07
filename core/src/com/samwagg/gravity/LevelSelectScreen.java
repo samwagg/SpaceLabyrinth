@@ -70,7 +70,9 @@ public class LevelSelectScreen implements Screen {
 		this.game = game;
 		this.galaxy = galaxy;
 		this.controller = menuController;
-		
+
+		System.out.println("Max level reached = " + maxLevelReached + " galaxy = " + galaxy);
+
 		currentSelection = currentLevel;
 		this.maxLevelReached = maxLevelReached;
 		
@@ -194,7 +196,7 @@ public class LevelSelectScreen implements Screen {
 	    			System.out.println(maxLevelReached);
 	    		    System.out.println("currentSelection = " + currentSelection);
 
-	    			currentSelection = i+1;
+	    			currentSelection = i + 1;
 	    			
 	    			MoveToAction moveAction = new MoveToAction();
 	    			moveAction.setDuration(SHIP_ANIM_DUR);
