@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.samwagg.gravity.controller.GravityGameController;
+import com.samwagg.gravity.controller.LevelDownloadController;
 import com.samwagg.gravity.controller.MenusController;
 import com.samwagg.gravity.objects.GameState;
 
@@ -35,9 +36,17 @@ public class GravityGame extends Game {
 	private GameState gameState;
 
 	public Constants constants;
-	
+
+	private LevelDownloadController downloadController;
+
+	public GravityGame(LevelDownloadController controller) {
+		downloadController = controller;
+	}
+
 	@Override
 	public void create() {
+
+		downloadController.launchLevelAquisitionModule();
 
 		constants = new Constants();
 		controller = new MenusController(this);
