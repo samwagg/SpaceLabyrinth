@@ -1,4 +1,4 @@
-package com.samwagg.gravity;
+package com.samwagg.gravity.view;
 
 import java.util.List;
 

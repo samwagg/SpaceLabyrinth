@@ -1,14 +1,12 @@
 package com.samwagg.gravity.controller;
 
-import com.samwagg.gravity.Constants;
-import com.samwagg.gravity.GalaxyCompleteScreen;
-import com.samwagg.gravity.GalaxySelectScreen;
+import com.samwagg.gravity.view.GalaxyCompleteScreen;
+import com.samwagg.gravity.view.GalaxySelectScreen;
 import com.samwagg.gravity.GravityGame;
 import com.samwagg.gravity.GravityGameScreen;
-import com.samwagg.gravity.LevelCompleteMenu;
-import com.samwagg.gravity.LevelSelectScreen;
-import com.samwagg.gravity.MainMenu;
-import com.samwagg.gravity.objects.GameState;
+import com.samwagg.gravity.view.LevelCompleteMenu;
+import com.samwagg.gravity.view.LevelSelectScreen;
+import com.samwagg.gravity.view.MainMenu;
 
 public class MenusController implements GravityGameController {
 

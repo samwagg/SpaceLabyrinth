@@ -1,4 +1,4 @@
-package com.samwagg.gravity;
+package com.samwagg.gravity.view;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.samwagg.gravity.Constants;
+import com.samwagg.gravity.GravityGame;
 import com.samwagg.gravity.controller.GravityGameController;
 import com.samwagg.gravity.objects.GameState;
 

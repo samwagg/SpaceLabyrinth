@@ -19,6 +19,7 @@ import com.samwagg.gravity.controller.GravityGameController;
 import com.samwagg.gravity.controller.LevelDownloadController;
 import com.samwagg.gravity.controller.MenusController;
 import com.samwagg.gravity.objects.GameState;
+import com.samwagg.gravity.view.MainMenu;
 
 
 public class GravityGame extends Game {

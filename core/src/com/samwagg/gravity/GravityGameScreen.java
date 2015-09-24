@@ -5,55 +5,32 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.samwagg.gravity.ai.EnemySteeringAgent;
 import com.samwagg.gravity.controller.GravityGameController;
-import com.samwagg.gravity.objects.AntiGravButton;
 import com.samwagg.gravity.objects.Explosion64;
 import com.samwagg.gravity.objects.FinishSensor;
 import com.samwagg.gravity.objects.GameCharacter;
@@ -63,6 +40,7 @@ import com.samwagg.gravity.objects.Map.GameTile;
 import com.samwagg.gravity.objects.Map.MapFormatException;
 import com.samwagg.gravity.objects.MovingWall;
 import com.samwagg.gravity.objects.Wall;
+import com.samwagg.gravity.view.PauseMenu;
 
 public class GravityGameScreen implements Screen {
 
@@ -126,23 +104,14 @@ public class GravityGameScreen implements Screen {
 	private boolean restart;
 	
 	private ExtendViewport extViewport;
-	
-	private FPSLogger logger = new FPSLogger();
 
-	private Texture wallTex;
-	private float x;
-	private float y;
-	
-    PauseMenu pauseMenu;
+    private PauseMenu pauseMenu;
 
 
-		
-
-	private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
 	/**
 	 * Set up camera, physics options, VectorSetter UI component, 
-	 * and load level 1
+	 * and load level
 	 * 
 	 * @param game the game instance
 	 */
@@ -153,10 +122,7 @@ public class GravityGameScreen implements Screen {
 		Gdx.graphics.setVSync(true);
 		
 		WORLD = new World(new Vector2(0,0), true);
-		
-//		wallTex = new Texture(Gdx.files.internal("wall.png"));
-//		wallTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		
+
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 1000, 600);
 		extViewport = new ExtendViewport(1000,600,camera);
@@ -187,7 +153,6 @@ public class GravityGameScreen implements Screen {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (MapFormatException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -282,9 +247,6 @@ public class GravityGameScreen implements Screen {
 		camera.position.x = character.getScreenX();
 		camera.position.y = character.getScreenY();
 		camera.update();
-		
-		x = character.getScreenX();
-		y = character.getScreenY();
 	}
 	
 	private void makeMovBlock(int i, int j, int width, int height, float speed, float wallWidth, float wallHeight) {
@@ -369,7 +331,7 @@ public class GravityGameScreen implements Screen {
 	}
 	
 	
-	public Rectangle extendTile(int iLow, int iHigh, int jLow, int jHigh, GameTile type, GameTile[][] map) {
+	private Rectangle extendTile(int iLow, int iHigh, int jLow, int jHigh, GameTile type, GameTile[][] map) {
 		
 		boolean expandableRight = true, expandableLeft = true, expandableUp = true, expandableDown = true;
 		
@@ -417,131 +379,80 @@ public class GravityGameScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		
-		//logger.log();
 		Gdx.gl.glClearColor(0, 0, .3f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//		Gdx.gl.glEnable(GL20.GL_BLEND);
-//		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		if (levelFinished) {
-			
-//			stage = new Stage();
-//			Table table = new Table();
-//			table.setFillParent(true);
-//
-//			stage.addActor(table);
-//		 
-//			//game.setScreen(new LevelCompleteMenu(game, level, (int)score));	
-//			Gdx.input.setInputProcessor(stage);
-//			Label label = new Label("Level Complete",skin);
-//			label.scaleBy(.5f);
-//			Table finishedDialog = new Table(skin);
-//			finishedDialog.add("Level Complete");
-//			finishedDialog.row();
-//			finishedDialog.add("Score: " + (int)score);
-//			finishedDialog.row();
-//			finishedDialog.add("Best: " + game.readHighScore(level));
-//			finishedDialog.row();
-//			Button continueButton = new Button(skin);
-//			continueButton.add("Continue");
-//			
-//			game.writeHighScore(level, (int) score);
-//			
-//			
-//			continueButton.addListener(new EventListener() {
-//
-//				@Override
-//				public boolean handle(Event event) {
-//					// TODO Auto-generated method stub
-//					game.setScreen(new GravityGameScreen(game, level + 1));					
-//					return true;
-//				}
-//				
-//			});
-//			finishedDialog.add(continueButton);
-//			table.add(finishedDialog);
-			//game.setScreen( new  LevelCompleteMenu(game, level, (int) score) );
 			displayDialog = true;
 			controller.levComplete((int) score);
 		}
-		
 
-				
-			game.batch.setProjectionMatrix(camera.combined);
-			game.batch.begin();
-//			Gdx.gl.glEnable(GL20.GL_BLEND);
-//			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-			
-			
-			tiledBackground.draw(game.batch, -camera.viewportWidth, -worldHeight - camera.viewportHeight, worldWidth+2*camera.viewportWidth, worldHeight + 2*camera.viewportHeight );
-	
-			for (GravField field : gravFields) {
-				field.getSprite().draw(game.batch);
-			}
-			
-			if (!shipGone) {
-				 character.getSprite().draw(game.batch);
-				 character.getSprite().rotate(.2f);
-			 }
-			
-			Gdx.gl.glEnable(GL20.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-			
-			for (Wall wall : walls) {
-				
-				wall.draw(game.batch, camera);
-	
-			} 
-	
-			for (MovingWall wall : movingWalls) {
-				wall.draw(game.batch, camera);
-			}
-			
-			Gdx.gl.glDisable(GL20.GL_BLEND);
-			
-			for (EnemySteeringAgent enemy : enemies) {
-				game.batch.draw(enemy.getGameObject().getTexture(), enemy.getGameObject().getScreenX(), enemy.getGameObject().getScreenY());
-			}
-			
-			if (score == 0 && !explosionBegun) {
-				explosions.add(new Explosion64(character.getScreenX(), character.getScreenY()));
-				explosionBegun = true;
-			}
-			
-			
-			for (Explosion64 exp : explosions) {
-				if (shipGone) {
-					if (exp.drawNextFrame(game.batch)) finishedExplosions.add(exp);
-				} else {
-					if (exp.drawNextFrame(game.batch, character.getScreenX(), character.getScreenY())) finishedExplosions.add(exp);
-	
-				}
-				if (exp.halfDone()) shipGone = true;
-			}
-			
-			
-			for (Explosion64 exp : finishedExplosions) {
-				explosions.remove(exp);
-			}
-			
+		game.batch.setProjectionMatrix(camera.combined);
+		game.batch.begin();
 
-			//game.batch.draw(wallTex, this.x, this.y);
-			game.batch.setProjectionMatrix(staticCamera.combined);
-			game.batch.draw(optionsTex, staticCamera.viewportWidth - optionsTex.getWidth(), staticCamera.viewportHeight - optionsTex.getHeight());	
+		tiledBackground.draw(game.batch, -camera.viewportWidth, -worldHeight - camera.viewportHeight, worldWidth+2*camera.viewportWidth, worldHeight + 2*camera.viewportHeight );
+	
+		for (GravField field : gravFields) {
+			field.getSprite().draw(game.batch);
+		}
 			
-			game.batch.end();
+		if (!shipGone) {
+			character.getSprite().draw(game.batch);
+			character.getSprite().rotate(.2f);
+		}
 			
-			if (countDown > 0) {
-				stage.act(delta);
-				stage.draw();
-				countDownLabel.setText(Integer.toString((int) countDown+1));
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+			
+		for (Wall wall : walls) {
+			wall.draw(game.batch, camera);
+	
+		}
+	
+		for (MovingWall wall : movingWalls) {
+			wall.draw(game.batch, camera);
+		}
+			
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+			
+		for (EnemySteeringAgent enemy : enemies) {
+			game.batch.draw(enemy.getGameObject().getTexture(), enemy.getGameObject().getScreenX(), enemy.getGameObject().getScreenY());
+		}
+			
+		if (score == 0 && !explosionBegun) {
+			explosions.add(new Explosion64(character.getScreenX(), character.getScreenY()));
+			explosionBegun = true;
+		}
+
+		for (Explosion64 exp : explosions) {
+			if (shipGone) {
+				if (exp.drawNextFrame(game.batch)) finishedExplosions.add(exp);
+			} else {
+				if (exp.drawNextFrame(game.batch, character.getScreenX(), character.getScreenY())) finishedExplosions.add(exp);
 			}
+			if (exp.halfDone()) shipGone = true;
+		}
+
+		for (Explosion64 exp : finishedExplosions) {
+			explosions.remove(exp);
+		}
+
+		game.batch.setProjectionMatrix(staticCamera.combined);
+		game.batch.draw(optionsTex, staticCamera.viewportWidth - optionsTex.getWidth(), staticCamera.viewportHeight - optionsTex.getHeight());
 			
-			if (optionsClicked) {
+		game.batch.end();
+			
+		if (countDown > 0) {
+			stage.act(delta);
+			stage.draw();
+			countDownLabel.setText(Integer.toString((int) countDown+1));
+		}
+			
+		if (optionsClicked) {
 				
-				Gdx.input.setInputProcessor(stage);
+			Gdx.input.setInputProcessor(stage);
 				
-				switch (pauseMenu.displayIfPaused()) {
+			switch (pauseMenu.displayIfPaused()) {
 				case RESUME:	pauseMenu.reset();
 								optionsClicked = false;
 								System.out.println("resume pressed");
@@ -556,71 +467,64 @@ public class GravityGameScreen implements Screen {
 								break;
 				
 				case REMAIN: ;
+			}
+		}
+
+		if (score == 0 && explosions.isEmpty() || restart) {
+			controller.healthDepleted();
+			return;
+		}
+			
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		game.shapeRenderer.begin();
+		game.shapeRenderer.setProjectionMatrix(staticCamera.combined);
+		game.shapeRenderer.setColor(1-1/(startScore/score),0f,score/startScore,.6f);
+		game.shapeRenderer.set(ShapeType.Filled);
+	
+		game.shapeRenderer.rect(0, 0,  (score/startScore) * staticCamera.viewportWidth, 20);
+			
+		if (!optionsClicked) vSetter.render(game.shapeRenderer, camera);
+			
+		game.shapeRenderer.end();
+
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+
+		gravVect.x = vSetter.getXComponent() * .05f;
+		gravVect.y = vSetter.getYComponent() * .05f;
+		WORLD.setGravity(gravVect);
+			
+		float gravFieldDirection;
+		for (GravField field : currentGravFields) {
+			gravFieldDirection = field.getRotation()*(float)Math.PI/180;
+			character.getBody().applyForceToCenter((float)(200*Math.cos(gravFieldDirection)), (float)(200*Math.sin(gravFieldDirection)), true);
+		}
+		
+		if (countDown > 0) {
+			displayDialog = true;
+			countDown -= delta;
+		} else if (!levelFinished && !optionsClicked) {
+			Gdx.input.setInputProcessor(vSetter.getInputProcessor());
+			doPhysicsStep(delta);
+		}
+			
+		if (Gdx.input.justTouched()) {
+			Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(),0);
+			staticCamera.unproject(touchPos);
+
+			if (touchPos.x > staticCamera.viewportWidth - optionsTex.getWidth() && touchPos.y > staticCamera.viewportHeight - optionsTex.getHeight()) {
+				if (optionsClicked) {
+					pauseMenu.resume();
+					System.out.println("Resumed by options click");
+				} else {
+					optionsClicked = true;
+					vSetter.onInputTurnedOff();
 				}
 			}
-//			else if (!displayDialog) 
+		}
 			
-			if (score == 0 && explosions.isEmpty() || restart) {
-				controller.healthDepleted();
-				return;
-			}
-			
-			Gdx.gl.glEnable(GL20.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-			game.shapeRenderer.begin();
-			game.shapeRenderer.setProjectionMatrix(staticCamera.combined);
-			//game.shapeRenderer.setProjectionMatrix(camera.);
-			game.shapeRenderer.setColor(1-1/(startScore/score),0f,score/startScore,.6f);
-			game.shapeRenderer.set(ShapeType.Filled);
-	
-			game.shapeRenderer.rect(0, 0,  (score/startScore) * staticCamera.viewportWidth, 20);
-			
-			if (!optionsClicked) vSetter.render(game.shapeRenderer, camera);
-			
-			game.shapeRenderer.end();
-			Gdx.gl.glDisable(GL20.GL_BLEND);
-	
-			gravVect.x = vSetter.getXComponent() * .05f;
-			gravVect.y = vSetter.getYComponent() * .05f;
-			WORLD.setGravity(gravVect);
-			
-			float gravFieldDirection;
-			for (GravField field : currentGravFields) {
-				gravFieldDirection = field.getRotation()*(float)Math.PI/180;
-				character.getBody().applyForceToCenter((float)(200*Math.cos(gravFieldDirection)), (float)(200*Math.sin(gravFieldDirection)), true);
-			}			
-		
-			if (countDown > 0) {
-				displayDialog = true;
-				countDown -= delta;
-			} else if (!levelFinished && !optionsClicked) {
-				Gdx.input.setInputProcessor(vSetter.getInputProcessor());
-				doPhysicsStep(delta);
-			}
-			
-
-			
-			if (Gdx.input.justTouched()) {
-				Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(),0);
-				staticCamera.unproject(touchPos);
-
-				if (touchPos.x > staticCamera.viewportWidth - optionsTex.getWidth() && touchPos.y > staticCamera.viewportHeight - optionsTex.getHeight()) {
-					if (optionsClicked) {
-						pauseMenu.resume();
-						System.out.println("Resumed by options click");
-					} else {
-						optionsClicked = true;
-						vSetter.onInputTurnedOff();
-					}
-				}
-			}
-			
-			//camera.update();
-			camera.position.set(character.getScreenX(), character.getScreenY(), 0);
-			camera.update();
-
-
-		
+		camera.position.set(character.getScreenX(), character.getScreenY(), 0);
+		camera.update();
 	}
 
 	private void doPhysicsStep(float deltaTime) {
@@ -643,9 +547,6 @@ public class GravityGameScreen implements Screen {
 			accumulator -= 1 / 45f;
 		}
 		character.updatePosition();
-//		camera.translate(character.getScreenX() - camera.position.x,
-//				character.getScreenY() - camera.position.y);
-
 
 		for (EnemySteeringAgent enemy : enemies) {
 			enemy.getGameObject().updatePosition();
@@ -658,20 +559,10 @@ public class GravityGameScreen implements Screen {
 		}
 		this.background.dispose();
 		System.out.println("disposed");
-		//WORLD.dispose();
-		//optionsTex.dispose();
-		//stage.dispose();
-		//skin.dispose();
-		
-	}
-	
-	public GravityGameScreen getInstance() {
-		return this;
 	}
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -683,21 +574,16 @@ public class GravityGameScreen implements Screen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void hide() {
-		//dispose();
-		// TODO Auto-generated method stub
-
 	}
 	
 	public class ForceListener implements ContactListener {
@@ -714,8 +600,6 @@ public class GravityGameScreen implements Screen {
 			GravField field = (GravField) forceFix.getUserData();
 			field.unlight();
 			currentGravFields.remove(field);
-			
-
 		}
 
 		@Override
@@ -735,17 +619,13 @@ public class GravityGameScreen implements Screen {
 				levelFinished = true;
 				return;
 			}
-				
-				else return;
-			
+			else return;
 
 			GravField field = (GravField) forceFix.getUserData();
 			field.light();
 			currentGravFields.add(field);
-			
 		}
 		
-
 
 		@Override
 		public void preSolve(Contact contact, Manifold oldManifold)

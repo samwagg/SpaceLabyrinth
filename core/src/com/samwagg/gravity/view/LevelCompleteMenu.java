@@ -1,4 +1,4 @@
-package com.samwagg.gravity;
+package com.samwagg.gravity.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.samwagg.gravity.GravityGame;
 import com.samwagg.gravity.controller.GravityGameController;
 import com.samwagg.gravity.objects.GameState;
 
