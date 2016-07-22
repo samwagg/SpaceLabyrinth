@@ -12,6 +12,6 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useImmersiveMode = true;
-		initialize(new GravityGame(new AndroidLevelAquisition()), config);
+		initialize(new GravityGame(), config);
 	}
 }

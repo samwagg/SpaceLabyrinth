@@ -40,14 +40,14 @@ public class GravityGame extends Game {
 
 	private LevelDownloadController downloadController;
 
-	public GravityGame(LevelDownloadController controller) {
-		downloadController = controller;
-	}
+//	public GravityGame(LevelDownloadController controller) {
+//		downloadController = controller;
+//	}
 
 	@Override
 	public void create() {
 
-		downloadController.launchLevelAquisitionModule();
+//		downloadController.launchLevelAquisitionModule();
 
 		constants = new Constants();
 		controller = new MenusController(this);
