@@ -51,8 +51,6 @@ public class Wall extends GameObject {
 		fixture.setUserData(this);
 		
 		brickBox.dispose();
-		
-		
 	}
 	
 	public void draw(SpriteBatch batch, Camera camera) {

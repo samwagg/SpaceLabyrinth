@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Explosion64 {
 
-	
-	private int framesPerTick = 100;
+	private final int TOTAL_FRAMES = 32;
 
-	
 	private Texture explosionPack;
+
+	private int currentFrameIndex;
 	private int currentFrame;
 	
 	private float x;
@@ -21,49 +21,50 @@ public class Explosion64 {
 	public Explosion64(float x, float y) {
 		explosionPack = new Texture(Gdx.files.internal("explosion.png"));
 		//explosionPack = new Texture(Gdx.files.internal("arrow.png"));
-		currentFrame = 15;
+		currentFrameIndex = 15;
+		currentFrame = 0;
 		
 		this.x = x;
 		this.y = y;
 		
 		explosionGrowing = true;
 	}
-	
-	public boolean drawNextFrame(SpriteBatch batch) {
-		batch.draw(explosionPack, x-32, y-32,(currentFrame % 4)*128,(currentFrame /4)*128,128,128);
-		//batch.draw(explosionPack, x, y);
-		if (currentFrame > 0 && explosionGrowing) currentFrame--;
-		else if (currentFrame == 0) {
-			explosionGrowing = false;
-			currentFrame ++;
+
+	/**
+	 * Draw next explosion frame in its current position
+	 * @param batch
+     */
+	public void drawNextFrame(SpriteBatch batch) {
+
+		if (!done()) {
+			batch.draw(explosionPack, x - 32, y - 32, (currentFrameIndex % 4) * 128, (currentFrameIndex / 4) * 128, 128, 128);
+			//batch.draw(explosionPack, x, y);
+			if (currentFrameIndex > 0 && explosionGrowing) currentFrameIndex--;
+			else if (currentFrameIndex == 0) {
+				explosionGrowing = false;
+				currentFrameIndex++;
+			}
+			else currentFrameIndex++;
+
+			currentFrame++;
 		}
-		else currentFrame++;
-		
-		
-		if (currentFrame > 15) return true;
-		else return false;
 	}
-	
-	public boolean drawNextFrame(SpriteBatch batch, float x, float y) {
-		batch.draw(explosionPack, x-32, y-32,(currentFrame % 4)*128,(currentFrame /4)*128,128,128);
-		//batch.draw(explosionPack, x, y);
-		if (currentFrame > 0 && explosionGrowing) currentFrame--;
-		else if (currentFrame == 0) {
-			explosionGrowing = false;
-			currentFrame ++;
-		}
-		else currentFrame++;
-		
+
+	public void updatePosition(int x, int y) {
 		this.x = x;
 		this.y = y;
-		
-		if (currentFrame > 15) return true;
-		else return false;
 	}
 	
-	public boolean halfDone() {
-		if (currentFrame < 7) return true;
-		else return false;
+	public int getCurrentFrame() {
+		return currentFrame;
+	}
+
+	public int getTotalFrames() {
+		return TOTAL_FRAMES;
+	}
+
+	public boolean done() {
+		return currentFrame == TOTAL_FRAMES;
 	}
 	
 	public void dispose() {
