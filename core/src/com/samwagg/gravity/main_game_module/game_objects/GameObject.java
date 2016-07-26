@@ -1,4 +1,4 @@
-package com.samwagg.gravity.objects;
+package com.samwagg.gravity.main_game_module.game_objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -75,8 +75,8 @@ public class GameObject implements Disposable {
 		screenHeight = constants.TILE_SIZE;
 	}
 	
-	
-	
+
+
 	public void updatePosition() {
 		
 		this.screenX = body.getPosition().x / constants.PHYS_SCALE - screenWidth/2;

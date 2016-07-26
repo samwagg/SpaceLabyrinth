@@ -1,16 +1,16 @@
-package com.samwagg.gravity.view;
+package com.samwagg.gravity.menus.main_menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.samwagg.gravity.GravityGame;
 import com.samwagg.gravity.controller.GravityGameController;
 
-
-public class GalaxyCompleteScreen implements Screen {
+public class MainMenu implements Screen {
 
 	private Texture texture;
 	
@@ -21,7 +21,7 @@ public class GalaxyCompleteScreen implements Screen {
 	
 	private Vector3 touchInput;
 	
-	public GalaxyCompleteScreen(GravityGameController controller, GravityGame game) {
+	public MainMenu(GravityGameController controller, GravityGame game) {
 		this.game = game;
 		this.controller = controller;
 		camera = new OrthographicCamera();
@@ -31,7 +31,7 @@ public class GalaxyCompleteScreen implements Screen {
 	
 	@Override
 	public void show() {
-		texture = new Texture(Gdx.files.internal("galaxy_complete.png"));
+		texture = new Texture(Gdx.files.internal("Start.png"));
 		// TODO Auto-generated method stub
 		
 	}
@@ -43,16 +43,31 @@ public class GalaxyCompleteScreen implements Screen {
 	    game.batch.begin();
 		game.batch.draw(texture,0,0,camera.viewportWidth,camera.viewportHeight);
 		game.batch.end();
-		
-		camera.unproject(touchInput);
-		
-		if (Gdx.input.justTouched()) controller.creditsScreenTouched();
-		
+
+
+		if (Gdx.input.justTouched()) {
+			touchInput = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+			camera.unproject(touchInput);
+
+			if (touchInput.x < 500 && touchInput.x > 300 && touchInput.y < 200 && touchInput.y > 100) {
+				controller.mainMenuStartClicked();
+			}
+
+			if (touchInput.x < 450 && touchInput.x > 350 && touchInput.y > camera.viewportHeight - 50) {
+//				game.resetGameProgress();
+//				System.out.println("here");
+			}
+
+			if (touchInput.x < 300 && touchInput.y < 300) {
+				for (int i = 0; i < game.getGameState().totalGalaxies; i++) {
+//					game.getGameState().maxLevelReachedByGalaxy.add(i, Constants.N_LEVELS);
+				}
+			}
+		}
 		
 		// TODO Auto-generated method stub
 		
 	}
-
 
 	@Override
 	public void resize(int width, int height) {

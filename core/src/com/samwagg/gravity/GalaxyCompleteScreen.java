@@ -1,16 +1,16 @@
-package com.samwagg.gravity.view;
+package com.samwagg.gravity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.samwagg.gravity.GravityGame;
 import com.samwagg.gravity.controller.GravityGameController;
 
-public class MainMenu implements Screen {
+
+public class GalaxyCompleteScreen implements Screen {
 
 	private Texture texture;
 	
@@ -21,7 +21,7 @@ public class MainMenu implements Screen {
 	
 	private Vector3 touchInput;
 	
-	public MainMenu(GravityGameController controller, GravityGame game) {
+	public GalaxyCompleteScreen(GravityGameController controller, GravityGame game) {
 		this.game = game;
 		this.controller = controller;
 		camera = new OrthographicCamera();
@@ -31,7 +31,7 @@ public class MainMenu implements Screen {
 	
 	@Override
 	public void show() {
-		texture = new Texture(Gdx.files.internal("Start.png"));
+		texture = new Texture(Gdx.files.internal("galaxy_complete.png"));
 		// TODO Auto-generated method stub
 		
 	}
@@ -43,31 +43,16 @@ public class MainMenu implements Screen {
 	    game.batch.begin();
 		game.batch.draw(texture,0,0,camera.viewportWidth,camera.viewportHeight);
 		game.batch.end();
-
-
-		if (Gdx.input.justTouched()) {
-			touchInput = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-			camera.unproject(touchInput);
-
-			if (touchInput.x < 500 && touchInput.x > 300 && touchInput.y < 200 && touchInput.y > 100) {
-				controller.mainMenuStartClicked();
-			}
-
-			if (touchInput.x < 450 && touchInput.x > 350 && touchInput.y > camera.viewportHeight - 50) {
-//				game.resetGameProgress();
-//				System.out.println("here");
-			}
-
-			if (touchInput.x < 300 && touchInput.y < 300) {
-				for (int i = 0; i < game.getGameState().totalGalaxies; i++) {
-//					game.getGameState().maxLevelReachedByGalaxy.add(i, Constants.N_LEVELS);
-				}
-			}
-		}
+		
+		camera.unproject(touchInput);
+		
+		if (Gdx.input.justTouched()) controller.creditsScreenTouched();
+		
 		
 		// TODO Auto-generated method stub
 		
 	}
+
 
 	@Override
 	public void resize(int width, int height) {

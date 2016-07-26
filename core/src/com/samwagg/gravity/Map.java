@@ -1,4 +1,4 @@
-package com.samwagg.gravity.objects;
+package com.samwagg.gravity;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -1,4 +1,4 @@
-package com.samwagg.gravity.objects;
+package com.samwagg.gravity.main_game_module.game_objects;
 
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;

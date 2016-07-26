@@ -1,4 +1,4 @@
-package com.samwagg.gravity;
+package com.samwagg.gravity.main_game_module.widgets;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;

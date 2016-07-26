@@ -1,6 +1,4 @@
-package com.samwagg.gravity.objects;
-
-import com.samwagg.gravity.Constants;
+package com.samwagg.gravity;
 
 import java.io.Serializable;
 import java.util.ArrayList;

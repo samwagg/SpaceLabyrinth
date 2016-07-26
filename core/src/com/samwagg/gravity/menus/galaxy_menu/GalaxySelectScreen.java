@@ -1,4 +1,4 @@
-package com.samwagg.gravity.view;
+package com.samwagg.gravity.menus.galaxy_menu;
 
 import java.util.List;
 

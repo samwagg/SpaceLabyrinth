@@ -1,10 +1,8 @@
-package com.samwagg.gravity.objects;
+package com.samwagg.gravity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.samwagg.gravity.Constants;
 
 public class HighScores implements Serializable {
 

@@ -1,4 +1,4 @@
-package com.samwagg.gravity;
+package com.samwagg.gravity.main_game_module;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -30,18 +30,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.samwagg.gravity.GravityGame;
+import com.samwagg.gravity.main_game_module.widgets.VectorSetter;
 import com.samwagg.gravity.ai.EnemySteeringAgent;
 import com.samwagg.gravity.controller.GravityGameController;
-import com.samwagg.gravity.objects.Explosion64;
-import com.samwagg.gravity.objects.FinishSensor;
-import com.samwagg.gravity.objects.GameCharacter;
-import com.samwagg.gravity.objects.GravField;
-import com.samwagg.gravity.objects.Map;
-import com.samwagg.gravity.objects.Map.GameTile;
-import com.samwagg.gravity.objects.Map.MapFormatException;
-import com.samwagg.gravity.objects.MovingWall;
-import com.samwagg.gravity.objects.Wall;
-import com.samwagg.gravity.view.PauseMenu;
+import com.samwagg.gravity.main_game_module.game_objects.Explosion64;
+import com.samwagg.gravity.main_game_module.game_objects.FinishSensor;
+import com.samwagg.gravity.main_game_module.game_objects.GameCharacter;
+import com.samwagg.gravity.main_game_module.game_objects.GravField;
+import com.samwagg.gravity.Map;
+import com.samwagg.gravity.Map.GameTile;
+import com.samwagg.gravity.Map.MapFormatException;
+import com.samwagg.gravity.main_game_module.game_objects.MovingWall;
+import com.samwagg.gravity.main_game_module.game_objects.Wall;
+import com.samwagg.gravity.main_game_module.widgets.PauseMenu;
 
 public class GravityGameScreen implements Screen {
 

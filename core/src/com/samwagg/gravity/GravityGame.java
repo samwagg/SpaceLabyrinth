@@ -16,10 +16,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.samwagg.gravity.controller.GravityGameController;
-import com.samwagg.gravity.controller.LevelDownloadController;
+//import com.samwagg.gravity.controller.LevelDownloadController;
 import com.samwagg.gravity.controller.MenusController;
-import com.samwagg.gravity.objects.GameState;
-import com.samwagg.gravity.view.MainMenu;
+import com.samwagg.gravity.menus.main_menu.MainMenu;
 
 
 public class GravityGame extends Game {
@@ -38,7 +37,7 @@ public class GravityGame extends Game {
 
 	public Constants constants;
 
-	private LevelDownloadController downloadController;
+//	private LevelDownloadController downloadController;
 
 //	public GravityGame(LevelDownloadController controller) {
 //		downloadController = controller;

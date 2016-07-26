@@ -1,4 +1,4 @@
-package com.samwagg.gravity.view;
+package com.samwagg.gravity.menus.level_select_menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -22,12 +20,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.samwagg.gravity.Constants;
 import com.samwagg.gravity.GravityGame;
 import com.samwagg.gravity.controller.GravityGameController;
-import com.samwagg.gravity.objects.GameState;
 
 public class LevelSelectScreen implements Screen {
 

@@ -1,4 +1,4 @@
-package com.samwagg.gravity.view;
+package com.samwagg.gravity.main_game_module.widgets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

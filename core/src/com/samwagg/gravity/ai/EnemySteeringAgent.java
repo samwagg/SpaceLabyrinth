@@ -4,10 +4,9 @@ import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.ai.steer.behaviors.Pursue;
-import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.samwagg.gravity.objects.GameCharacter;
+import com.samwagg.gravity.main_game_module.game_objects.GameCharacter;
 
 // A simple steering agent for 2D.
 // Of course, for 3D (well, actually for 2.5D) you have to replace all occurrences of Vector2 with  Vector3.
