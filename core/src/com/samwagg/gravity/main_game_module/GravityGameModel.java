@@ -36,6 +36,35 @@ public class GravityGameModel {
     private GameCharacter character;
     private List<Wall> walls;
     private List<GravField> gravFields;
+
+    public GameCharacter getCharacter() {
+        return character;
+    }
+
+    public List<Wall> getWalls() {
+        return walls;
+    }
+
+    public List<GravField> getGravFields() {
+        return gravFields;
+    }
+
+    public List<MovingWall> getMovingWalls() {
+        return movingWalls;
+    }
+
+    public List<Explosion64> getExplosions() {
+        return explosions;
+    }
+
+    public List<FinishSensor> getEndSensors() {
+        return endSensors;
+    }
+
+    public boolean isShipGone() {
+        return shipGone;
+    }
+
     private List<GravField> currentGravFields;
     private List<MovingWall> movingWalls;
     private List<Explosion64> explosions;
@@ -377,7 +406,7 @@ public class GravityGameModel {
     }
 
     public List<GameObject> getObjects() {
-        
+
     }
 
     private void doPhysicsStep(float deltaTime) {
