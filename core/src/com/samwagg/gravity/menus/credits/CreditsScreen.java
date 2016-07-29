@@ -1,4 +1,4 @@
-package com.samwagg.gravity;
+package com.samwagg.gravity.menus.credits;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -6,22 +6,23 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
+import com.samwagg.gravity.GravityGame;
+import com.samwagg.gravity.ScreenFlowController;
 
 
-public class GalaxyCompleteScreen implements Screen {
+public class CreditsScreen implements Screen, CreditsMenu {
 
 	private Texture texture;
 	
 	private GravityGame game;
-	private ScreenFlowController controller;
-	
+	private CreditsMenuListener listener;
+
 	private OrthographicCamera camera;
 	
 	private Vector3 touchInput;
 	
-	public GalaxyCompleteScreen(ScreenFlowController controller, GravityGame game) {
+	public CreditsScreen(GravityGame game) {
 		this.game = game;
-		this.controller = controller;
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		touchInput = new Vector3(0,0,0);
@@ -44,13 +45,12 @@ public class GalaxyCompleteScreen implements Screen {
 		
 		camera.unproject(touchInput);
 		
-		if (Gdx.input.justTouched()) controller.creditsScreenTouched();
+		if (Gdx.input.justTouched() && listener != null) listener.screenTouched();
 		
 		
 		// TODO Auto-generated method stub
 		
 	}
-
 
 	@Override
 	public void resize(int width, int height) {
@@ -82,4 +82,8 @@ public class GalaxyCompleteScreen implements Screen {
 		
 	}
 
+	@Override
+	public void registerCreditsMenuListener(CreditsMenuListener listener) {
+		this.listener = listener;
+	}
 }
