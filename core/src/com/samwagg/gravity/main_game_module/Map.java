@@ -1,4 +1,4 @@
-package com.samwagg.gravity;
+package com.samwagg.gravity.main_game_module;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,25 +12,77 @@ import com.badlogic.gdx.files.FileHandle;
 
 public class Map {
 	
-	private GameTile[][] tileArray;
 	private int startHealth;
+	private MapReader reader;
+
+	private GameTile[][] tileArray;
 		
 	public Map(int galaxy, int level) throws FileNotFoundException, MapFormatException {
-		MapReader reader = new MapReader("galaxy" + galaxy + "-" + "level" + level);
+		reader = new MapReader("galaxy" + galaxy + "-" + "level" + level);
 		reader.readMap();
-		tileArray = reader.getGameMap();
 		startHealth = reader.getStartHealth();
-		
+		tileArray = reader.getGameMap();
 	}
 	
 	public GameTile[][] getTileArray() {
-		return tileArray;
+
+		GameTile[][] tileArrayCopy= new GameTile[tileArray.length][];
+
+		for (int i = 0; i < tileArray.length; i++) {
+			tileArrayCopy[i] = new GameTile[tileArray[i].length];
+			System.arraycopy(tileArray[i], 0, tileArrayCopy[i], 0, tileArray[i].length);
+		}
+		return tileArrayCopy;
+	}
+
+	public int getWidth() {
+		return reader.gameMap[0].length;
+	}
+
+	public int getHeight() {
+		return reader.gameMap.length;
 	}
 	
 	public int getInitScore() {
 		return startHealth;
 	}
-	
+
+	@Override
+	public String toString() {
+	    String str = "";
+	    for (int i = 0; i < reader.gameMap.length; i++) {
+	        GameTile[] row = reader.gameMap[i];
+	        for (int j = 0; j < row.length; j++) {
+	            char character;
+                switch (row[j]) {
+                    case WALL: character = 'x'; break;
+                    case FORCE_RIGHT: character = '>'; break;
+                    case FORCE_LEFT: character = '<'; break;
+                    case FORCE_UP: character = '^'; break;
+                    case FORCE_DOWN: character = '!'; break;
+                    case MOV_BLOCK1: character = '1'; break;
+                    case MOV_BLOCK2: character = '2'; break;
+                    case MOV_BLOCK3: character = '3'; break;
+                    case MOV_BLOCK4: character = '4'; break;
+                    case MOV_BLOCK5: character = '5'; break;
+                    case MOV_BLOCK6: character = '6'; break;
+                    case MOV_BLOCK7: character = '7'; break;
+                    case MOV_BLOCK8: character = '8'; break;
+                    case MOV_BLOCK9: character = '9'; break;
+                    case END_RANGE: character = '-'; break;
+                    case RANGE_VERT: character = '|'; break;
+                    case RANGE_HOR: character = '#'; break;
+                    case START: character = 's'; break;
+                    case END: character = 'e'; break;
+                    case AI_START: character = 'a'; break;
+                    default: character = ' ';
+                }
+                str += character;
+	        }
+	        str += '\n';
+        }
+        return str;
+    }
 
 	private class MapReader
 	{
@@ -60,8 +112,7 @@ public class Map {
 				}
 				
 				levelScore = Integer.parseInt(splitLine[1].trim());
-				
-				
+
 				while ((line = textReader.readLine()) != null) {
 					strList.add(line);
 				}
