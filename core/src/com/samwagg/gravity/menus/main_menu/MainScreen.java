@@ -9,20 +9,19 @@ import com.badlogic.gdx.math.Vector3;
 import com.samwagg.gravity.GravityGame;
 import com.samwagg.gravity.ScreenFlowController;
 
-public class MainMenu implements Screen {
+public class MainScreen implements Screen, MainMenu {
 
 	private Texture texture;
 	
 	private GravityGame game;
-	private ScreenFlowController controller;
-	
+	private MainMenuListener listener;
+
 	private OrthographicCamera camera;
 	
 	private Vector3 touchInput;
 	
-	public MainMenu(ScreenFlowController controller, GravityGame game) {
+	public MainScreen(ScreenFlowController controller, GravityGame game) {
 		this.game = game;
-		this.controller = controller;
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		touchInput = new Vector3(0,0,0);
@@ -49,7 +48,7 @@ public class MainMenu implements Screen {
 			camera.unproject(touchInput);
 
 			if (touchInput.x < 500 && touchInput.x > 300 && touchInput.y < 200 && touchInput.y > 100) {
-				controller.mainMenuStartClicked();
+				if (listener != null) listener.mainMenuStartClicked();
 			}
 
 			if (touchInput.x < 450 && touchInput.x > 350 && touchInput.y > camera.viewportHeight - 50) {
@@ -98,4 +97,8 @@ public class MainMenu implements Screen {
 		
 	}
 
+	@Override
+	public void registerMainMenuListener(MainMenuListener listener) {
+		this.listener = listener;
+	}
 }
