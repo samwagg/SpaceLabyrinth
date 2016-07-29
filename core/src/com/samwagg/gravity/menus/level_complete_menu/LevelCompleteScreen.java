@@ -16,16 +16,16 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.samwagg.gravity.GravityGame;
 import com.samwagg.gravity.ScreenFlowController;
 
-public class LevelCompleteMenu implements Screen {
-	
+public class LevelCompleteScreen implements Screen, LevelCompleteMenu {
+
+	private LevelCompleteMenuListener listener;
 	private Stage stage;
 	private Table table;
 	// For debug drawing
 	private ShapeRenderer shapeRenderer;
 	private int level;
 	private GravityGame game;
-	private final ScreenFlowController controller;
-	
+
 	private boolean finalLevel;
 	
     private boolean buttonClicked = false;
@@ -37,11 +37,10 @@ public class LevelCompleteMenu implements Screen {
     
     private final float BUT_WIDTH = 500;
 
-	public LevelCompleteMenu (final GravityGame game, ScreenFlowController menuController, int score, int highScore, boolean isFinalLevel) {
+	public LevelCompleteScreen(final GravityGame game, int score, int highScore, boolean isFinalLevel) {
 		
-		this.controller = menuController;
 		finalLevel = isFinalLevel;
-		
+
 	    stage = new Stage(new ExtendViewport(1800,900));
 	    
 	    Gdx.input.setInputProcessor(stage);
@@ -59,21 +58,18 @@ public class LevelCompleteMenu implements Screen {
 		Button menuButton = new TextButton(MENU_BUT_TEXT, skin);
 	    
 	    nextLevelButton.addListener(new ClickListener() {
-
-	    	
 			@Override
 			public void clicked(InputEvent event, float x, float y) { 				
-				if (finalLevel) controller.levCompleteFinishGalaxy(); 
-				else controller.levCompleteNextLevel();
+				if (finalLevel) listener.galaxyFinished();
+				else listener.nextLevelSelected();
 			}
-	    	
 	    });
 	    
 	    retryLevelButton.addListener(new ClickListener() {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) { 				
-				controller.levCompleteRetryLevel();
+				listener.retryLevelSelected();
 			}
 	    	
 	    });
@@ -81,7 +77,7 @@ public class LevelCompleteMenu implements Screen {
 	    menuButton.addListener(new ClickListener() {
 	    	@Override
 			public void clicked(InputEvent event, float x, float y) { 				
-	    		controller.levCompleteMenu();
+	    		listener.mainMenuSelected();
 	    	}
 	    });
 	    
@@ -154,4 +150,8 @@ public class LevelCompleteMenu implements Screen {
 		
 	}
 
+	@Override
+	public void registerLevelCompleteMenuListener(LevelCompleteMenuListener listener) {
+		this.listener = listener;
+	}
 }
