@@ -59,17 +59,19 @@ public class LevelCompleteScreen implements Screen, LevelCompleteMenu {
 	    
 	    nextLevelButton.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) { 				
-				if (finalLevel) listener.galaxyFinished();
-				else listener.nextLevelSelected();
+			public void clicked(InputEvent event, float x, float y) {
+				if (listener != null) {
+					if (finalLevel) listener.galaxyFinished();
+					else listener.nextLevelSelected();
+				}
 			}
 	    });
 	    
 	    retryLevelButton.addListener(new ClickListener() {
 
 			@Override
-			public void clicked(InputEvent event, float x, float y) { 				
-				listener.retryLevelSelected();
+			public void clicked(InputEvent event, float x, float y) {
+				if (listener != null) listener.retryLevelSelected();
 			}
 	    	
 	    });
@@ -77,7 +79,7 @@ public class LevelCompleteScreen implements Screen, LevelCompleteMenu {
 	    menuButton.addListener(new ClickListener() {
 	    	@Override
 			public void clicked(InputEvent event, float x, float y) { 				
-	    		listener.mainMenuSelected();
+	    		if (listener != null) listener.mainMenuSelected();
 	    	}
 	    });
 	    
