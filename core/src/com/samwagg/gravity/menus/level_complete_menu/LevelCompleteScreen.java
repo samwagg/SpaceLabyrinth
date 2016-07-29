@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.samwagg.gravity.GravityGame;
-import com.samwagg.gravity.controller.GravityGameController;
+import com.samwagg.gravity.ScreenFlowController;
 
 public class LevelCompleteMenu implements Screen {
 	
@@ -24,7 +24,7 @@ public class LevelCompleteMenu implements Screen {
 	private ShapeRenderer shapeRenderer;
 	private int level;
 	private GravityGame game;
-	private final GravityGameController controller;
+	private final ScreenFlowController controller;
 	
 	private boolean finalLevel;
 	
@@ -37,7 +37,7 @@ public class LevelCompleteMenu implements Screen {
     
     private final float BUT_WIDTH = 500;
 
-	public LevelCompleteMenu (final GravityGame game, GravityGameController menuController, int score, int highScore, boolean isFinalLevel) {
+	public LevelCompleteMenu (final GravityGame game, ScreenFlowController menuController, int score, int highScore, boolean isFinalLevel) {
 		
 		this.controller = menuController;
 		finalLevel = isFinalLevel;

@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
-import com.samwagg.gravity.GravityGame;
-import com.samwagg.gravity.controller.GravityGameController;
 
 
 public class GalaxyCompleteScreen implements Screen {
@@ -15,13 +13,13 @@ public class GalaxyCompleteScreen implements Screen {
 	private Texture texture;
 	
 	private GravityGame game;
-	private GravityGameController controller;
+	private ScreenFlowController controller;
 	
 	private OrthographicCamera camera;
 	
 	private Vector3 touchInput;
 	
-	public GalaxyCompleteScreen(GravityGameController controller, GravityGame game) {
+	public GalaxyCompleteScreen(ScreenFlowController controller, GravityGame game) {
 		this.game = game;
 		this.controller = controller;
 		camera = new OrthographicCamera();
