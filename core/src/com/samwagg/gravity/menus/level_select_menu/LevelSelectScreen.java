@@ -23,15 +23,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.samwagg.gravity.Constants;
 import com.samwagg.gravity.GravityGame;
-import com.samwagg.gravity.controller.GravityGameController;
+import com.samwagg.gravity.ScreenFlowController;
 
-public class LevelSelectScreen implements Screen {
+public class LevelSelectScreen implements Screen, LevelSelectMenu {
 
 	private GravityGame game;
 
 	private final Texture background;
-	GravityGameController controller;
-	
+	private LevelSelectMenuListener listener;
 	int galaxy;
 	
 	Stage stage;
@@ -64,10 +63,9 @@ public class LevelSelectScreen implements Screen {
 	
 	private final float SHIP_ANIM_DUR = .5f;
 	
-	public LevelSelectScreen(GravityGameController menuController, GravityGame game, int galaxy, int currentLevel, int maxLevelReached, Constants constants) {
+	public LevelSelectScreen(ScreenFlowController menuController, GravityGame game, int galaxy, int currentLevel, int maxLevelReached, Constants constants) {
 		this.game = game;
 		this.galaxy = galaxy;
-		this.controller = menuController;
 
 		System.out.println("Max level reached = " + maxLevelReached + " galaxy = " + galaxy);
 
@@ -136,7 +134,7 @@ public class LevelSelectScreen implements Screen {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.levelSelectBackSelected();
+				if (listener != null) listener.levelSelectBackSelected();
 			}
 			
 		});			
@@ -186,7 +184,7 @@ public class LevelSelectScreen implements Screen {
 	    			
 	    			// only allow level select if ship is done moving
 	    			if (ship.getActions().size == 0) {
-	    				controller.levelSelected(galaxy, currentSelection);
+						if (listener != null) listener.levelSelected(galaxy, currentSelection);
 		    			return;
 	    			}
 	   
@@ -209,7 +207,12 @@ public class LevelSelectScreen implements Screen {
 	    stage.draw();
 		
 	}
-	
+
+	@Override
+	public void registerLevelSelectMenuListener(LevelSelectMenuListener listener) {
+
+	}
+
 	public class ShipActor extends Actor {
 		private Sprite sprite = atlas.createSprite("menu_ship");
 		
