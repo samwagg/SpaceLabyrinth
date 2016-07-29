@@ -18,12 +18,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.samwagg.gravity.controller.GravityGameController;
+import com.samwagg.gravity.ScreenFlowController;
 
-public class GalaxySelectScreen implements Screen {
+public class GalaxySelectScreen implements Screen, GalaxySelector {
 
-	GravityGameController controller;
-	
+
+	GalaxySelectCallback callbackObject;
+
 	private final TextureAtlas unlockedAtlas = new TextureAtlas(Gdx.files.internal("galaxy_unlocked_pack.atlas"));
 	private final TextureAtlas lockedAtlas = new TextureAtlas(Gdx.files.internal("galaxy_locked_pack.atlas"));
 
@@ -38,9 +39,8 @@ public class GalaxySelectScreen implements Screen {
 
 	
 	
-	public GalaxySelectScreen(GravityGameController controller, List<Integer> unlockedGalaxies) {
+	public GalaxySelectScreen(ScreenFlowController controller, List<Integer> unlockedGalaxies) {
 		this.unlockedGalaxies = unlockedGalaxies;
-		this.controller = controller;
 	}
 	
 	@Override
@@ -68,7 +68,7 @@ public class GalaxySelectScreen implements Screen {
 	
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					if (unlockedGalaxies.contains(buttonLevel)) controller.galaxySelected(buttonLevel);
+					if (unlockedGalaxies.contains(buttonLevel) && callbackObject != null) callbackObject.galaxySelected(buttonLevel);
 				}
 			});
 			
@@ -164,4 +164,8 @@ public class GalaxySelectScreen implements Screen {
 		unlockedAtlas.dispose();
 	}
 
+	@Override
+	public void registerGalaxySelectCallback(GalaxySelectCallback callbackObject) {
+		this.callbackObject = callbackObject;
+	}
 }
