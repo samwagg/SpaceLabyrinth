@@ -27,7 +27,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.samwagg.gravity.GravityGame;
+import com.samwagg.gravity.main_game_module.widgets.PauseMenuListener;
 import com.samwagg.gravity.main_game_module.widgets.VectorSetter;
 import com.samwagg.gravity.ai.EnemySteeringAgent;
 import com.samwagg.gravity.main_game_module.game_objects.Explosion64;
@@ -39,7 +41,7 @@ import com.samwagg.gravity.main_game_module.game_objects.MovingWall;
 import com.samwagg.gravity.main_game_module.game_objects.Wall;
 import com.samwagg.gravity.main_game_module.widgets.PauseMenu;
 
-public class GravityGameScreen implements Screen {
+public class GravityGameScreen implements Screen, MainGameView, PauseMenuListener {
 
 
     private OrthographicCamera camera;
@@ -47,45 +49,21 @@ public class GravityGameScreen implements Screen {
     private VectorSetter vSetter;
     private Map map;
 
-    private final GravityGame game;
-    private final GravityGameController controller;
-
-
-    private Vector2 gravVect;
-
-    private List<GravField> currentGravFields;
-
-    private float score;
-    private boolean levelFinished;
-    private int level;
-
-    public World WORLD;
-
     private Texture background;
     private TextureRegion backgroundReg;
     private TiledDrawable tiledBackground;
+    private Label countDownLabel;
 
     private Texture optionsTex;
-
-    private float worldHeight;
-    private float worldWidth;
-
-    private boolean shipGone;
-
-    private final float startScore;
 
     private Stage stage;
     private Table table;
 
     private float countDown = 3;
-    Label countDownLabel;
-
-    private InputMultiplexer multiPlex;
 
     private Skin skin;
 
-    private boolean displayDialog = true;
-    private boolean optionsClicked;
+    private boolean displayOptionsMenu;
 
     private boolean restart;
 
@@ -96,7 +74,10 @@ public class GravityGameScreen implements Screen {
     private Sound collisionSound;
     private Music music;
 
-    GravityGameModel model;
+    private GravityGameModel model;
+    private MainGameViewListener listener;
+    private final GravityGame game;
+
 
 //    public final float PHYS_SCALE = .05f;
 //    public final int TILE_SIZE = 64;
@@ -110,12 +91,11 @@ public class GravityGameScreen implements Screen {
 //    public final TextureAtlas.AtlasRegion WALL_REGION;
 
     /**
-     * @param controller
+     *
+     * @param model
      * @param game
-     * @param galaxy The galaxy number in which the level appears is in
-     * @param level The level to load
      */
-    public GravityGameScreen(GravityGameController controller, GravityGameModel model, final GravityGame game, int galaxy, int level) {
+    public GravityGameScreen(GravityGameModel model, final GravityGame game) {
 //
 //        ATLAS = new TextureAtlas("pack.atlas");
 //        CHAR_SPRITE = ATLAS.createSprite("Ship");
@@ -130,11 +110,13 @@ public class GravityGameScreen implements Screen {
 //        ARROW_UNLIT_SPRITE.setOriginCenter();
 
         this.game = game;
-        this.controller = controller;
         this.model = model;
 
         Gdx.graphics.setVSync(true);
 
+        music = Gdx.audio.newMusic(Gdx.files.internal("keith.mp3"));
+        music.setVolume(.7f);
+        music.play();
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1000, 600);
@@ -154,9 +136,10 @@ public class GravityGameScreen implements Screen {
         background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
         //ScalingViewport viewport = new ScalingViewport(Scaling.fill,800,480);
-        stage = new Stage(new ExtendViewport(1800, 900));
+        Viewport stageViewport = new ExtendViewport(1800, 900);
+        stage = new Stage(stageViewport);
 
-        Gdx.input.setInputProcessor(stage);
+//        Gdx.input.setInputProcessor(stage);
 
         table = new Table();
         table.setFillParent(true);
@@ -164,7 +147,9 @@ public class GravityGameScreen implements Screen {
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         table.setSkin(skin);
 
-        pauseMenu = new PauseMenu(controller, stage);
+        pauseMenu = new PauseMenu(stageViewport);
+        pauseMenu.registerPauseMenuListener(this);
+        displayOptionsMenu = false;
 
         countDownLabel = new Label(Integer.toString((int) countDown), skin);
         countDownLabel.setHeight(500);
@@ -178,8 +163,8 @@ public class GravityGameScreen implements Screen {
         backgroundReg = new TextureRegion(background, background.getWidth(), background.getHeight());
         tiledBackground = new TiledDrawable(backgroundReg);
 
-        camera.position.x = character.getScreenX();
-        camera.position.y = character.getScreenY();
+        camera.position.x = model.getCharacter().getScreenX();
+        camera.position.y = model.getCharacter().getScreenY();
         camera.update();
     }
 
@@ -194,7 +179,7 @@ public class GravityGameScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
 
-        tiledBackground.draw(game.batch, -camera.viewportWidth, -worldHeight - camera.viewportHeight, worldWidth + 2 * camera.viewportWidth, worldHeight + 2 * camera.viewportHeight);
+        tiledBackground.draw(game.batch, -camera.viewportWidth, -model.getWorldHeight()- camera.viewportHeight, model.getWorldWidth() + 2 * camera.viewportWidth, model.getWorldHeight() + 2 * camera.viewportHeight);
 
         for (GravField field : model.getGravFields()) {
             field.getSprite().draw(game.batch);
@@ -228,10 +213,21 @@ public class GravityGameScreen implements Screen {
 
         game.batch.end();
 
-        if (countDown > 0) {
+        if (model.getCountDownToStart() > 0) {
             stage.act(delta);
             stage.draw();
-            countDownLabel.setText(Integer.toString((int) countDown + 1));
+            countDownLabel.setText(Integer.toString((int) model.getCountDownToStart() + 1));
+        }
+        else if (displayOptionsMenu) {
+            vSetter.onInputTurnedOff();
+            Gdx.input.setInputProcessor(pauseMenu.getStage());
+            pauseMenu.getStage().act();
+            pauseMenu.getStage().draw();
+        }
+        else {
+            Gdx.input.setInputProcessor(vSetter.getInputProcessor());
+            if (listener != null) listener.vSetterState(vSetter.getMagnitude(), vSetter.getXComponent(), vSetter.getYComponent());
+
         }
 
 //        if (levelFinished) {
@@ -240,12 +236,26 @@ public class GravityGameScreen implements Screen {
 //        }
 
 
+
         handleInput();
-        renderVSetter();
+        if (!displayOptionsMenu) renderVSetter();
         model.doLogic(delta);
 
         camera.position.set(model.getCharacter().getScreenX(), model.getCharacter().getScreenY(), 0);
         camera.update();
+    }
+
+    public void startCountdown() {
+
+    }
+
+    public void displayOptionsMenu(boolean display) {
+        displayOptionsMenu = display;
+        if (display) Gdx.input.setInputProcessor(pauseMenu.getStage());
+    }
+
+    public boolean isOptionsMenuDisplayed() {
+        return displayOptionsMenu;
     }
 
     private void renderVSetter() {
@@ -254,15 +264,19 @@ public class GravityGameScreen implements Screen {
 
         game.shapeRenderer.begin();
         game.shapeRenderer.setProjectionMatrix(staticCamera.combined);
-        game.shapeRenderer.setColor(1 - 1 / (startScore / score), 0f, score / startScore, .6f);
-        game.shapeRenderer.set(ShapeType.Filled);
-        game.shapeRenderer.rect(0, 0, (score / startScore) * staticCamera.viewportWidth, 20);
 
-        if (!optionsClicked) vSetter.render(game.shapeRenderer, camera);
+
+        vSetter.render(game.shapeRenderer, camera);
 
         game.shapeRenderer.end();
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
+    }
+
+    private void renderHealthBar() {
+        game.shapeRenderer.setColor(1 - 1 / (model.getStartScore() / model.getScore()), 0f, model.getScore() / model.getStartScore(), .6f);
+        game.shapeRenderer.set(ShapeType.Filled);
+        game.shapeRenderer.rect(0, 0, (model.getScore() / model.getStartScore()) * staticCamera.viewportWidth, 20);
     }
 
 
@@ -277,13 +291,7 @@ public class GravityGameScreen implements Screen {
             staticCamera.unproject(touchPos);
 
             if (touchPos.x > staticCamera.viewportWidth - optionsTex.getWidth() && touchPos.y > staticCamera.viewportHeight - optionsTex.getHeight()) {
-                if (optionsClicked) {
-                    pauseMenu.resume();
-                    System.out.println("Resumed by options click");
-                }
-                else {
-                    optionsClicked = true;
-                }
+                if (listener != null) listener.optionsClicked();
             }
         }
     }
@@ -307,9 +315,6 @@ public class GravityGameScreen implements Screen {
 
 
     public void dispose() {
-        for (Explosion64 exp : explosions) {
-            exp.dispose();
-        }
         this.background.dispose();
         music.dispose();
         collisionSound.dispose();
@@ -341,7 +346,23 @@ public class GravityGameScreen implements Screen {
     public void hide() {
     }
 
+    @Override
+    public void registerUserInputListener(MainGameViewListener listener) {
+        this.listener = listener;
+    }
 
+    @Override
+    public void onResumeClicked() {
+        listener.resumeClicked();
+    }
 
+    @Override
+    public void onRestartClicked() {
+        listener.restartClicked();
+    }
 
+    @Override
+    public void onMainMenuClicked() {
+        listener.mainMenuClicked();
+    }
 }

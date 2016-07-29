@@ -184,7 +184,6 @@ public class VectorSetter {
 			
 			camera.unproject(draggedPos);
 
-			
 			magnitude = pos.dst(draggedPos);
 			xComponent = draggedPos.x - pos.x;
 			yComponent = draggedPos.y - pos.y;

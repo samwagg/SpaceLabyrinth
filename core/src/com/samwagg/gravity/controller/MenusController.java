@@ -1,6 +1,7 @@
 package com.samwagg.gravity.controller;
 
 import com.samwagg.gravity.GalaxyCompleteScreen;
+import com.samwagg.gravity.main_game_module.MainGameFacade;
 import com.samwagg.gravity.menus.galaxy_menu.GalaxySelectScreen;
 import com.samwagg.gravity.GravityGame;
 import com.samwagg.gravity.main_game_module.GravityGameScreen;
@@ -37,7 +38,7 @@ public class MenusController implements GravityGameController {
 	@Override
 	public void levelSelected(int galaxy, int level) {
 		currentLevel = level;
-		game.setScreen(new GravityGameScreen(this, game, galaxy, level ));
+		new MainGameFacade(game, galaxy, level );
 	}
 
 	@Override
@@ -50,13 +51,13 @@ public class MenusController implements GravityGameController {
 	public void levCompleteNextLevel() {
 		currentLevel++;
 		game.getScreen().dispose();
-		game.setScreen(new GravityGameScreen(this, game, currentGalaxy, currentLevel));	
+		new MainGameFacade(game, currentGalaxy, currentLevel);
 	}
 
 	@Override
 	public void levCompleteRetryLevel() {
 		game.getScreen().dispose();
-		game.setScreen(new GravityGameScreen(this, game, currentGalaxy, currentLevel));			
+		new MainGameFacade(game, currentGalaxy, currentLevel);
 	}
 
 	@Override
@@ -68,7 +69,7 @@ public class MenusController implements GravityGameController {
 	@Override
 	public void pauseMenuLevelRestart() {
 		game.getScreen().dispose();
-		game.setScreen(new GravityGameScreen(this, game, currentGalaxy, currentLevel));		
+		new MainGameFacade(game, currentGalaxy, currentLevel);
 	}
 
 	@Override
@@ -87,8 +88,8 @@ public class MenusController implements GravityGameController {
 	@Override
 	public void healthDepleted() {
 		game.getScreen().dispose();
-		game.setScreen(new GravityGameScreen(this, game, currentGalaxy, currentLevel));
-		
+		new MainGameFacade(game, currentGalaxy, currentLevel);
+
 	}
 
 	@Override
