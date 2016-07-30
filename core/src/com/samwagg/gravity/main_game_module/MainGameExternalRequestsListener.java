@@ -6,4 +6,5 @@ package com.samwagg.gravity.main_game_module;
 public interface MainGameExternalRequestsListener {
 
     void onMainMenuRequested();
+    void onLevelCompleted(int galaxy, int level);
 }

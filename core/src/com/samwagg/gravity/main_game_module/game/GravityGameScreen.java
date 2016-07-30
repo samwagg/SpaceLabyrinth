@@ -1,12 +1,6 @@
-package com.samwagg.gravity.main_game_module;
-
-import java.io.FileNotFoundException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+package com.samwagg.gravity.main_game_module.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -14,13 +8,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -29,16 +19,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.samwagg.gravity.GravityGame;
+import com.samwagg.gravity.main_game_module.Map;
 import com.samwagg.gravity.main_game_module.widgets.PauseMenuListener;
 import com.samwagg.gravity.main_game_module.widgets.VectorSetter;
-import com.samwagg.gravity.ai.EnemySteeringAgent;
-import com.samwagg.gravity.main_game_module.game_objects.Explosion64;
-import com.samwagg.gravity.main_game_module.game_objects.FinishSensor;
-import com.samwagg.gravity.main_game_module.game_objects.GameCharacter;
-import com.samwagg.gravity.main_game_module.game_objects.GravField;
-import com.samwagg.gravity.main_game_module.Map.MapFormatException;
-import com.samwagg.gravity.main_game_module.game_objects.MovingWall;
-import com.samwagg.gravity.main_game_module.game_objects.Wall;
+import com.samwagg.gravity.main_game_module.game.game_objects.Explosion64;
+import com.samwagg.gravity.main_game_module.game.game_objects.GravField;
+import com.samwagg.gravity.main_game_module.game.game_objects.MovingWall;
+import com.samwagg.gravity.main_game_module.game.game_objects.Wall;
 import com.samwagg.gravity.main_game_module.widgets.PauseMenu;
 
 public class GravityGameScreen implements Screen, MainGameView, PauseMenuListener {

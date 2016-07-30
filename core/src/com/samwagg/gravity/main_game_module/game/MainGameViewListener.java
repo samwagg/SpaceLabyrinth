@@ -1,4 +1,4 @@
-package com.samwagg.gravity.main_game_module;
+package com.samwagg.gravity.main_game_module.game;
 
 /**
  * Created by sam on 7/28/16.

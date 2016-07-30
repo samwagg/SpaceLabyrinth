@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.samwagg.gravity.GravityGame;
-import com.samwagg.gravity.ScreenFlowController;
 
 
 public class CreditsScreen implements Screen, CreditsMenu {

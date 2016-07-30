@@ -23,7 +23,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.samwagg.gravity.Constants;
 import com.samwagg.gravity.GravityGame;
-import com.samwagg.gravity.ScreenFlowController;
 
 public class LevelSelectScreen implements Screen, LevelSelectMenu {
 
@@ -63,7 +62,7 @@ public class LevelSelectScreen implements Screen, LevelSelectMenu {
 	
 	private final float SHIP_ANIM_DUR = .5f;
 	
-	public LevelSelectScreen(ScreenFlowController menuController, GravityGame game, int galaxy, int currentLevel, int maxLevelReached, Constants constants) {
+	public LevelSelectScreen(GravityGame game, int galaxy, int currentLevel, int maxLevelReached, Constants constants) {
 		this.game = game;
 		this.galaxy = galaxy;
 
@@ -210,7 +209,7 @@ public class LevelSelectScreen implements Screen, LevelSelectMenu {
 
 	@Override
 	public void registerLevelSelectMenuListener(LevelSelectMenuListener listener) {
-
+		this.listener = listener;
 	}
 
 	public class ShipActor extends Actor {
@@ -262,9 +261,4 @@ public class LevelSelectScreen implements Screen, LevelSelectMenu {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	private static class Level {
-		
-	}
-
 }

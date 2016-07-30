@@ -1,24 +1,13 @@
-package com.samwagg.gravity.main_game_module;
+package com.samwagg.gravity.main_game_module.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.samwagg.gravity.Constants;
 import com.samwagg.gravity.GravityGame;
-import com.samwagg.gravity.ai.EnemySteeringAgent;
-import com.samwagg.gravity.main_game_module.game_objects.*;
-import com.samwagg.gravity.main_game_module.widgets.PauseMenu;
+import com.samwagg.gravity.main_game_module.Map;
+import com.samwagg.gravity.main_game_module.game.game_objects.Explosion64;
+import com.samwagg.gravity.main_game_module.game.game_objects.GravField;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -34,13 +23,13 @@ public class GravityGameModel {
     private GravityGameController controller;
     private World world;
 
-    private GameCharacter character;
-    private List<Wall> walls;
-    private List<GravField> gravFields;
-    private List<GravField> currentGravFields;
-    private List<MovingWall> movingWalls;
-    private List<Explosion64> explosions;
-    private List<FinishSensor> endSensors;
+    private com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter character;
+    private List<com.samwagg.gravity.main_game_module.game.game_objects.Wall> walls;
+    private List<com.samwagg.gravity.main_game_module.game.game_objects.GravField> gravFields;
+    private List<com.samwagg.gravity.main_game_module.game.game_objects.GravField> currentGravFields;
+    private List<com.samwagg.gravity.main_game_module.game.game_objects.MovingWall> movingWalls;
+    private List<com.samwagg.gravity.main_game_module.game.game_objects.Explosion64> explosions;
+    private List<com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor> endSensors;
 
     private Vector2 gravVect;
     
@@ -68,7 +57,7 @@ public class GravityGameModel {
 
     private float countDown;
 
-    private LevelCompleteCallback callback;
+    private LevelCompleteListener callback;
 
 
 
@@ -99,13 +88,13 @@ public class GravityGameModel {
         world= new World(new Vector2(0, 0), true);
         world.setContactListener(new ForceListener());
 
-        walls = new ArrayList<Wall>();
-        gravFields = new ArrayList<GravField>();
-        endSensors = new ArrayList<FinishSensor>();
-        currentGravFields = new LinkedList<GravField>();
-        movingWalls = new LinkedList<MovingWall>();
+        walls = new ArrayList<com.samwagg.gravity.main_game_module.game.game_objects.Wall>();
+        gravFields = new ArrayList<com.samwagg.gravity.main_game_module.game.game_objects.GravField>();
+        endSensors = new ArrayList<com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor>();
+        currentGravFields = new LinkedList<com.samwagg.gravity.main_game_module.game.game_objects.GravField>();
+        movingWalls = new LinkedList<com.samwagg.gravity.main_game_module.game.game_objects.MovingWall>();
 
-        explosions = new LinkedList<Explosion64>();
+        explosions = new LinkedList<com.samwagg.gravity.main_game_module.game.game_objects.Explosion64>();
 
         gravVect = new Vector2(0, -3);
         world.setGravity(gravVect);
@@ -148,28 +137,28 @@ public class GravityGameModel {
                     case WALL:
                         System.out.println("making wall");
                         Rectangle block = extendTile(i, i, j, j, currTile, tileArray);
-                        walls.add(new Wall(xPos, yPos - WALL_HEIGHT * (block.height - 1), block.width * WALL_WIDTH, block.height * WALL_HEIGHT,world,game.constants));
+                        walls.add(new com.samwagg.gravity.main_game_module.game.game_objects.Wall(xPos, yPos - WALL_HEIGHT * (block.height - 1), block.width * WALL_WIDTH, block.height * WALL_HEIGHT,world,game.constants));
                         break;
                     case START:
-                        character = new GameCharacter(xPos, yPos,world,game.constants);
+                        character = new com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter(xPos, yPos,world,game.constants);
                         System.out.println("i = " + i + " and j = " + j);
                         character.updatePosition();
                         System.out.println("here at char");
                         break;
                     case FORCE_RIGHT:
-                        gravFields.add(new GravField(xPos, yPos, 0,world,game.constants));
+                        gravFields.add(new com.samwagg.gravity.main_game_module.game.game_objects.GravField(xPos, yPos, 0,world,game.constants));
                         break;
                     case FORCE_UP:
-                        gravFields.add(new GravField(xPos, yPos, 90,world,game.constants));
+                        gravFields.add(new com.samwagg.gravity.main_game_module.game.game_objects.GravField(xPos, yPos, 90,world,game.constants));
                         break;
                     case FORCE_LEFT:
-                        gravFields.add(new GravField(xPos, yPos, 180,world,game.constants));
+                        gravFields.add(new com.samwagg.gravity.main_game_module.game.game_objects.GravField(xPos, yPos, 180,world,game.constants));
                         break;
                     case FORCE_DOWN:
-                        gravFields.add(new GravField(xPos, yPos, 270,world,game.constants));
+                        gravFields.add(new com.samwagg.gravity.main_game_module.game.game_objects.GravField(xPos, yPos, 270,world,game.constants));
                         break;
                     case END:
-                        endSensors.add(new FinishSensor(xPos, yPos,world,game.constants));
+                        endSensors.add(new com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor(xPos, yPos,world,game.constants));
                         break;
                     case AI_START: // not implemented yet
                         break;
@@ -226,7 +215,7 @@ public class GravityGameModel {
                 k++;
             }
 
-            movingWalls.add(new MovingWall(j * WALL_WIDTH, -i * WALL_HEIGHT - (height - 1) * WALL_HEIGHT, width * WALL_WIDTH, height * WALL_HEIGHT, new Vector2(0, 0), new Vector2(-i * WALL_HEIGHT - rangeBelow * WALL_HEIGHT - (height - 1) * WALL_HEIGHT, -i * WALL_HEIGHT + rangeAbove * WALL_HEIGHT - (height - 1) * WALL_HEIGHT),world,true, speed, game.constants));
+            movingWalls.add(new com.samwagg.gravity.main_game_module.game.game_objects.MovingWall(j * WALL_WIDTH, -i * WALL_HEIGHT - (height - 1) * WALL_HEIGHT, width * WALL_WIDTH, height * WALL_HEIGHT, new Vector2(0, 0), new Vector2(-i * WALL_HEIGHT - rangeBelow * WALL_HEIGHT - (height - 1) * WALL_HEIGHT, -i * WALL_HEIGHT + rangeAbove * WALL_HEIGHT - (height - 1) * WALL_HEIGHT),world,true, speed, game.constants));
         }
 
         else if (tileArray[i][j + width] == Map.GameTile.RANGE_HOR
@@ -262,7 +251,7 @@ public class GravityGameModel {
                 k++;
             }
 
-            movingWalls.add(new MovingWall(j * WALL_WIDTH, -i * WALL_HEIGHT - (height - 1) * WALL_HEIGHT, width * WALL_WIDTH, height * WALL_HEIGHT, new Vector2(j * WALL_WIDTH - rangeLeft * WALL_WIDTH, j * WALL_WIDTH + rangeRight * WALL_WIDTH), new Vector2(0, 0),world,false, speed, game.constants));
+            movingWalls.add(new com.samwagg.gravity.main_game_module.game.game_objects.MovingWall(j * WALL_WIDTH, -i * WALL_HEIGHT - (height - 1) * WALL_HEIGHT, width * WALL_WIDTH, height * WALL_HEIGHT, new Vector2(j * WALL_WIDTH - rangeLeft * WALL_WIDTH, j * WALL_WIDTH + rangeRight * WALL_WIDTH), new Vector2(0, 0),world,false, speed, game.constants));
         }
     }
 
@@ -323,7 +312,7 @@ public class GravityGameModel {
             else {
 
                 if (score == 0 && !explosionBegun) {
-                    explosions.add(new Explosion64(character.getScreenX(), character.getScreenY()));
+                    explosions.add(new com.samwagg.gravity.main_game_module.game.game_objects.Explosion64(character.getScreenX(), character.getScreenY()));
                     explosionBegun = true;
                     shipGone = true;
                     System.out.println("Beginning explosion");
@@ -378,23 +367,23 @@ public class GravityGameModel {
         return countDown;
     }
 
-    public GameCharacter getCharacter() {
+    public com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter getCharacter() {
         return character;
     }
 
-    public List<Wall> getWalls() {
+    public List<com.samwagg.gravity.main_game_module.game.game_objects.Wall> getWalls() {
         return walls;
     }
 
-    public List<GravField> getGravFields() {
+    public List<com.samwagg.gravity.main_game_module.game.game_objects.GravField> getGravFields() {
         return gravFields;
     }
 
-    public List<MovingWall> getMovingWalls() {
+    public List<com.samwagg.gravity.main_game_module.game.game_objects.MovingWall> getMovingWalls() {
         return movingWalls;
     }
 
-    public List<Explosion64> getExplosions() {
+    public List<com.samwagg.gravity.main_game_module.game.game_objects.Explosion64> getExplosions() {
         return explosions;
     }
 
@@ -434,7 +423,7 @@ public class GravityGameModel {
         return WORLD_WIDTH;
     }
 
-    public void registerLevelCompleteCallback(LevelCompleteCallback callback) {
+    public void registerLevelCompleteCallback(LevelCompleteListener callback) {
         this.callback = callback;
     }
 
@@ -447,7 +436,7 @@ public class GravityGameModel {
 
             if (score > 0 && !levelFinished) score--;
 
-            for (MovingWall wall : movingWalls) {
+            for (com.samwagg.gravity.main_game_module.game.game_objects.MovingWall wall : movingWalls) {
                 wall.move();
             }
             accumulator -= 1 / 45f;
@@ -465,6 +454,10 @@ public class GravityGameModel {
 //        collisionSound.play();
         crashForce = force;
         score = score - GravityGame.CONTACT_DECREMENT * force < 0 ? 0 : score - GravityGame.CONTACT_DECREMENT * force;
+    }
+
+    private void onLevelCompleted() {
+        callback.onLevelCompleted();
     }
 
 
@@ -487,7 +480,7 @@ public class GravityGameModel {
             }
             else return;
 
-            GravField field = (GravField) forceFix.getUserData();
+            com.samwagg.gravity.main_game_module.game.game_objects.GravField field = (com.samwagg.gravity.main_game_module.game.game_objects.GravField) forceFix.getUserData();
             field.unlight();
             currentGravFields.remove(field);
         }
@@ -500,20 +493,21 @@ public class GravityGameModel {
 
             Fixture forceFix;
 
-            if (fixA.getUserData().getClass().equals(GravField.class)) {
+            if (fixA.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.GravField.class)) {
                 forceFix = contact.getFixtureA();
             }
-            else if (fixB.getUserData().getClass().equals(GravField.class)) {
+            else if (fixB.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.GravField.class)) {
                 forceFix = contact.getFixtureB();
             }
-            else if (fixA.getUserData().getClass().equals(FinishSensor.class) ||
-                    fixB.getUserData().getClass().equals(FinishSensor.class)) {
+            else if (fixA.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor.class) ||
+                    fixB.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor.class)) {
                 levelFinished = true;
+                onLevelCompleted();
                 return;
             }
             else return;
 
-            GravField field = (GravField) forceFix.getUserData();
+            com.samwagg.gravity.main_game_module.game.game_objects.GravField field = (com.samwagg.gravity.main_game_module.game.game_objects.GravField) forceFix.getUserData();
             field.light();
             currentGravFields.add(field);
         }
@@ -531,18 +525,18 @@ public class GravityGameModel {
 
             float forceStren = impulse.getNormalImpulses()[0];
 
-            if (fixA.getUserData().getClass().equals(GameCharacter.class) &&
-                    fixB.getUserData().getClass().equals(Wall.class) ||
-                    fixA.getUserData().getClass().equals(Wall.class) &&
-                            fixB.getUserData().getClass().equals(GameCharacter.class)) {
+            if (fixA.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter.class) &&
+                    fixB.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.Wall.class) ||
+                    fixA.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.Wall.class) &&
+                            fixB.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter.class)) {
 
                 onWallCollision(forceStren);
 
             }
-            else if (fixA.getUserData().getClass().equals(GameCharacter.class) &&
-                    fixB.getUserData().getClass().equals(MovingWall.class) ||
-                    fixA.getUserData().getClass().equals(MovingWall.class) &&
-                            fixB.getUserData().getClass().equals(GameCharacter.class)) {
+            else if (fixA.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter.class) &&
+                    fixB.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.MovingWall.class) ||
+                    fixA.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.MovingWall.class) &&
+                            fixB.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter.class)) {
                 onWallCollision(forceStren);
             }
         }

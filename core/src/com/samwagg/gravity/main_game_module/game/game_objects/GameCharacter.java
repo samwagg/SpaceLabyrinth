@@ -1,4 +1,4 @@
-package com.samwagg.gravity.main_game_module.game_objects;
+package com.samwagg.gravity.main_game_module.game.game_objects;
 
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.math.Vector2;

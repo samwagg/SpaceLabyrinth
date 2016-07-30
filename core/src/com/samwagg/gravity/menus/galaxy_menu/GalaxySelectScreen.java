@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.samwagg.gravity.ScreenFlowController;
 
 public class GalaxySelectScreen implements Screen, GalaxySelector {
 
@@ -39,7 +38,7 @@ public class GalaxySelectScreen implements Screen, GalaxySelector {
 
 	
 	
-	public GalaxySelectScreen(ScreenFlowController controller, List<Integer> unlockedGalaxies) {
+	public GalaxySelectScreen(List<Integer> unlockedGalaxies) {
 		this.unlockedGalaxies = unlockedGalaxies;
 	}
 	

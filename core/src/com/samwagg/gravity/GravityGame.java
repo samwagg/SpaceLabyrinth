@@ -15,10 +15,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.samwagg.gravity.controller.GravityGameController;
 //import com.samwagg.gravity.controller.LevelDownloadController;
-import com.samwagg.gravity.controller.MenusController;
-import com.samwagg.gravity.menus.main_menu.MainMenu;
+import com.samwagg.gravity.menus.main_menu.MainScreen;
 
 
 public class GravityGame extends Game {
@@ -28,7 +26,7 @@ public class GravityGame extends Game {
 	public BitmapFont font;
 	public TextureAtlas atlas;
 	
-	private GravityGameController controller;
+	private Navigator controller;
 	
 	
 	public static final float CONTACT_DECREMENT = .1f;
@@ -49,7 +47,7 @@ public class GravityGame extends Game {
 //		downloadController.launchLevelAquisitionModule();
 
 		constants = new Constants();
-		controller = new MenusController(this);
+		controller = new Navigator(this);
 
 		FileHandle file = Gdx.files.local("gamestate.bin");
 
@@ -89,7 +87,9 @@ public class GravityGame extends Game {
 		shapeRenderer.setAutoShapeType(true);
 		font = new BitmapFont();
 
-		setScreen(new MainMenu(controller, this));
+		MainScreen screen = new MainScreen(this);
+		screen.registerMainMenuListener(controller);
+		setScreen(screen);
 	}
 	
 	public void setScreenAndDispose(Screen screen, Screen oldScreen) {

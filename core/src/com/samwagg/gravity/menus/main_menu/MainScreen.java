@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.samwagg.gravity.GravityGame;
-import com.samwagg.gravity.ScreenFlowController;
 
 public class MainScreen implements Screen, MainMenu {
 
@@ -20,7 +19,7 @@ public class MainScreen implements Screen, MainMenu {
 	
 	private Vector3 touchInput;
 	
-	public MainScreen(ScreenFlowController controller, GravityGame game) {
+	public MainScreen(GravityGame game) {
 		this.game = game;
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
