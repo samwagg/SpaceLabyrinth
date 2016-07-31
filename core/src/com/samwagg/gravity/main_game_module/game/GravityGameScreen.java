@@ -222,8 +222,6 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
 //            controller.levComplete((int) score);
 //        }
 
-
-
         handleInput();
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -235,12 +233,10 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         game.shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
-
-
         model.doLogic(delta);
 
         camera.position.set(model.getCharacter().getScreenX(), model.getCharacter().getScreenY(), 0);
-        camera.update();
+        if (!model.isShipGone()) camera.update();
     }
 
     public void startCountdown() {
