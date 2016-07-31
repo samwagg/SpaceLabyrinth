@@ -225,7 +225,18 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
 
 
         handleInput();
+
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        game.shapeRenderer.begin();
+        game.shapeRenderer.setProjectionMatrix(staticCamera.combined);
         if (!displayOptionsMenu) renderVSetter();
+        renderHealthBar();
+        game.shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+
+
+
         model.doLogic(delta);
 
         camera.position.set(model.getCharacter().getScreenX(), model.getCharacter().getScreenY(), 0);
@@ -246,18 +257,7 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
     }
 
     private void renderVSetter() {
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-        game.shapeRenderer.begin();
-        game.shapeRenderer.setProjectionMatrix(staticCamera.combined);
-
-
         vSetter.render(game.shapeRenderer, camera);
-
-        game.shapeRenderer.end();
-
-        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     private void renderHealthBar() {
