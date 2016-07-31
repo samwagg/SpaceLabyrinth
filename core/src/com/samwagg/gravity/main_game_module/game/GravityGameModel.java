@@ -360,6 +360,7 @@ public class GravityGameModel {
     public float getWallCrash() {
         float lastCrashForce = crashForce;
         crashForce = 0;
+        if (lastCrashForce > 0) System.out.println("lastCrashForce = " + lastCrashForce);
         return lastCrashForce;
     }
 

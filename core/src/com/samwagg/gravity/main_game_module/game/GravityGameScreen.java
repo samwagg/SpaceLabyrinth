@@ -233,6 +233,11 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         game.shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
+        float force = model.getWallCrash();
+        if (force != 0) {
+            onWallCollision(force);
+        }
+
         model.doLogic(delta);
 
         camera.position.set(model.getCharacter().getScreenX(), model.getCharacter().getScreenY(), 0);
@@ -279,20 +284,20 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         }
     }
 
-//    private void onWallCollision(float force) {
-//        float volume;
-//        if (force < 100) volume = .1f;
-//        else if (force < 1000) volume = .2f;
-//        else if (force < 3000) volume = .5f;
-//        else if (force < 5000) volume = .7f;
-//        else if (force < 8000) volume = .85f;
-//        else volume = 1;
-//
-//        collisionSound.play(volume);
-//        System.out.println(force);
-////        collisionSound.play();
-//        score = score - GravityGame.CONTACT_DECREMENT * force < 0 ? 0 : score - GravityGame.CONTACT_DECREMENT * force;
-//    }
+    private void onWallCollision(float force) {
+        float volume;
+        if (force < 100) volume = .1f;
+        else if (force < 1000) volume = .2f;
+        else if (force < 3000) volume = .5f;
+        else if (force < 5000) volume = .7f;
+        else if (force < 8000) volume = .85f;
+        else volume = 1;
+
+        collisionSound.play(volume);
+        System.out.println(volume);
+        System.out.println(force);
+//        collisionSound.play();
+    }
 
 
 
