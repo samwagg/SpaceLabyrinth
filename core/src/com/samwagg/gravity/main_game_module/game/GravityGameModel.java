@@ -36,6 +36,7 @@ public class GravityGameModel {
     private boolean shipGone;
     private boolean gamePaused;
     private boolean explosionBegun;
+    private boolean explosionEvent;
     private boolean restart;
     private float crashForce;
 
@@ -105,6 +106,7 @@ public class GravityGameModel {
         gamePaused = false;
         explosionBegun = false;
         crashForce = 0;
+        explosionEvent = false;
 
         Map.GameTile[][] tileArray = map.getTileArray();
         System.out.println(map);
@@ -362,6 +364,14 @@ public class GravityGameModel {
         crashForce = 0;
         if (lastCrashForce > 0) System.out.println("lastCrashForce = " + lastCrashForce);
         return lastCrashForce;
+    }
+
+    public boolean getExplosionEvent() {
+        if (explosionBegun && !explosionEvent) {
+            explosionEvent = true;
+            return true;
+        }
+        else return false;
     }
 
     public float getCountDownToStart() {

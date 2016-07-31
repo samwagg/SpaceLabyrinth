@@ -59,6 +59,7 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
     private PauseMenu pauseMenu;
 
     private Sound collisionSound;
+    private Sound explodeSound;
     private Music music;
 
     private GravityGameModel model;
@@ -118,6 +119,7 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
 //		multiPlex.addProcessor(vSetter.getInputProcessor());
 
         collisionSound = Gdx.audio.newSound(Gdx.files.internal("muf_exp.wav"));
+        explodeSound = Gdx.audio.newSound(Gdx.files.internal("DeathFlash.mp3"));
 
         background = new Texture(Gdx.files.internal("Space-02.png"));
         background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -234,7 +236,8 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
         float force = model.getWallCrash();
-        if (force != 0) {
+        if (model.getExplosionEvent()) explodeSound.play();
+        else if (force != 0) {
             onWallCollision(force);
         }
 
@@ -266,8 +269,6 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         game.shapeRenderer.set(ShapeType.Filled);
         game.shapeRenderer.rect(0, 0, (model.getScore() / model.getStartScore()) * staticCamera.viewportWidth, 20);
     }
-
-
 
     /*
      * Handle input that GavityGameScreen listens for directly. As this code is refactored, this method should eventually
