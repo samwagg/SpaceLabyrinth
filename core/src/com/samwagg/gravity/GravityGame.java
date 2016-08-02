@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,7 +28,7 @@ public class GravityGame extends Game {
 	public TextureAtlas atlas;
 	
 	private Navigator controller;
-	
+	private Music music;
 	
 	public static final float CONTACT_DECREMENT = .1f;
 
@@ -87,9 +88,20 @@ public class GravityGame extends Game {
 		shapeRenderer.setAutoShapeType(true);
 		font = new BitmapFont();
 
+		music = Gdx.audio.newMusic(Gdx.files.internal("alliance.mp3"));
+		music.play();
+
 		MainScreen screen = new MainScreen(this);
 		screen.registerMainMenuListener(controller);
 		setScreen(screen);
+	}
+
+	public void playMenuMusic() {
+		music.play();
+	}
+
+	public void stopMenuMusic() {
+		music.stop();
 	}
 	
 	public void setScreenAndDispose(Screen screen, Screen oldScreen) {

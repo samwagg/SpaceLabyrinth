@@ -7,12 +7,13 @@ import com.samwagg.gravity.menus.credits.CreditsScreen;
 import com.samwagg.gravity.menus.galaxy_menu.GalaxySelectCallback;
 import com.samwagg.gravity.menus.galaxy_menu.GalaxySelectScreen;
 import com.samwagg.gravity.menus.level_complete_menu.LevelCompleteMenuListener;
+import com.samwagg.gravity.menus.level_complete_menu.LevelCompleteScreen;
 import com.samwagg.gravity.menus.level_select_menu.LevelSelectMenuListener;
 import com.samwagg.gravity.menus.level_select_menu.LevelSelectScreen;
 import com.samwagg.gravity.menus.main_menu.MainMenuListener;
 import com.samwagg.gravity.menus.main_menu.MainScreen;
 
-public class Navigator implements CreditsMenuListener, GalaxySelectCallback, LevelCompleteMenuListener,
+public class Navigator implements CreditsMenuListener, GalaxySelectCallback,
 										LevelSelectMenuListener, MainGameExternalRequestsListener, MainMenuListener {
 
 	GravityGame game;
@@ -45,6 +46,7 @@ public class Navigator implements CreditsMenuListener, GalaxySelectCallback, Lev
 	@Override
 	public void levelSelected(int galaxy, int level) {
 		currentLevel = level;
+		game.stopMenuMusic();
 		MainGameFacade facade = new MainGameFacade(game, galaxy, level);
 		facade.registerMainGameExternalRequestsListener(this);
 		System.out.println("level selected");
@@ -59,31 +61,6 @@ public class Navigator implements CreditsMenuListener, GalaxySelectCallback, Lev
 		game.setScreen(screen);
 	}
 
-	@Override
-	public void nextLevelSelected() {
-		currentLevel++;
-		game.getScreen().dispose();
-		MainGameFacade facade = new MainGameFacade(game, currentGalaxy, currentLevel);
-		facade.registerMainGameExternalRequestsListener(this);
-	}
-
-	@Override
-	public void galaxyFinished() {
-		game.getScreen().dispose();
-		game.setScreen(new CreditsScreen(game));
-	}
-
-	@Override
-	public void retryLevelSelected() {
-		game.getScreen().dispose();
-		new MainGameFacade(game, currentGalaxy, currentLevel);
-	}
-
-	@Override
-	public void mainMenuSelected() {
-		openGalaxySelect();
-
-	}
 
 
 	/*
@@ -99,12 +76,12 @@ public class Navigator implements CreditsMenuListener, GalaxySelectCallback, Lev
 	@Override
 	public void onMainMenuRequested() {
 		openGalaxySelect();
+		game.playMenuMusic();
 	}
 
 	@Override
 	public void onLevelCompleted(int galaxy, int level) {
 		System.out.println("levelCompleted");
-		nextLevelSelected();
 	}
 
 	/*

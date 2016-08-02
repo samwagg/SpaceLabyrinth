@@ -342,7 +342,7 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
 
     @Override
     public void onResumeClicked() {
-        listener.resumeClicked();
+        System.out.println("resume clicked"); listener.resumeClicked();
     }
 
     @Override

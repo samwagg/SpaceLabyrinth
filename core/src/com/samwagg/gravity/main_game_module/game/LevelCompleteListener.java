@@ -5,5 +5,5 @@ package com.samwagg.gravity.main_game_module.game;
  */
 public interface LevelCompleteListener {
 
-    void onLevelCompleted();
+    void onLevelCompleted(int score);
 }

@@ -49,10 +49,10 @@ public class GravityGameModel {
 
     private final float WALL_WIDTH = 128;
     private final float WALL_HEIGHT = 128;
-    private final float WORLD_WIDTH;
-    private final float WORLD_HEIGHT;        
-    private final float MAP_HEIGHT;
-    private final float MAP_WIDTH;
+    private float worldWidth;
+    private float worldHeight;
+    private float mapHeight;
+    private float mapWidth;
 
     private float accumulator = 0;
 
@@ -65,10 +65,7 @@ public class GravityGameModel {
     public GravityGameModel(final GravityGame game, Map map) {
         this.game = game;
 
-        MAP_HEIGHT = map.getHeight();
-        MAP_WIDTH = map.getWidth();
-        WORLD_WIDTH = MAP_WIDTH * WALL_WIDTH;
-        WORLD_HEIGHT = MAP_HEIGHT * WALL_HEIGHT;
+
 
         World.setVelocityThreshold(0);
 
@@ -83,8 +80,13 @@ public class GravityGameModel {
     }
 
     private void resetLevel() {
-
+        System.out.println("level reset");
         countDown = 3;
+
+        mapHeight = map.getHeight();
+        mapWidth = map.getWidth();
+        worldWidth = mapWidth * WALL_WIDTH;
+        worldHeight = mapHeight * WALL_HEIGHT;
 
         world= new World(new Vector2(0, 0), true);
         world.setContactListener(new ForceListener());
@@ -125,9 +127,9 @@ public class GravityGameModel {
         float xPos;
         float yPos;
         Map.GameTile currTile;
-        for (int i = 0; i < MAP_HEIGHT; i++) {
+        for (int i = 0; i < mapHeight; i++) {
 
-            for (int j = 0; j < MAP_WIDTH; j++) {
+            for (int j = 0; j < mapWidth; j++) {
 
                 xPos = j * WALL_WIDTH;
                 yPos = -i * WALL_HEIGHT;
@@ -374,6 +376,11 @@ public class GravityGameModel {
         else return false;
     }
 
+    public void changeLevel(Map map) {
+        this.map = map;
+        resetLevel();
+    }
+
     public float getCountDownToStart() {
         return countDown;
     }
@@ -427,11 +434,11 @@ public class GravityGameModel {
     }
 
     public float getWorldHeight() {
-        return WORLD_HEIGHT;
+        return worldHeight;
     }
 
     public float getWorldWidth() {
-        return WORLD_WIDTH;
+        return worldWidth;
     }
 
     public void registerLevelCompleteCallback(LevelCompleteListener callback) {
@@ -468,7 +475,7 @@ public class GravityGameModel {
     }
 
     private void onLevelCompleted() {
-        callback.onLevelCompleted();
+        callback.onLevelCompleted((int) score);
     }
 
 
