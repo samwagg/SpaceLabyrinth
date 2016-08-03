@@ -103,7 +103,7 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         Gdx.graphics.setVSync(true);
 
         music = Gdx.audio.newMusic(Gdx.files.internal("keith.mp3"));
-        music.setVolume(.7f);
+        music.setVolume(.1f);
         music.play();
 
         camera = new OrthographicCamera();
@@ -236,7 +236,7 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
         float force = model.getWallCrash();
-        if (model.getExplosionEvent()) explodeSound.play();
+        if (model.getExplosionEvent()) explodeSound.play(.5f);
         else if (force != 0) {
             onWallCollision(force);
         }
@@ -352,6 +352,6 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
 
     @Override
     public void onMainMenuClicked() {
-        listener.mainMenuClicked();
+        System.out.println("here!"); listener.mainMenuClicked();
     }
 }
