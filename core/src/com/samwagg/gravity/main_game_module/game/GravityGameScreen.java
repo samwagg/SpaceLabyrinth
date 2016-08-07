@@ -202,12 +202,13 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
 
         game.batch.end();
 
-        if (model.getCountDownToStart() > 0) {
+        if (model.getCountDownToStart() > 0 && !displayOptionsMenu) {
             stage.act(delta);
             stage.draw();
             countDownLabel.setText(Integer.toString((int) model.getCountDownToStart() + 1));
         }
         else if (displayOptionsMenu) {
+            if (model.getCountDownToStart() > 0) stage.draw();
             vSetter.onInputTurnedOff();
             pauseMenu.getStage().act();
             pauseMenu.getStage().draw();
