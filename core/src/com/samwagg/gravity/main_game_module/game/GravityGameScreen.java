@@ -202,12 +202,12 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
 
         game.batch.end();
 
-        if (model.getCountDownToStart() > 0 && !displayOptionsMenu) {
+        if (model.getCountDownToStart() > 0 && !displayOptionsMenu && !pauseMenu.isTransitioning()) {
             stage.act(delta);
             stage.draw();
             countDownLabel.setText(Integer.toString((int) model.getCountDownToStart() + 1));
         }
-        else if (displayOptionsMenu) {
+        else if (displayOptionsMenu || pauseMenu.isTransitioning()) {
             if (model.getCountDownToStart() > 0) stage.draw();
             vSetter.onInputTurnedOff();
             pauseMenu.getStage().act();
@@ -252,8 +252,20 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
     }
 
     public void displayOptionsMenu(boolean display) {
+        if (display) {
+            Gdx.input.setInputProcessor(pauseMenu.getStage());
+            if (!displayOptionsMenu) {
+                pauseMenu.startInTransition();
+            }
+        }
+        else {
+            Gdx.input.setInputProcessor(vSetter.getInputProcessor());
+            if (displayOptionsMenu) {
+                pauseMenu.startOutTransition();
+            }
+        }
         displayOptionsMenu = display;
-        if (display) Gdx.input.setInputProcessor(pauseMenu.getStage());
+
     }
 
     public boolean isOptionsMenuDisplayed() {

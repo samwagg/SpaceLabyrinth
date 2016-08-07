@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -72,8 +73,30 @@ public class PauseMenu {
 
 		stage.clear();
 		stage.addActor(container);
+//		container.setSize(stage.getWidth(), stage.getHeight());
+		System.out.println("container height = "+container.getPrefHeight());
+		container.setPosition(0, -container.getPrefHeight());
+
 	}
-	
+
+	public boolean isTransitioning() {
+		return container.getActions().size > 0;
+	}
+
+	public void startInTransition() {
+		MoveToAction action = new MoveToAction();
+		action.setPosition(0,0);
+		action.setDuration(.25f);
+		container.addAction(action);
+	}
+
+	public void startOutTransition() {
+		MoveToAction action = new MoveToAction();
+		action.setPosition(0, -container.getPrefHeight());
+		action.setDuration(.25f);
+		container.addAction(action);
+	}
+
 	public Stage getStage() {
 		return stage;
 	}
