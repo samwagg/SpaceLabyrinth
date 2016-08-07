@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -29,11 +31,12 @@ public class LevelCompleteScreen implements Screen, LevelCompleteMenu {
 	
     private boolean buttonClicked = false;
     
-    private final String NEXT_LEVEL_BUT_TEXT = "Next Level";
-    private final String RETRY_BUT_TEXT = "Retry";
-    private final String MENU_BUT_TEXT = "Menu";
-    private final String FINISH_TEXT = "Finish";
-    
+    private final static String NEXT_LEVEL_BUT_TEXT = "Next Level";
+    private final static String RETRY_BUT_TEXT = "Retry";
+    private final static String MENU_BUT_TEXT = "Menu";
+    private final static String FINISH_TEXT = "Finish";
+    private final static float TRANSITION_DURATION = 1f;
+
     private final float BUT_WIDTH = 500;
 
 	public LevelCompleteScreen(final GravityGame game, int score, int highScore, boolean isFinalLevel) {
@@ -47,10 +50,22 @@ public class LevelCompleteScreen implements Screen, LevelCompleteMenu {
 	    this.game = game;
 	    
 	    table = new Table();
-	    table.setFillParent(true);
+//	    table.setFillParent(true);
 	    stage.addActor(table);
 	    Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 	    table.setSkin(skin);
+
+		table.setBounds(0,0,stage.getWidth(),stage.getHeight());
+		table.getColor().a=0;
+//		MoveToAction transAct = new MoveToAction();
+//		transAct.setPosition(0,0);
+//		transAct.setDuration(TRANSITION_DURATION);
+
+		AlphaAction act = new AlphaAction();
+		act.setAlpha(1f);
+		act.setDuration(TRANSITION_DURATION);
+		table.addAction(act);
+
 
 		Button nextLevelButton = new TextButton(finalLevel? FINISH_TEXT : NEXT_LEVEL_BUT_TEXT , skin);
 		Button retryLevelButton = new TextButton(RETRY_BUT_TEXT ,skin);
