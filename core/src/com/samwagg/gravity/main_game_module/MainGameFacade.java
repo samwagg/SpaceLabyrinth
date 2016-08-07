@@ -56,6 +56,27 @@ public class MainGameFacade implements MainGameControllerListener, MainGameExter
         game.setScreenAndDispose(screen, game.getScreen());
     }
 
+    public void changeLevel(int galaxy, int level) {
+
+        if (currLevel + 1 <= NUM_LEVELS) {
+            Map map = null;
+
+            try {
+                map = new Map(galaxy, level);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (Map.MapFormatException e) {
+                e.printStackTrace();
+            }
+
+            model.changeLevel(map);
+        }
+    }
+
+    public void dispose() {
+        screen.dispose();
+    }
+
     @Override
     public void onLevelCompleted(int score) {
         game.updateGameState(currGalaxy, currLevel, score);
@@ -74,24 +95,6 @@ public class MainGameFacade implements MainGameControllerListener, MainGameExter
         System.out.println("main menu requested");
         if (listener != null) listener.onMainMenuRequested();
     }
-
-    public void changeLevel(int galaxy, int level) {
-
-        if (currLevel + 1 <= NUM_LEVELS) {
-            Map map = null;
-
-            try {
-                map = new Map(galaxy, level);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (Map.MapFormatException e) {
-                e.printStackTrace();
-            }
-
-            model.changeLevel(map);
-        }
-    }
-
 
     @Override
     public void nextLevelSelected() {

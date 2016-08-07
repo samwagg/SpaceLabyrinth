@@ -17,7 +17,8 @@ public class Navigator implements CreditsMenuListener, GalaxySelectCallback,
 										LevelSelectMenuListener, MainGameExternalRequestsListener, MainMenuListener {
 
 	GravityGame game;
-	
+	MainGameFacade facade;
+
 	private int currentGalaxy = 0;
 	private int currentLevel = 0;
 	
@@ -47,7 +48,7 @@ public class Navigator implements CreditsMenuListener, GalaxySelectCallback,
 	public void levelSelected(int galaxy, int level) {
 		currentLevel = level;
 		game.stopMenuMusic();
-		MainGameFacade facade = new MainGameFacade(game, galaxy, level);
+		facade = new MainGameFacade(game, galaxy, level);
 		facade.registerMainGameExternalRequestsListener(this);
 		System.out.println("level selected");
 
@@ -75,6 +76,7 @@ public class Navigator implements CreditsMenuListener, GalaxySelectCallback,
 
 	@Override
 	public void onMainMenuRequested() {
+		facade.dispose();
 		openGalaxySelect();
 		game.playMenuMusic();
 	}
