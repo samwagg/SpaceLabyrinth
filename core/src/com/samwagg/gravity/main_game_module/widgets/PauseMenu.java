@@ -24,7 +24,6 @@ public class PauseMenu {
 		stage = new Stage(stageViewport);
 
 		container = new Container<HorizontalGroup>();
-		Gdx.input.setInputProcessor(stage);
 
 		container.setFillParent(true);
 		HorizontalGroup group = new HorizontalGroup();
@@ -55,7 +54,7 @@ public class PauseMenu {
 			
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				listener.onMainMenuClicked();
+				System.out.println("AHHH!"); listener.onMainMenuClicked();
 			}
 			
 		});

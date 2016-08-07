@@ -209,7 +209,6 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         }
         else if (displayOptionsMenu) {
             vSetter.onInputTurnedOff();
-            Gdx.input.setInputProcessor(pauseMenu.getStage());
             pauseMenu.getStage().act();
             pauseMenu.getStage().draw();
         }
