@@ -313,13 +313,14 @@ public class GravityGameModel {
 
     public void doLogic(float delta) {
 
-        if (!gamePaused && !levelFinished) {
+        if (!gamePaused) {
             if (countDown > 0) countDown -= delta;
             else {
                 if (score < 1 && !explosionBegun) {
                     explosions.add(new com.samwagg.gravity.main_game_module.game.game_objects.Explosion64(character.getScreenX(), character.getScreenY()));
                     explosionBegun = true;
                     shipGone = true;
+                    world.destroyBody(character.getBody());
                     System.out.println("Beginning explosion");
                 }
 
