@@ -58,7 +58,7 @@ public class MainGameFacade implements MainGameControllerListener, MainGameExter
 
     @Override
     public void onLevelCompleted(int score) {
-        LevelCompleteScreen screen = new LevelCompleteScreen(game, currLevel, score, currLevel == NUM_LEVELS);
+        LevelCompleteScreen screen = new LevelCompleteScreen(game, score, game.getGameState().hs.galaxies.get(currGalaxy)[currLevel], currLevel == NUM_LEVELS);
         game.setScreen(screen);
         screen.registerLevelCompleteMenuListener(this);
     }
