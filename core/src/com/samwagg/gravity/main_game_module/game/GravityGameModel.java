@@ -42,7 +42,7 @@ public class GravityGameModel {
 
 
     private Map map;
-    private final float START_SCORE;
+    private float startScore;
 
     private float score;
     private boolean levelFinished;
@@ -73,7 +73,7 @@ public class GravityGameModel {
 //		multiPlex.addProcessor(vSetter.getInputProcessor());
 
         this.map = map;
-        START_SCORE = map.getInitScore();
+        startScore = map.getInitScore();
 
 
         resetLevel();
@@ -82,6 +82,8 @@ public class GravityGameModel {
     private void resetLevel() {
         System.out.println("level reset");
         countDown = 3;
+
+        startScore = map.getInitScore();
 
         mapHeight = map.getHeight();
         mapWidth = map.getWidth();
@@ -102,7 +104,7 @@ public class GravityGameModel {
         gravVect = new Vector2(0, -3);
         world.setGravity(gravVect);
 
-        score = START_SCORE;
+        score = startScore;
         levelFinished = false;
         shipGone = false;
         gamePaused = false;
@@ -426,7 +428,7 @@ public class GravityGameModel {
     }
 
     public float getStartScore() {
-        return START_SCORE;
+        return startScore;
     }
 
     public float getScore() {
