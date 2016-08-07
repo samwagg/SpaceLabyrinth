@@ -316,8 +316,7 @@ public class GravityGameModel {
         if (!gamePaused && !levelFinished) {
             if (countDown > 0) countDown -= delta;
             else {
-
-                if (score == 0 && !explosionBegun) {
+                if (score < 1 && !explosionBegun) {
                     explosions.add(new com.samwagg.gravity.main_game_module.game.game_objects.Explosion64(character.getScreenX(), character.getScreenY()));
                     explosionBegun = true;
                     shipGone = true;
@@ -355,6 +354,23 @@ public class GravityGameModel {
 //            Gdx.input.setInputProcessor(vSetter.getInputProcessor());
 //            doPhysicsStep(delta);
 //        }
+    }
+
+    private void doPhysicsStep(float deltaTime) {
+        float frameTime = Math.min(deltaTime, 0.25f);
+        accumulator += frameTime;
+        while (accumulator >= 1 / 45f) {
+
+            world.step(1 / 45f, 6, 2);
+
+            if (score > 0 && !levelFinished) score--;
+
+            for (com.samwagg.gravity.main_game_module.game.game_objects.MovingWall wall : movingWalls) {
+                wall.move();
+            }
+            accumulator -= 1 / 45f;
+        }
+        character.updatePosition();
     }
 
     public void setGravity(float x, float y) {
@@ -447,22 +463,7 @@ public class GravityGameModel {
         this.callback = callback;
     }
 
-    private void doPhysicsStep(float deltaTime) {
-        float frameTime = Math.min(deltaTime, 0.25f);
-        accumulator += frameTime;
-        while (accumulator >= 1 / 45f) {
 
-            world.step(1 / 45f, 6, 2);
-
-            if (score > 0 && !levelFinished) score--;
-
-            for (com.samwagg.gravity.main_game_module.game.game_objects.MovingWall wall : movingWalls) {
-                wall.move();
-            }
-            accumulator -= 1 / 45f;
-        }
-        character.updatePosition();
-    }
 
     private void healthDepleted() {
         resetLevel();
