@@ -97,6 +97,7 @@ public class GravityGame extends Game {
 	}
 
 	public void playMenuMusic() {
+		music.setLooping(true);
 		music.play();
 	}
 
