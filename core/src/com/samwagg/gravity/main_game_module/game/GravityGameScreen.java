@@ -194,7 +194,6 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
 
         for (Explosion64 exp : model.getExplosions()) {
             exp.drawNextFrame(game.batch);
-
         }
 
         game.batch.setProjectionMatrix(staticCamera.combined);
@@ -345,6 +344,8 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
 
     @Override
     public void hide() {
+        vSetter.onInputTurnedOff();
+        System.out.println("hiding");
     }
 
     @Override

@@ -114,6 +114,8 @@ public class VectorSetter {
 	public void onInputTurnedOff() {
 		magnitude = 0;
 		direction = 0;
+		xComponent = 0;
+		yComponent = 0;
 		onScreen = false;
 	}
 	
