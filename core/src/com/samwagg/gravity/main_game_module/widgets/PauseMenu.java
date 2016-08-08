@@ -2,6 +2,7 @@ package com.samwagg.gravity.main_game_module.widgets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PauseMenu {
@@ -28,10 +30,16 @@ public class PauseMenu {
 
 		container.setFillParent(true);
 		HorizontalGroup group = new HorizontalGroup();
-		
-		ImageButton resumeButton = new ImageButton(new Image(new Texture(Gdx.files.internal("resume.png"))).getDrawable());
-		ImageButton restartButton = new ImageButton(new Image(new Texture(Gdx.files.internal("restart.png"))).getDrawable());
-		ImageButton menuButton = new ImageButton(new Image(new Texture(Gdx.files.internal("menu.png"))).getDrawable());
+
+		TextureAtlas atlas = new TextureAtlas("menu_buttons_pack.atlas");
+
+		ImageButton resumeButton = new ImageButton(new TextureRegionDrawable(atlas.findRegion("resume")));
+		ImageButton restartButton = new ImageButton(new TextureRegionDrawable(atlas.findRegion("restart")));
+		ImageButton menuButton = new ImageButton(new TextureRegionDrawable(atlas.findRegion("menu")));
+
+////		ImageButton resumeButton = new ImageButton(new Image(new Texture(Gdx.files.internal("resume.png"))).getDrawable());
+//		ImageButton restartButton = new ImageButton(new Image(new Texture(Gdx.files.internal("restart.png"))).getDrawable());
+//		ImageButton menuButton = new ImageButton(new Image(new Texture(Gdx.files.internal("menu.png"))).getDrawable());
 		
 		resumeButton.addListener(new ClickListener() {
 
