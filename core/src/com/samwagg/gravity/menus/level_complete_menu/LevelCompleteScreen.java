@@ -162,8 +162,7 @@ public class LevelCompleteScreen implements Screen, LevelCompleteMenu {
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
+		Gdx.input.setInputProcessor(null);
 	}
 
 	@Override
