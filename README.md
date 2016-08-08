@@ -1,6 +1,6 @@
 # SpaceLabyrinth
 
-*Sound Credits*
+###Sound Credits
 
 Main Game Music
 "keith" by shalpin (username on opengameart.org) http://opengameart.org/content/keith
@@ -23,7 +23,7 @@ Licence: https://creativecommons.org/licenses/by-sa/3.0/
 No modifications
 
 
-*Font Credit*
+###Font Credit
 http://www.dafont.com/space-1.font
 
 
