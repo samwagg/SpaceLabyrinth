@@ -82,8 +82,13 @@ public class Navigator implements CreditsMenuListener, GalaxySelectCallback,
 	}
 
 	@Override
-	public void onLevelCompleted(int galaxy, int level) {
+	public void onGalaxyCompleted(int galaxy) {
 		System.out.println("levelCompleted");
+		CreditsScreen screen = new CreditsScreen(game);
+		screen.registerCreditsMenuListener(this);
+		game.setScreen(screen);
+		game.playMenuMusic();
+		facade.dispose();
 	}
 
 	/*

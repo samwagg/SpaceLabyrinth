@@ -106,7 +106,7 @@ public class MainGameFacade implements MainGameControllerListener, MainGameExter
 
     @Override
     public void galaxyFinished() {
-        listener.onLevelCompleted(currGalaxy, currLevel);
+        listener.onGalaxyCompleted(currGalaxy);
     }
 
     @Override
