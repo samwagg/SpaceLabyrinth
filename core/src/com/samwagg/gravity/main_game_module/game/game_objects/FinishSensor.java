@@ -16,9 +16,9 @@ public class FinishSensor extends GameObject {
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(this.physX + .5f * Wall.WALL_TEXT.getWidth() * constants.PHYS_SCALE, this.physY + .5f * Wall.WALL_TEXT.getHeight() *constants.PHYS_SCALE);
+		bodyDef.position.set(this.physX + .5f * constants.WALL_REGION.getRegionWidth() * constants.PHYS_SCALE, this.physY + .5f * constants.WALL_REGION.getRegionHeight()*constants.PHYS_SCALE);
 		PolygonShape brickBox = new PolygonShape();
-		brickBox.setAsBox(Wall.WALL_TEXT.getWidth()*constants.PHYS_SCALE*.5f, Wall.WALL_TEXT.getHeight()*constants.PHYS_SCALE*.5f);
+		brickBox.setAsBox(constants.WALL_REGION.getRegionWidth()*constants.PHYS_SCALE*.5f, constants.WALL_REGION.getRegionHeight()*constants.PHYS_SCALE*.5f);
 		//ystem.out.println("brickBox " + brickBox.ge + " " + brickBox.height);
 		FixtureDef fixDef = new FixtureDef();
 		fixDef.shape = brickBox;

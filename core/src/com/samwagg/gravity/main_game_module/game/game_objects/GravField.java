@@ -14,8 +14,8 @@ import com.samwagg.gravity.Constants;
 
 public class GravField extends GameObject {
 
-	public static final Texture G_FIELD_TEXT_UNLIT = new Texture(Gdx.files.internal("arrow_unlit.png"));
-	public static final Texture G_FIELD_TEXT_LIT = new Texture(Gdx.files.internal("arrow_lit.png"));
+//	public static final Texture G_FIELD_TEXT_UNLIT = new Texture(Gdx.files.internal("arrow_unlit.png"));
+//	public static final Texture G_FIELD_TEXT_LIT = new Texture(Gdx.files.internal("arrow_lit.png"));
 
 	private final float rotation;
 	
@@ -35,7 +35,7 @@ public class GravField extends GameObject {
 		LIT_SPRITE.setRotation(rotation);
 		
 		this.rotation = rotation;
-		this.texture = G_FIELD_TEXT_UNLIT;
+//		this.texture = G_FIELD_TEXT_UNLIT;
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;

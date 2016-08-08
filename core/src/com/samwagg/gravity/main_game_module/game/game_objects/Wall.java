@@ -19,16 +19,14 @@ import com.samwagg.gravity.Constants;
 
 public class Wall extends GameObject {
 
-	public final static Texture WALL_TEXT = new Texture(Gdx.files.internal("wall.png"));
-	
+
 	private TextureRegion texReg;
 	private TiledDrawable tiledTex;
 	
 	
 	public Wall(float screenX, float screenY, float screenWidth, float screenHeight, World world, Constants constants) {
 		super(screenX, screenY, screenWidth, screenHeight, constants);
-		this.texture = WALL_TEXT;
-		
+
 		AtlasRegion texReg = constants.WALL_REGION;
 //		texReg.offsetX = 64;
 //		texReg.offsetY = 64;
