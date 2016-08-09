@@ -132,8 +132,7 @@ public class LevelCompleteScreen implements Screen, LevelCompleteMenu {
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-		
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
@@ -150,8 +149,7 @@ public class LevelCompleteScreen implements Screen, LevelCompleteMenu {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
