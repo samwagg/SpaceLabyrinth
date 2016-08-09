@@ -58,7 +58,7 @@ public class MainGameFacade implements MainGameControllerListener, MainGameExter
 
     public void changeLevel(int galaxy, int level) {
 
-        if (currLevel + 1 <= NUM_LEVELS) {
+        if (level <= NUM_LEVELS) {
             Map map = null;
 
             try {
