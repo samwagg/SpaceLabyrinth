@@ -330,7 +330,7 @@ public class GravityGameModel {
                     System.out.println("Explosion done: " + exp.done() + "\nExplosion CurrentFrame: " + exp.getCurrentFrame());
                 }
 
-                if (score == 0 && explosions.isEmpty() || restart) {
+                if (score < 1 && explosions.isEmpty() || restart) {
                     System.out.println("explosions: " + explosions + "\nrestart = " + restart);
                     healthDepleted();
                     return;
