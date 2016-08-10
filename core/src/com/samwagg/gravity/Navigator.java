@@ -13,112 +13,102 @@ import com.samwagg.gravity.menus.level_select_menu.LevelSelectScreen;
 import com.samwagg.gravity.menus.main_menu.MainMenuListener;
 import com.samwagg.gravity.menus.main_menu.MainScreen;
 
-public class Navigator implements CreditsMenuListener, GalaxySelectCallback,
-										LevelSelectMenuListener, MainGameExternalRequestsListener, MainMenuListener {
+public class Navigator {
 
-	GravityGame game;
-	MainGameFacade facade;
+	private GravityGame game;
+	private MainGameFacade facade;
 
-	private int currentGalaxy = 0;
-	private int currentLevel = 0;
-	
+	private CreditsMenuNavigator creditsMenuNavigator;
+	private GalaxySelectNavigator galaxySelectNavigator;
+	private LevelSelectNavigator levelSelectNavigator;
+	private MainGameNavigator mainGameNavigator;
+	private MainMenuNavigator mainMenuNavigator;
+
+
 	public Navigator(GravityGame game) {
 		this.game = game;
-	}
-
-	@Override
-	public void mainMenuStartClicked() {
-		System.out.println("Start button clicked");
-		openGalaxySelect();
-	}
-
-	@Override
-	public void galaxySelected(int galaxy) {
-		currentGalaxy = galaxy;
-		game.getScreen().dispose();
-		LevelSelectScreen screen = new LevelSelectScreen(game, galaxy,
-				game.getGameState().currentLevelByGalaxy.get(galaxy-1),
-				game.getGameState().maxLevelReachedByGalaxy.get(galaxy-1), game.constants);
-		screen.registerLevelSelectMenuListener(this);
-		game.setScreen(screen);
-
-	}
-
-	@Override
-	public void levelSelected(int galaxy, int level) {
-		currentLevel = level;
-		game.stopMenuMusic();
-		facade = new MainGameFacade(game, galaxy, level);
-		facade.registerMainGameExternalRequestsListener(this);
-		System.out.println("level selected");
-
-	}
-
-	@Override
-	public void levelSelectBackSelected() {
-		openGalaxySelect();
+		creditsMenuNavigator = new CreditsMenuNavigator();
+		galaxySelectNavigator = new GalaxySelectNavigator();
+		levelSelectNavigator = new LevelSelectNavigator();
+		mainGameNavigator = new MainGameNavigator();
+		mainMenuNavigator = new MainMenuNavigator();
 	}
 
 
-
-	/*
-	 * Begin Credits screen listener
-	 */
-
-	@Override
-	public void screenTouched() {
-		openMainScreen();
+	private class CreditsMenuNavigator implements CreditsMenuListener {
+		@Override
+		public void screenTouched() {
+			openMainScreen();
+		}
 	}
 
-	@Override
-	public void onMainMenuRequested() {
-		facade.dispose();
-		openGalaxySelect();
-		game.playMenuMusic();
+	private class GalaxySelectNavigator implements GalaxySelectCallback {
+		@Override
+		public void galaxySelected(int galaxy) {
+			game.getScreen().dispose();
+			LevelSelectScreen screen = new LevelSelectScreen(game, galaxy,
+					game.getGameState().currentLevelByGalaxy.get(galaxy-1),
+					game.getGameState().maxLevelReachedByGalaxy.get(galaxy-1), game.constants);
+			screen.registerLevelSelectMenuListener(levelSelectNavigator);
+			game.setScreen(screen);
+
+		}
 	}
 
-	@Override
-	public void onGalaxyCompleted(int galaxy) {
-		System.out.println("levelCompleted");
-		CreditsScreen screen = new CreditsScreen(game);
-		screen.registerCreditsMenuListener(this);
-		game.setScreen(screen);
-		game.playMenuMusic();
-		facade.dispose();
+	private class LevelSelectNavigator implements LevelSelectMenuListener {
+		@Override
+		public void levelSelected(int galaxy, int level) {
+			game.stopMenuMusic();
+			facade = new MainGameFacade(game, galaxy, level);
+			facade.registerMainGameExternalRequestsListener(mainGameNavigator);
+			System.out.println("level selected");
+
+		}
+
+		@Override
+		public void levelSelectBackSelected() {
+			openGalaxySelect();
+		}
 	}
 
-	/*
-	 * End Credits screen listener
-	 */
+	private class MainGameNavigator implements MainGameExternalRequestsListener {
+		@Override
+		public void onMainMenuRequested() {
+			facade.dispose();
+			openGalaxySelect();
+			game.playMenuMusic();
+		}
 
-//	@Override
-//	public void levComplete(int score) {
-//
-//		game.getScreen().dispose();
-//		game.updateGameState(currentGalaxy, currentLevel, score);
-//		game.setScreen(new LevelCompleteScreen(game, this, score,
-//				game.getGameState().hs.galaxies.get(currentGalaxy-1)[currentLevel-1].intValue(),
-//				currentLevel == game.constants.N_LEVELS));
-//	}
+		@Override
+		public void onGalaxyCompleted(int galaxy) {
+			System.out.println("levelCompleted");
+			CreditsScreen screen = new CreditsScreen(game);
+			screen.registerCreditsMenuListener(creditsMenuNavigator);
+			game.setScreen(screen);
+			game.playMenuMusic();
+			facade.dispose();
+		}
+	}
 
-//	@Override
-//	public void levCompleteFinishGalaxy() {
-//		game.getScreen().dispose();
-//		game.setScreen(new CreditsScreen(this, game));
-//	}
-
+	private class MainMenuNavigator implements MainMenuListener {
+		@Override
+		public void mainMenuStartClicked() {
+			System.out.println("Start button clicked");
+			openGalaxySelect();
+		}
+	}
 
 	private void openGalaxySelect() {
 		game.getScreen().dispose();
 		GalaxySelectScreen screen = new GalaxySelectScreen(game.getGameState().galaxiesUnlocked);
 		game.setScreen(screen);
-		screen.registerGalaxySelectCallback(this);
+		screen.registerGalaxySelectCallback(galaxySelectNavigator);
 	}
 
 	private void openMainScreen() {
 		game.getScreen().dispose();
 		MainScreen screen = new MainScreen(game);
-		screen.registerMainMenuListener(this);
+		screen.registerMainMenuListener(mainMenuNavigator);
 		game.setScreen(screen);
 	}
 }
