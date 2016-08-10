@@ -56,10 +56,7 @@ public class Navigator implements CreditsMenuListener, GalaxySelectCallback,
 
 	@Override
 	public void levelSelectBackSelected() {
-		game.getScreen().dispose();
-		GalaxySelectScreen screen = new GalaxySelectScreen(game.getGameState().galaxiesUnlocked);
-		screen.registerGalaxySelectCallback(this);
-		game.setScreen(screen);
+		openGalaxySelect();
 	}
 
 
@@ -70,8 +67,7 @@ public class Navigator implements CreditsMenuListener, GalaxySelectCallback,
 
 	@Override
 	public void screenTouched() {
-		game.getScreen().dispose();
-		game.setScreen(new MainScreen(game));
+		openMainScreen();
 	}
 
 	@Override
@@ -117,5 +113,12 @@ public class Navigator implements CreditsMenuListener, GalaxySelectCallback,
 		GalaxySelectScreen screen = new GalaxySelectScreen(game.getGameState().galaxiesUnlocked);
 		game.setScreen(screen);
 		screen.registerGalaxySelectCallback(this);
+	}
+
+	private void openMainScreen() {
+		game.getScreen().dispose();
+		MainScreen screen = new MainScreen(game);
+		screen.registerMainMenuListener(this);
+		game.setScreen(screen);
 	}
 }
