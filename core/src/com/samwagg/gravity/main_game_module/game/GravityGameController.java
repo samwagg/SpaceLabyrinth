@@ -43,7 +43,7 @@ public class GravityGameController implements MainGameViewListener, MainGameCont
     }
 
     public void vSetterState(float magnitude, float xComponenet, float yComponent) {
-        model.setGravity(xComponenet/10, yComponent/10);
+        model.setGravity(xComponenet*5, yComponent*5);
     }
 
     @Override

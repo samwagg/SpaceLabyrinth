@@ -11,7 +11,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.samwagg.gravity.Constants;
 
 public class GameCharacter extends GameObject implements Steerable<Vector2> {
-	
+
+	protected boolean isExploding;
+
 	public GameCharacter(float screenX, float screenY, World world, Constants constants) {
 		super(screenX+constants.TILE_SIZE, screenY+constants.TILE_SIZE, constants.ATLAS.createSprite("Ship"), constants);
 				
@@ -34,7 +36,14 @@ public class GameCharacter extends GameObject implements Steerable<Vector2> {
 	    circle.dispose();		
 	}
 
-	
+	public void explode() {
+		isExploding = true;
+	}
+
+	public boolean isExploding() {
+		return isExploding;
+	}
+
 	@Override
 	public float getMaxLinearSpeed() {
 		// TODO Auto-generated method stub

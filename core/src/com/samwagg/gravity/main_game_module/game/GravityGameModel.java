@@ -24,6 +24,7 @@ public class GravityGameModel {
     private World world;
 
     private List<AICharacter> enemies;
+    private List<AICharacter> explodingEnemies;
     private com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter character;
     private List<com.samwagg.gravity.main_game_module.game.game_objects.Wall> walls;
     private List<com.samwagg.gravity.main_game_module.game.game_objects.GravField> gravFields;
@@ -96,6 +97,7 @@ public class GravityGameModel {
         world.setContactListener(new ForceListener());
 
         enemies = new ArrayList<AICharacter>();
+        explodingEnemies = new ArrayList<AICharacter>();
         walls = new ArrayList<com.samwagg.gravity.main_game_module.game.game_objects.Wall>();
         gravFields = new ArrayList<com.samwagg.gravity.main_game_module.game.game_objects.GravField>();
         endSensors = new ArrayList<com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor>();
@@ -104,8 +106,8 @@ public class GravityGameModel {
 
         explosions = new LinkedList<com.samwagg.gravity.main_game_module.game.game_objects.Explosion64>();
 
-        gravVect = new Vector2(0, -3);
-        world.setGravity(gravVect);
+//        gravVect = new Vector2(0, -3);
+//        world.setGravity(gravVect);
 
         score = startScore;
         levelFinished = false;
@@ -326,6 +328,7 @@ public class GravityGameModel {
                 if (score < 1 && !explosionBegun) {
                     explosions.add(new com.samwagg.gravity.main_game_module.game.game_objects.Explosion64(character.getScreenX(), character.getScreenY()));
                     explosionBegun = true;
+                    explosionEvent = true;
                     shipGone = true;
                     world.destroyBody(character.getBody());
                     System.out.println("Beginning explosion");
@@ -348,9 +351,16 @@ public class GravityGameModel {
                     gravFieldDirection = pair.force.getRotation() * (float) Math.PI / 180;
                     pair.character.getBody().applyForceToCenter((float) (200 * Math.cos(gravFieldDirection)), (float) (200 * Math.sin(gravFieldDirection)), true);
                 }
-
-                for (AICharacter enemy : enemies) {
-                    enemy.update(delta);
+                AICharacter enemy;
+                for (Iterator<AICharacter> iter = enemies.iterator(); iter.hasNext(); ) {
+                    enemy = iter.next();
+                    if (enemy.isExploding()) {
+                        iter.remove();
+                        world.destroyBody(enemy.getBody());
+                    }
+                    else {
+                        enemy.update(delta);
+                    }
                 }
 
                 doPhysicsStep(delta);
@@ -389,9 +399,10 @@ public class GravityGameModel {
     }
 
     public void setGravity(float x, float y) {
-        gravVect.x = x;
-        gravVect.y = y;
-        world.setGravity(gravVect);
+//        gravVect.x = x;
+//        gravVect.y = y;
+//        world.setGravity(gravVect);
+        character.getBody().applyForceToCenter(x, y, true);
     }
 
     public float getWallCrash() {
@@ -402,8 +413,8 @@ public class GravityGameModel {
     }
 
     public boolean getExplosionEvent() {
-        if (explosionBegun && !explosionEvent) {
-            explosionEvent = true;
+        if (explosionEvent) {
+            explosionEvent = false;
             return true;
         }
         else return false;
@@ -552,6 +563,8 @@ public class GravityGameModel {
             Fixture forceFix;
             Fixture forcedCharFix;
 
+            Fixture contactedAIFix;
+
             if (fixA.getUserData().getClass().equals(GravField.class)) {
                 forceFix = contact.getFixtureA();
                 forcedCharFix = contact.getFixtureB();
@@ -567,6 +580,9 @@ public class GravityGameModel {
                 onLevelCompleted();
                 return;
             }
+//            else if ( (contactedAIFix = fixA).getUserData().getClass().equals(AICharacter.class) || (contactedAIFix = fixB).getUserData().getClass().equals(AICharacter.class)) {
+//                AICharacter aiChar = (AICharacter) contactedAIFix.getUserData();
+//            }
             else return;
 
             com.samwagg.gravity.main_game_module.game.game_objects.GravField field = (com.samwagg.gravity.main_game_module.game.game_objects.GravField) forceFix.getUserData();
@@ -587,6 +603,7 @@ public class GravityGameModel {
 
             float forceStren = impulse.getNormalImpulses()[0];
 
+
             if (fixA.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter.class) &&
                     fixB.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.Wall.class) ||
                     fixA.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.Wall.class) &&
@@ -600,6 +617,26 @@ public class GravityGameModel {
                     fixA.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.MovingWall.class) &&
                             fixB.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter.class)) {
                 onWallCollision(forceStren);
+            }
+            else if (fixA.getUserData().getClass().equals(AICharacter.class)) {
+                AICharacter aiChar = (AICharacter) fixA.getUserData();
+                Vector2 normal = contact.getWorldManifold().getNormal().nor();
+                Vector2 impulseToApply = normal.scl(1000f);
+                System.out.println("ai collision " + impulseToApply);
+                explosions.add(new Explosion64(aiChar.getScreenX(), aiChar.getScreenY()));
+                explosionEvent = true;
+                aiChar.explode();
+                fixB.getBody().applyLinearImpulse(impulseToApply, fixB.getBody().getWorldCenter(), true);
+            }
+            else if (fixB.getUserData().getClass().equals(AICharacter.class)) {
+                AICharacter aiChar = (AICharacter) fixB.getUserData();
+                Vector2 normal = contact.getWorldManifold().getNormal().nor();
+                Vector2 impulseToApply = normal.scl(1000f);
+                System.out.println("ai collision " + impulseToApply);
+                explosions.add(new Explosion64(aiChar.getScreenX(), aiChar.getScreenY()));
+                explosionEvent = true;
+                aiChar.explode();
+                fixA.getBody().applyLinearImpulse(impulseToApply, fixA.getBody().getWorldCenter(), true);
             }
         }
     }

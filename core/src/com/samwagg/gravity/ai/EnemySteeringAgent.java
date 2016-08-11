@@ -57,7 +57,6 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
         if (steeringBehavior != null) {
             // Calculate steering acceleration
             steeringBehavior.calculateSteering(steeringOutput);
-			System.out.println("updating steering");
             /*
              * Here you might want to add a motor control layer filtering steering accelerations.
              * 
