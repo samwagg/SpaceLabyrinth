@@ -4,9 +4,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.samwagg.gravity.GravityGame;
+import com.samwagg.gravity.ai.EnemySteeringAgent;
 import com.samwagg.gravity.main_game_module.Map;
-import com.samwagg.gravity.main_game_module.game.game_objects.Explosion64;
-import com.samwagg.gravity.main_game_module.game.game_objects.GravField;
+import com.samwagg.gravity.main_game_module.game.game_objects.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,13 +23,15 @@ public class GravityGameModel {
     private GravityGameController controller;
     private World world;
 
+    private List<AICharacter> enemies;
     private com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter character;
     private List<com.samwagg.gravity.main_game_module.game.game_objects.Wall> walls;
     private List<com.samwagg.gravity.main_game_module.game.game_objects.GravField> gravFields;
-    private List<com.samwagg.gravity.main_game_module.game.game_objects.GravField> currentGravFields;
+    private List<ForceCharPair> activeGravCharPairs;
     private List<com.samwagg.gravity.main_game_module.game.game_objects.MovingWall> movingWalls;
     private List<com.samwagg.gravity.main_game_module.game.game_objects.Explosion64> explosions;
     private List<com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor> endSensors;
+
 
     private Vector2 gravVect;
     
@@ -93,10 +95,11 @@ public class GravityGameModel {
         world= new World(new Vector2(0, 0), true);
         world.setContactListener(new ForceListener());
 
+        enemies = new ArrayList<AICharacter>();
         walls = new ArrayList<com.samwagg.gravity.main_game_module.game.game_objects.Wall>();
         gravFields = new ArrayList<com.samwagg.gravity.main_game_module.game.game_objects.GravField>();
         endSensors = new ArrayList<com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor>();
-        currentGravFields = new LinkedList<com.samwagg.gravity.main_game_module.game.game_objects.GravField>();
+        activeGravCharPairs = new ArrayList<ForceCharPair>();
         movingWalls = new LinkedList<com.samwagg.gravity.main_game_module.game.game_objects.MovingWall>();
 
         explosions = new LinkedList<com.samwagg.gravity.main_game_module.game.game_objects.Explosion64>();
@@ -166,7 +169,8 @@ public class GravityGameModel {
                     case END:
                         endSensors.add(new com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor(xPos, yPos,world,game.constants));
                         break;
-                    case AI_START: // not implemented yet
+                    case AI_START:
+                        enemies.add(new AICharacter(xPos, yPos, world, game.constants));
                         break;
                     default:
                         ;// Do nothing
@@ -177,6 +181,9 @@ public class GravityGameModel {
                     makeMovBlock(i, j, (int) movBlock.width, (int) movBlock.height, currTile.getSpeed(), WALL_WIDTH, WALL_HEIGHT, tileArray);
                 }
             }
+        }
+        for (AICharacter enemy : enemies) {
+            enemy.pursue(character);
         }
 
     }
@@ -337,9 +344,13 @@ public class GravityGameModel {
                 }
 
                 float gravFieldDirection;
-                for (GravField field : currentGravFields) {
-                    gravFieldDirection = field.getRotation() * (float) Math.PI / 180;
-                    character.getBody().applyForceToCenter((float) (200 * Math.cos(gravFieldDirection)), (float) (200 * Math.sin(gravFieldDirection)), true);
+                for (ForceCharPair pair : activeGravCharPairs) {
+                    gravFieldDirection = pair.force.getRotation() * (float) Math.PI / 180;
+                    pair.character.getBody().applyForceToCenter((float) (200 * Math.cos(gravFieldDirection)), (float) (200 * Math.sin(gravFieldDirection)), true);
+                }
+
+                for (AICharacter enemy : enemies) {
+                    enemy.update(delta);
                 }
 
                 doPhysicsStep(delta);
@@ -372,6 +383,9 @@ public class GravityGameModel {
             accumulator -= 1 / 45f;
         }
         character.updatePosition();
+        for (AICharacter enemy : enemies) {
+            enemy.updatePosition();
+        }
     }
 
     public void setGravity(float x, float y) {
@@ -418,6 +432,10 @@ public class GravityGameModel {
 
     public List<com.samwagg.gravity.main_game_module.game.game_objects.MovingWall> getMovingWalls() {
         return movingWalls;
+    }
+
+    public List<AICharacter> getEnemies() {
+        return enemies;
     }
 
     public List<com.samwagg.gravity.main_game_module.game.game_objects.Explosion64> getExplosions() {
@@ -483,28 +501,46 @@ public class GravityGameModel {
     }
 
 
+    private class ForceCharPair {
+        GravField force;
+        GameCharacter character;
+        ForceCharPair(GravField force, GameCharacter character) {
+            this.force = force;
+            this.character = character;
+        }
 
+    }
 
     /**
      * ForceListener is a ContactListener that handles all contact events between
      */
-    public class ForceListener implements ContactListener {
+    private class ForceListener implements ContactListener {
 
 
         @Override
         public void endContact(Contact contact) {
             Fixture forceFix;
+            Fixture charFix;
             if (contact.getFixtureA().isSensor()) {
                 forceFix = contact.getFixtureA();
+                charFix = contact.getFixtureB();
             }
             else if (contact.getFixtureB().isSensor()) {
                 forceFix = contact.getFixtureB();
+                charFix = contact.getFixtureA();
             }
             else return;
 
             com.samwagg.gravity.main_game_module.game.game_objects.GravField field = (com.samwagg.gravity.main_game_module.game.game_objects.GravField) forceFix.getUserData();
             field.unlight();
-            currentGravFields.remove(field);
+
+            ForceCharPair pair;
+            for (Iterator<ForceCharPair> iter = activeGravCharPairs.iterator(); iter.hasNext(); ) {
+                pair = iter.next();
+                if (pair.force.equals(forceFix.getUserData()) && pair.character.equals(charFix.getUserData())) {
+                    iter.remove();
+                }
+            }
         }
 
         @Override
@@ -514,15 +550,19 @@ public class GravityGameModel {
             Fixture fixB = contact.getFixtureB();
 
             Fixture forceFix;
+            Fixture forcedCharFix;
 
-            if (fixA.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.GravField.class)) {
+            if (fixA.getUserData().getClass().equals(GravField.class)) {
                 forceFix = contact.getFixtureA();
+                forcedCharFix = contact.getFixtureB();
             }
-            else if (fixB.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.GravField.class)) {
+            else if (fixB.getUserData().getClass().equals(GravField.class)) {
                 forceFix = contact.getFixtureB();
+                forcedCharFix = contact.getFixtureA();
+
             }
-            else if (fixA.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor.class) ||
-                    fixB.getUserData().getClass().equals(com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor.class)) {
+            else if (fixA.getUserData().getClass().equals(FinishSensor.class) && !fixB.getUserData().getClass().equals(AICharacter.class) ||
+                    fixB.getUserData().getClass().equals(FinishSensor.class) && !fixA.getUserData().getClass().equals(AICharacter.class)) {
                 levelFinished = true;
                 onLevelCompleted();
                 return;
@@ -531,7 +571,7 @@ public class GravityGameModel {
 
             com.samwagg.gravity.main_game_module.game.game_objects.GravField field = (com.samwagg.gravity.main_game_module.game.game_objects.GravField) forceFix.getUserData();
             field.light();
-            currentGravFields.add(field);
+            activeGravCharPairs.add(new ForceCharPair( (GravField) forceFix.getUserData(), (GameCharacter) forcedCharFix.getUserData()));
         }
 
 

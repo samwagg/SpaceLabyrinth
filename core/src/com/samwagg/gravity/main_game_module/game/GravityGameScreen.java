@@ -20,12 +20,9 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.samwagg.gravity.GravityGame;
 import com.samwagg.gravity.main_game_module.Map;
+import com.samwagg.gravity.main_game_module.game.game_objects.*;
 import com.samwagg.gravity.main_game_module.widgets.PauseMenuListener;
 import com.samwagg.gravity.main_game_module.widgets.VectorSetter;
-import com.samwagg.gravity.main_game_module.game.game_objects.Explosion64;
-import com.samwagg.gravity.main_game_module.game.game_objects.GravField;
-import com.samwagg.gravity.main_game_module.game.game_objects.MovingWall;
-import com.samwagg.gravity.main_game_module.game.game_objects.Wall;
 import com.samwagg.gravity.main_game_module.widgets.PauseMenu;
 
 public class GravityGameScreen implements Screen, MainGameView, PauseMenuListener {
@@ -178,6 +175,10 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         if (!model.isShipGone()) {
             model.getCharacter().getSprite().draw(game.batch);
             model.getCharacter().getSprite().rotate(.2f);
+        }
+
+        for (AICharacter enemy : model.getEnemies()) {
+            enemy.getSprite().draw(game.batch);
         }
 
         Gdx.gl.glEnable(GL20.GL_BLEND);

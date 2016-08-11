@@ -13,7 +13,7 @@ import com.samwagg.gravity.Constants;
 public class GameCharacter extends GameObject implements Steerable<Vector2> {
 	
 	public GameCharacter(float screenX, float screenY, World world, Constants constants) {
-		super(screenX+constants.TILE_SIZE, screenY+constants.TILE_SIZE, constants.CHAR_SPRITE, constants);
+		super(screenX+constants.TILE_SIZE, screenY+constants.TILE_SIZE, constants.ATLAS.createSprite("Ship"), constants);
 				
 		BodyDef bodyDef = new BodyDef();
 	    bodyDef.type = BodyType.DynamicBody;

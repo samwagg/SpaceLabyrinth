@@ -91,9 +91,7 @@ public class GravityGame extends Game {
 		music = Gdx.audio.newMusic(Gdx.files.internal("alliance.mp3"));
 		music.play();
 
-		MainScreen screen = new MainScreen(this);
-		screen.registerMainMenuListener(controller);
-		setScreen(screen);
+		controller.startGame();
 	}
 
 	public void playMenuMusic() {

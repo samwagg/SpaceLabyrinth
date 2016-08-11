@@ -21,16 +21,19 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
     float angularVelocity;
     float maxSpeed;
     boolean independentFacing;
-    SteeringBehavior<Vector2> steeringBehavior;
+    private SteeringBehavior<Vector2> steeringBehavior;
     
-    private GameCharacter gameObject;
+    private GameCharacter vehicle;
     
-    public EnemySteeringAgent(float screenX, float screenY, World world, GameCharacter player) {
-//    	gameObject = new GameCharacter(screenX, screenY, world);
-    	Pursue<Vector2> pursue = new Pursue<Vector2>(this, player);
-    	steeringBehavior = pursue;
-    	
+    public EnemySteeringAgent(float x, float y,  GameCharacter vehicle) {
+    	this.vehicle = vehicle;
+		position = new Vector2(x,y);
      }
+
+     public void pursue(Steerable<Vector2> thingToPursue) {
+		 Pursue<Vector2> pursue = new Pursue<Vector2>(this, thingToPursue);
+		 steeringBehavior = pursue;
+	 }
 
     /* Here you should implement missing methods inherited from Steerable */
 
@@ -54,7 +57,7 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
         if (steeringBehavior != null) {
             // Calculate steering acceleration
             steeringBehavior.calculateSteering(steeringOutput);
-
+			System.out.println("updating steering");
             /*
              * Here you might want to add a motor control layer filtering steering accelerations.
              * 
@@ -74,7 +77,7 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
         // Update position and linear velocity. Velocity is trimmed to maximum speed
         //this.position.mulAdd(linearVelocity, time);
         //this.linearVelocity.mulAdd(steering.linear, time).limit(this.getMaxLinearSpeed());
-        gameObject.getBody().setLinearVelocity(gameObject.getBody().getLinearVelocity().mulAdd(steering.linear, time).limit(getMaxLinearSpeed()));              
+        vehicle.getBody().setLinearVelocity(vehicle.getBody().getLinearVelocity().mulAdd(steering.linear, time).limit(getMaxLinearSpeed()));
         // Update orientation and angular velocity
         
         //this.orientation += angularVelocity * time;
@@ -82,14 +85,14 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
 
     }
     
-    public GameCharacter getGameObject() {
-    	return gameObject;
+    public GameCharacter getVehicle() {
+    	return vehicle;
     }
 
 	@Override
 	public float getMaxLinearSpeed() {
 		// TODO Auto-generated method stub
-		return 10;
+		return 10f;
 	}
 
 	@Override
@@ -101,7 +104,7 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
 	@Override
 	public float getMaxLinearAcceleration() {
 		// TODO Auto-generated method stub
-		return 10;
+		return 10f;
 	}
 
 	@Override
@@ -137,7 +140,7 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
 	@Override
 	public Vector2 getPosition() {
 		// TODO Auto-generated method stub
-		return gameObject.getBody().getPosition();
+		return vehicle.getBody().getPosition();
 	}
 
 	@Override
@@ -149,13 +152,13 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
 	@Override
 	public Vector2 getLinearVelocity() {
 		// TODO Auto-generated method stub
-		return gameObject.getBody().getLinearVelocity();
+		return vehicle.getBody().getLinearVelocity();
 	}
 
 	@Override
 	public float getAngularVelocity() {
 		// TODO Auto-generated method stub
-		return gameObject.getBody().getAngularVelocity();
+		return vehicle.getBody().getAngularVelocity();
 	}
 
 	@Override

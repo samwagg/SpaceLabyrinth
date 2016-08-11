@@ -34,10 +34,14 @@ public class Navigator {
 		mainMenuNavigator = new MainMenuNavigator();
 	}
 
+	public void startGame() {
+		openMainScreen();
+	}
 
 	private class CreditsMenuNavigator implements CreditsMenuListener {
 		@Override
 		public void screenTouched() {
+			game.getScreen().dispose();
 			openMainScreen();
 		}
 	}
@@ -106,7 +110,6 @@ public class Navigator {
 	}
 
 	private void openMainScreen() {
-		game.getScreen().dispose();
 		MainScreen screen = new MainScreen(game);
 		screen.registerMainMenuListener(mainMenuNavigator);
 		game.setScreen(screen);
