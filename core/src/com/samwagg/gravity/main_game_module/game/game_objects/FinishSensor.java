@@ -12,13 +12,16 @@ public class FinishSensor extends GameObject {
 	
 	public FinishSensor(float x, float y, World world, Constants constants) {
 
-		super(x, y, constants);
+		super(x + constants.TILE_SIZE, y + constants.TILE_SIZE, constants);
+
+		float physWidth = screenWidth * constants.PHYS_SCALE;
+		float physHeight = screenHeight * constants.PHYS_SCALE;
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(this.physX + .5f * constants.WALL_REGION.getRegionWidth() * constants.PHYS_SCALE, this.physY + .5f * constants.WALL_REGION.getRegionHeight()*constants.PHYS_SCALE);
+		bodyDef.position.set(this.physX + .5f*physWidth , this.physY + .5f*physHeight);
 		PolygonShape brickBox = new PolygonShape();
-		brickBox.setAsBox(constants.WALL_REGION.getRegionWidth()*constants.PHYS_SCALE*.5f, constants.WALL_REGION.getRegionHeight()*constants.PHYS_SCALE*.5f);
+		brickBox.setAsBox(physWidth*.5f, physHeight*.5f);
 		//ystem.out.println("brickBox " + brickBox.ge + " " + brickBox.height);
 		FixtureDef fixDef = new FixtureDef();
 		fixDef.shape = brickBox;
