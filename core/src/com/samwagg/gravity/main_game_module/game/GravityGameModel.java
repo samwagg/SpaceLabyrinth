@@ -637,7 +637,9 @@ public class GravityGameModel {
                 if (fixB.getUserData().getClass().equals(GameCharacter.class)) {
                     score -= 200;
                 }
-
+                else if (fixB.getUserData().getClass().equals(AICharacter.class)) {
+                    ((AICharacter) fixB.getUserData()).explode();
+                }
 
 
             }
@@ -653,6 +655,9 @@ public class GravityGameModel {
 
                 if (fixA.getUserData().getClass().equals(GameCharacter.class)) {
                     score -= 200;
+                }
+                else if (fixA.getUserData().getClass().equals(AICharacter.class)) {
+                    ((AICharacter) fixA.getUserData()).explode();
                 }
             }
         }
