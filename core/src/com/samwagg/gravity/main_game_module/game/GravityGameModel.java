@@ -174,7 +174,9 @@ public class GravityGameModel {
                         endSensors.add(new com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor(xPos, yPos,world,game.constants));
                         break;
                     case AI_START:
-                        enemies.add(new AICharacter(xPos, yPos, world, game.constants));
+                        AICharacter enemy = new AICharacter(xPos, yPos, world, game.constants);
+                        enemy.updatePosition();
+                        enemies.add(enemy);
                         break;
                     default:
                         ;// Do nothing
