@@ -126,7 +126,7 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         Viewport stageViewport = new ExtendViewport(1800, 900);
         stage = new Stage(stageViewport);
 
-//        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(vSetter.getInputProcessor());
 
         table = new Table();
         table.setFillParent(true);
