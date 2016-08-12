@@ -1,6 +1,7 @@
 package com.samwagg.gravity.main_game_module.game.game_objects;
 
 import com.badlogic.gdx.ai.steer.Steerable;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -16,24 +17,33 @@ public class GameCharacter extends GameObject implements Steerable<Vector2> {
 
 	public GameCharacter(float screenX, float screenY, World world, Constants constants) {
 		super(screenX+constants.TILE_SIZE, screenY+constants.TILE_SIZE, constants.ATLAS.createSprite("Ship"), constants);
-				
+		setupBody(world);
+
+	}
+
+	protected GameCharacter(float screenX, float screenY, World world, Sprite sprite, Constants constants) {
+		super(screenX+constants.TILE_SIZE, screenY+constants.TILE_SIZE, sprite, constants);
+		setupBody(world);
+	}
+
+	private void setupBody(World world) {
 		BodyDef bodyDef = new BodyDef();
-	    bodyDef.type = BodyType.DynamicBody;
-	    bodyDef.allowSleep = false;
-	    bodyDef.position.set(this.physX, this.physY);
-	    FixtureDef charFixtureDef = new FixtureDef();
-	    CircleShape circle = new CircleShape();
-	    circle.setRadius(constants.CHAR_SPRITE.getHeight()/2*constants.PHYS_SCALE);
-	    charFixtureDef.shape = circle;
-	    charFixtureDef.density = 10f;
-	    charFixtureDef.friction = 0f;
-	    charFixtureDef.restitution = .4f;
-	    
+		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.allowSleep = false;
+		bodyDef.position.set(this.physX, this.physY);
+		FixtureDef charFixtureDef = new FixtureDef();
+		CircleShape circle = new CircleShape();
+		circle.setRadius(constants.CHAR_SPRITE.getHeight()/2*constants.PHYS_SCALE);
+		charFixtureDef.shape = circle;
+		charFixtureDef.density = 10f;
+		charFixtureDef.friction = 0f;
+		charFixtureDef.restitution = .4f;
+
 		body = world.createBody(bodyDef);
 		Fixture fixture = body.createFixture(charFixtureDef);
 		fixture.setUserData(this);
-		
-	    circle.dispose();		
+
+		circle.dispose();
 	}
 
 	public void explode() {
