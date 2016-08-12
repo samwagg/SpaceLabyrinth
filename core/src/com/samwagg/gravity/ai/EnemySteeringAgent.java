@@ -4,6 +4,7 @@ import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.ai.steer.behaviors.Pursue;
+import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter;
@@ -31,8 +32,8 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
      }
 
      public void pursue(Steerable<Vector2> thingToPursue) {
-		 Pursue<Vector2> pursue = new Pursue<Vector2>(this, thingToPursue);
-		 steeringBehavior = pursue;
+		 Seek<Vector2> seek = new Seek<Vector2>(this, thingToPursue);
+		 steeringBehavior = seek;
 	 }
 
     /* Here you should implement missing methods inherited from Steerable */
