@@ -6,28 +6,42 @@ filter: Linear,Linear
 repeat: xy
 Ship
   rotate: false
-  xy: 2, 2
+  xy: 2, 68
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 arrow_lit
   rotate: false
-  xy: 2, 68
+  xy: 2, 134
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 arrow_unlit
   rotate: false
-  xy: 260, 68
+  xy: 260, 134
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
+enemy
+  rotate: false
+  xy: 776, 326
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+enemy_lit
+  rotate: false
+  xy: 2, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 wall
   rotate: false
-  xy: 518, 68
+  xy: 518, 134
   size: 256, 256
   orig: 256, 256
   offset: 0, 0

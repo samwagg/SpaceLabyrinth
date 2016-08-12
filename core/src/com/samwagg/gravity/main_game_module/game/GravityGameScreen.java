@@ -179,6 +179,9 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
 
         for (AICharacter enemy : model.getEnemies()) {
             enemy.getSprite().draw(game.batch);
+            if (enemy.isPursuing()) {
+                enemy.getSprite().rotate(1f);
+            }
         }
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
