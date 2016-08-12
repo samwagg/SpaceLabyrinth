@@ -96,7 +96,7 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
 	@Override
 	public float getMaxLinearSpeed() {
 		// TODO Auto-generated method stub
-		return 10f;
+		return 100f;
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
 	@Override
 	public float getMaxLinearAcceleration() {
 		// TODO Auto-generated method stub
-		return 10f;
+		return 20f;
 	}
 
 	@Override
