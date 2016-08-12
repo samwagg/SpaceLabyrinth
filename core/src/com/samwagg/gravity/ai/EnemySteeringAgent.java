@@ -36,6 +36,10 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
 		 steeringBehavior = seek;
 	 }
 
+	 public SteeringBehavior<Vector2> getSteeringBehavior() {
+	 	return steeringBehavior;
+	 }
+
     /* Here you should implement missing methods inherited from Steerable */
 
     // Actual implementation depends on your coordinate system.
