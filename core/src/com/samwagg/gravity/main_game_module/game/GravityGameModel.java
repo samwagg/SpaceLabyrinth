@@ -63,6 +63,8 @@ public class GravityGameModel {
 
     private LevelCompleteListener callback;
 
+    private static final float AI_ACTIVATION_DISTANCE = 15;
+
 
 
     public GravityGameModel(final GravityGame game, Map map) {
@@ -184,9 +186,9 @@ public class GravityGameModel {
                 }
             }
         }
-        for (AICharacter enemy : enemies) {
-            enemy.pursue(character);
-        }
+//        for (AICharacter enemy : enemies) {
+//            enemy.pursue(character);
+//        }
 
     }
 
@@ -351,9 +353,13 @@ public class GravityGameModel {
                     gravFieldDirection = pair.force.getRotation() * (float) Math.PI / 180;
                     pair.character.getBody().applyForceToCenter((float) (200 * Math.cos(gravFieldDirection)), (float) (200 * Math.sin(gravFieldDirection)), true);
                 }
+
                 AICharacter enemy;
                 for (Iterator<AICharacter> iter = enemies.iterator(); iter.hasNext(); ) {
                     enemy = iter.next();
+                    if (!enemy.isPursuing() && enemy.getBody().getPosition().dst(character.getBody().getPosition()) < AI_ACTIVATION_DISTANCE) {
+                        enemy.pursue(character);
+                    }
                     if (enemy.isExploding()) {
                         iter.remove();
                         world.destroyBody(enemy.getBody());
@@ -626,17 +632,28 @@ public class GravityGameModel {
                 explosions.add(new Explosion64(aiChar.getScreenX(), aiChar.getScreenY()));
                 explosionEvent = true;
                 aiChar.explode();
-                fixB.getBody().applyLinearImpulse(impulseToApply, fixB.getBody().getWorldCenter(), true);
+                fixB.getBody().applyLinearImpulse(impulseToApply, fixB.getBody().getLocalCenter(), true);
+
+                if (fixB.getUserData().getClass().equals(GameCharacter.class)) {
+                    score -= 200;
+                }
+
+
+
             }
             else if (fixB.getUserData().getClass().equals(AICharacter.class)) {
                 AICharacter aiChar = (AICharacter) fixB.getUserData();
                 Vector2 normal = contact.getWorldManifold().getNormal().nor();
-                Vector2 impulseToApply = normal.scl(1000f);
+                Vector2 impulseToApply = normal.scl(-1000f);
                 System.out.println("ai collision " + impulseToApply);
                 explosions.add(new Explosion64(aiChar.getScreenX(), aiChar.getScreenY()));
                 explosionEvent = true;
                 aiChar.explode();
-                fixA.getBody().applyLinearImpulse(impulseToApply, fixA.getBody().getWorldCenter(), true);
+                fixA.getBody().applyLinearImpulse(impulseToApply, fixA.getBody().getLocalCenter(), true);
+
+                if (fixA.getUserData().getClass().equals(GameCharacter.class)) {
+                    score -= 200;
+                }
             }
         }
     }
