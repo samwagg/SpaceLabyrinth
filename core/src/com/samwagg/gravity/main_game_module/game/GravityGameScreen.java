@@ -100,7 +100,7 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         Gdx.graphics.setVSync(true);
 
         music = Gdx.audio.newMusic(Gdx.files.internal("keith.mp3"));
-        music.setVolume(.1f);
+        music.setVolume(.2f);
         music.setLooping(true);
         music.play();
 
