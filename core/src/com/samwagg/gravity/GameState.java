@@ -23,13 +23,13 @@ public class GameState implements Serializable {
 			currentLevelByGalaxy.add(i, 1);
 			//maxLevelReachedByGalaxy.add(i, 1);
 		}
-		maxLevelReachedByGalaxy.add(0,7);
+		maxLevelReachedByGalaxy.add(0,1);
 		maxLevelReachedByGalaxy.add(1,1);
 		maxLevelReachedByGalaxy.add(2,2);
 		
 		galaxiesUnlocked = new ArrayList<Integer>();
 		galaxiesUnlocked.add(1);
-		galaxiesUnlocked.add(2);
-		galaxiesUnlocked.add(3);
+//		galaxiesUnlocked.add(2);
+//		galaxiesUnlocked.add(3);
 	}
 }
