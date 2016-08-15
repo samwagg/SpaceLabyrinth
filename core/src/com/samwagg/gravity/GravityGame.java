@@ -131,7 +131,7 @@ public class GravityGame extends Game {
 	
 	public void updateGameState(int galaxy, int level, int score) {
 		
-		gameState.currentLevelByGalaxy.set(galaxy-1, level);
+		gameState.currentLevelByGalaxy.set(galaxy-1, level+1);
 
 		System.out.println("galaxy = " + galaxy);
 		System.out.println("level = " + level);
