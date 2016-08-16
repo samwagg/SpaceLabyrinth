@@ -12,6 +12,7 @@ public class Constants {
 	public final float PHYS_SCALE = .05f;
 	public final int TILE_SIZE = 64;
 	public final int N_LEVELS = 7;
+	public final static int N_GALAXIES = 3;
 
 	public TextureAtlas ATLAS;
 
