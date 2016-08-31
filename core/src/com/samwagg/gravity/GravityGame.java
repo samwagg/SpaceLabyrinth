@@ -19,28 +19,23 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 //import com.samwagg.gravity.controller.LevelDownloadController;
 import com.samwagg.gravity.menus.main_menu.MainScreen;
 
-
+/**
+ * Top level class that provides point of entry and top level services such as saving game progress, playing game music,
+ * and setting the game's current screen
+ */
 public class GravityGame extends Game {
 
 	public SpriteBatch batch;
 	public ShapeRenderer shapeRenderer;
 	public BitmapFont font;
-	public TextureAtlas atlas;
-	
+
 	private Navigator controller;
 	private Music music;
 	
 	public static final float CONTACT_DECREMENT = .1f;
 
 	private GameState gameState;
-
 	public Constants constants;
-
-//	private LevelDownloadController downloadController;
-
-//	public GravityGame(LevelDownloadController controller) {
-//		downloadController = controller;
-//	}
 
 	@Override
 	public void create() {
@@ -94,6 +89,11 @@ public class GravityGame extends Game {
 		controller.startGame();
 	}
 
+	@Override
+	public void render() {
+		super.render();
+	}
+
 	public void playMenuMusic() {
 		music.setLooping(true);
 		music.play();
@@ -102,24 +102,14 @@ public class GravityGame extends Game {
 	public void stopMenuMusic() {
 		music.stop();
 	}
-	
+
 	public void setScreenAndDispose(Screen screen, Screen oldScreen) {
 		setScreen(screen);
-		
 	}
-	
-	public void resetGameProgress() {
-		gameState = new GameState(constants);
-	}
-	
-	public void mainMenuStartPressed(Screen oldScreen) {
-		//setScreen(new LevelSelectScreen(this, gameState));
-	}
-	 
-	public void render() {
-		super.render();
-	}
-	
+
+	/**
+	 * dispose all disposable resources managed by GravityGame instance
+     */
 	public void dispose() {
 		batch.dispose();
 		shapeRenderer.dispose();
@@ -128,7 +118,13 @@ public class GravityGame extends Game {
 	public GameState getGameState() {
 		return this.gameState;
 	}
-	
+
+	/**
+	 * Updates current GameState object to reflect progress of completed level
+	 * @param galaxy
+	 * @param level
+	 * @param score
+     */
 	public void updateGameState(int galaxy, int level, int score) {
 
 		if (level < constants.N_LEVELS) {
