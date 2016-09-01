@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data class holding game state information to be persisted. 
+ */
 public class GameState implements Serializable {
 	
 	public HighScores hs;
@@ -13,7 +16,7 @@ public class GameState implements Serializable {
 
 	public int totalGalaxies = 3;
 	public List<Integer> galaxiesUnlocked;
-	
+
 	public GameState(Constants constants) {
 		hs = new HighScores(this, constants);
 		

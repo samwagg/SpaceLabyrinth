@@ -13,6 +13,9 @@ import com.samwagg.gravity.menus.level_select_menu.LevelSelectScreen;
 import com.samwagg.gravity.menus.main_menu.MainMenuListener;
 import com.samwagg.gravity.menus.main_menu.MainScreen;
 
+/**
+ * Manages navigation in response to game and menu events
+ */
 public class Navigator {
 
 	private GravityGame game;

@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Wrapper around a list of arrays, where each value is a high score
+ */
 public class HighScores implements Serializable {
 
 	public List<Integer[]> galaxies = new ArrayList<Integer[]>();
