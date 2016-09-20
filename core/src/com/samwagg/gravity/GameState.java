@@ -5,8 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Deprecated: using libgdx preferences via GalaxyState class going forward. This class remains to enable
+ * migration to the new persistence implementation
+ *
  * Data class holding game state information to be persisted.
  */
+@Deprecated
 public class GameState implements Serializable {
 	
 	public HighScores hs;

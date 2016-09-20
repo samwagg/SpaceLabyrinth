@@ -7,6 +7,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.World;
 
+/**
+ *	Deprecated: This class exists because it is a dependency of the deprecated GameState class and is needed for
+ *  persistence migration to GalaxyState.
+ */
+@Deprecated
 public class Constants {
 	
 	public final float PHYS_SCALE = .05f;
