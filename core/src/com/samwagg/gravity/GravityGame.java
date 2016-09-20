@@ -41,6 +41,8 @@ public class GravityGame extends Game {
 	private static final String RESOURCE_ENEMY_LIT = "enemy_lit";
 	private static final String RESOURCE_WALL = "wall";
 
+	private static final String MENU_MUSIC_FILE = "alliance.mp3";
+
 	public SpriteBatch batch;
 	public ShapeRenderer shapeRenderer;
 	public BitmapFont font;
@@ -56,8 +58,6 @@ public class GravityGame extends Game {
 	private GameState gameState;
 	private ViewResources gameResources;
 
-	private int levelsPerGalaxy;
-	private int numGalaxies;
 
 	@Override
 	public void create() {
@@ -65,41 +65,7 @@ public class GravityGame extends Game {
 		GalaxyReader galaxyReader = new GalaxyReader();
 		FileHandle resourcePack = Gdx.files.internal(RESOURCE_PACK);
 
-//		downloadController.launchLevelAquisitionModule();
-
 		controller = new Navigator(this);
-
-//		FileHandle file = Gdx.files.local("gamestate.bin");
-//
-//		InputStream stream = null;
-//		if (file.exists()) {
-//			System.out.println("here");
-//			stream = file.read();
-//			ObjectInputStream objStream = null;
-//
-//			try {
-//				objStream = new ObjectInputStream(stream);
-//				gameState = (GameState) objStream.readObject();
-//			} catch (InvalidClassException e) {
-//				gameState = new GameState(constants);
-//			} catch (ClassNotFoundException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} finally {
-//				try {
-//					objStream.close();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//
-//		} else {
-//			gameState = new GameState(constants);
-//		}
 
 		gameResources = new ViewResources(resourcePack, RESOURCE_SHIP, RESOURCE_ENEMY_UNLIT, RESOURCE_ENEMY_LIT,
 				RESOURCE_WALL, RESOURCE_FORCE_LIT, RESOURCE_FORCE_UNLIT);
@@ -125,14 +91,12 @@ public class GravityGame extends Game {
 			galDir = Gdx.files.internal(GALAXIES_DIRECTORY + "/" + GALAXY_DIRECTORY_BASE + i);
 		}
 
-		System.out.println("num galaxies = " + galaxies.size());
-
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
 		font = new BitmapFont();
 
-		music = Gdx.audio.newMusic(Gdx.files.internal("alliance.mp3"));
+		music = Gdx.audio.newMusic(Gdx.files.internal(MENU_MUSIC_FILE));
 		music.play();
 
 		controller.startGame();
@@ -162,6 +126,55 @@ public class GravityGame extends Game {
 	public void dispose() {
 		batch.dispose();
 		shapeRenderer.dispose();
+	}
+
+	/**
+	 * Updates current GameState object to reflect progress of completed level
+	 * @param galaxy
+	 * @param level
+	 * @param score
+     */
+	public void updateGameState(Galaxy galaxy, int level, int score) {
+
+		GalaxyState state = new GalaxyState(galaxy.getGalaxyId());
+
+		if (state.getHighScore(level) < score) {
+			state.changeHighScore(level, score);
+		}
+
+		if (level + 2 <= galaxy.getLevels().size()) {
+			state.changeCurrentLevel(level + 1);
+
+			if (state.getLevelReached() < level) {
+				state.changeLevelReached(level + 1);
+			}
+		}
+		else if (!state.isFinished()) {
+			state.changeIsFinished(true);
+			unlockNextGalaxy();
+		}
+
+		state.persistChanges();
+	}
+
+	private List<Galaxy> getGalaxiesByUnlockedStatus(boolean unlocked) {
+		System.out.println("Getting galaxies in unlcoekd status " + unlocked);
+		GalaxyState state;
+		List<Galaxy> selectedGalaxies = new ArrayList<Galaxy>();
+		for (Galaxy galaxy : galaxies) {
+			state = new GalaxyState(galaxy.getGalaxyId());
+			System.out.println("galaxy has state " + state.isUnlocked());
+			if (state.isUnlocked() == unlocked) {
+				selectedGalaxies.add(galaxy);
+			}
+		}
+		return selectedGalaxies;
+	}
+
+	private void unlockNextGalaxy() {
+		Galaxy galToUnlock = getUnlockedGalaxies().get(0);
+		GalaxyState state = new GalaxyState(galToUnlock.getGalaxyId());
+		state.changeIsUnlocked(true);
 	}
 
 	public ViewResources getGameResources() {
@@ -194,98 +207,6 @@ public class GravityGame extends Game {
 
 	public int getHighScore(Galaxy galaxy, int level) {
 		return galaxyIdToState.get(galaxy.getGalaxyId()).getHighScore(level);
-	}
-
-	/**
-	 * Updates current GameState object to reflect progress of completed level
-	 * @param galaxy
-	 * @param level
-	 * @param score
-     */
-	public void updateGameState(Galaxy galaxy, int level, int score) {
-
-		GalaxyState state = new GalaxyState(galaxy.getGalaxyId());
-
-		if (state.getHighScore(level) < score) {
-			state.changeHighScore(level, score);
-		}
-
-		if (level + 2 <= galaxy.getLevels().size()) {
-			state.changeCurrentLevel(level + 1);
-
-			if (state.getLevelReached() < level) {
-				state.changeLevelReached(level + 1);
-			}
-		}
-		else if (!state.isFinished()) {
-			state.changeIsFinished(true);
-			unlockNextGalaxy();
-		}
-
-		state.persistChanges();
-//
-//
-//		if (level < constants.N_LEVELS) {
-//			gameState.currentLevelByGalaxy.set(galaxy - 1, level + 1);
-//		}
-//
-//		System.out.println("galaxy = " + galaxy);
-//		System.out.println("level = " + level);
-//
-//		if (gameState.maxLevelReachedByGalaxy.get(galaxy-1) < level + 1) {
-//			gameState.maxLevelReachedByGalaxy.set(galaxy-1, level + 1);
-//		}
-//
-//		System.out.println("maxLevel = " + gameState.maxLevelReachedByGalaxy.get(0) + " and galaxiesUnlocked = " + gameState.galaxiesUnlocked.contains(2));
-//		if (gameState.maxLevelReachedByGalaxy.get(0) == constants.N_LEVELS + 1 && !gameState.galaxiesUnlocked.contains(Constants.N_GALAXIES)) {
-//			gameState.galaxiesUnlocked.add(galaxy+1);
-//			gameState.maxLevelReachedByGalaxy.set(galaxy, 1);
-//			gameState.currentLevelByGalaxy.set(galaxy, 1);
-//		}
-//
-//		if (gameState.hs.galaxies.get(galaxy-1)[level-1] < score) {
-//			gameState.hs.galaxies.get(galaxy-1)[level-1] = score;
-//			FileHandle file = Gdx.files.local("gamestate.bin");
-//			OutputStream stream = file.write(false, 100000);
-//			ObjectOutputStream objStream = null;
-//			try {
-//				objStream = new ObjectOutputStream(stream);
-//				objStream.writeObject(gameState);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} finally {
-//				try {
-//					stream.close();
-//					objStream.close();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//
-//			}
-//
-//		}
-	}
-
-	private List<Galaxy> getGalaxiesByUnlockedStatus(boolean unlocked) {
-		System.out.println("Getting galaxies in unlcoekd status " + unlocked);
-		GalaxyState state;
-		List<Galaxy> selectedGalaxies = new ArrayList<Galaxy>();
-		for (Galaxy galaxy : galaxies) {
-			state = new GalaxyState(galaxy.getGalaxyId());
-			System.out.println("galaxy has state " + state.isUnlocked());
-			if (state.isUnlocked() == unlocked) {
-				selectedGalaxies.add(galaxy);
-			}
-		}
-		return selectedGalaxies;
-	}
-
-	private void unlockNextGalaxy() {
-		Galaxy galToUnlock = getUnlockedGalaxies().get(0);
-		GalaxyState state = new GalaxyState(galToUnlock.getGalaxyId());
-		state.changeIsUnlocked(true);
 	}
 
 }
