@@ -19,8 +19,6 @@ public class ViewResources {
     private final TextureRegion enemyUnlit;
     private final TextureRegion enemyLit;
 
-
-
     public ViewResources(FileHandle pack, String shipTexture, String enemyUnlitTexture, String enemyLitTexture,
                          String wallTexture, String arrowLitTexture, String arrowUnlitTexture) {
         atlas = new TextureAtlas(pack);

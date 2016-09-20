@@ -19,18 +19,17 @@ import com.samwagg.gravity.GravityGame;
 
 public class LevelCompleteScreen implements Screen, LevelCompleteMenu {
 
-	private LevelCompleteMenuListener listener;
-	private Stage stage;
-	private Table table;
-	// For debug drawing
-	private ShapeRenderer shapeRenderer;
-	private int level;
-	private GravityGame game;
+    private LevelCompleteMenuListener listener;
+    private Stage stage;
+    private Table table;
+    private ShapeRenderer shapeRenderer;
+    private int level;
+    private GravityGame game;
 
-	private boolean finalLevel;
-	
+    private boolean finalLevel;
+
     private boolean buttonClicked = false;
-    
+
     private final static String NEXT_LEVEL_BUT_TEXT = "Next Level";
     private final static String RETRY_BUT_TEXT = "Retry";
     private final static String MENU_BUT_TEXT = "Menu";
@@ -39,132 +38,132 @@ public class LevelCompleteScreen implements Screen, LevelCompleteMenu {
 
     private final float BUT_WIDTH = 500;
 
-	public LevelCompleteScreen(final GravityGame game, int score, int highScore, boolean isFinalLevel) {
-		
-		finalLevel = isFinalLevel;
+    public LevelCompleteScreen(final GravityGame game, int score, int highScore, boolean isFinalLevel) {
 
-	    stage = new Stage(new ExtendViewport(1800,900));
-	    
-	    Gdx.input.setInputProcessor(stage);
-	    
-	    this.game = game;
-	    
-	    table = new Table();
+        finalLevel = isFinalLevel;
+
+        stage = new Stage(new ExtendViewport(1800, 900));
+
+        Gdx.input.setInputProcessor(stage);
+
+        this.game = game;
+
+        table = new Table();
 //	    table.setFillParent(true);
-	    stage.addActor(table);
-	    Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-	    table.setSkin(skin);
+        stage.addActor(table);
+        Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+        table.setSkin(skin);
 
-		table.setBounds(0,0,stage.getWidth(),stage.getHeight());
-		table.getColor().a=0;
+        table.setBounds(0, 0, stage.getWidth(), stage.getHeight());
+        table.getColor().a = 0;
 //		MoveToAction transAct = new MoveToAction();
 //		transAct.setPosition(0,0);
 //		transAct.setDuration(TRANSITION_DURATION);
 
-		AlphaAction act = new AlphaAction();
-		act.setAlpha(1f);
-		act.setDuration(TRANSITION_DURATION);
-		table.addAction(act);
+        AlphaAction act = new AlphaAction();
+        act.setAlpha(1f);
+        act.setDuration(TRANSITION_DURATION);
+        table.addAction(act);
 
 
-		Button nextLevelButton = new TextButton(finalLevel? FINISH_TEXT : NEXT_LEVEL_BUT_TEXT , skin);
-		Button retryLevelButton = new TextButton(RETRY_BUT_TEXT ,skin);
-		Button menuButton = new TextButton(MENU_BUT_TEXT, skin);
-	    
-	    nextLevelButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				if (listener != null) {
-					if (finalLevel) listener.galaxyFinished();
-					else listener.nextLevelSelected();
-				}
-			}
-	    });
-	    
-	    retryLevelButton.addListener(new ClickListener() {
+        Button nextLevelButton = new TextButton(finalLevel ? FINISH_TEXT : NEXT_LEVEL_BUT_TEXT, skin);
+        Button retryLevelButton = new TextButton(RETRY_BUT_TEXT, skin);
+        Button menuButton = new TextButton(MENU_BUT_TEXT, skin);
 
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				if (listener != null) listener.retryLevelSelected();
-			}
-	    	
-	    });
-	    
-	    menuButton.addListener(new ClickListener() {
-	    	@Override
-			public void clicked(InputEvent event, float x, float y) { 				
-	    		if (listener != null) listener.mainMenuSelected();
-	    	}
-	    });
-	    
-	    Label headLabel = new Label("Level Complete", skin);
-	    Label scoreLabel = new Label("Score: " + score, skin);
-	    Label hScoreLabel = new Label("High Score = " + highScore, skin);
-	    
-	    table.add(headLabel);
-	    table.row();
-	    table.add(scoreLabel);
-	    table.row();
-	    table.add(hScoreLabel);
-	    table.row();
-	    
-	  
-	    table.add(nextLevelButton).padTop(50).width(BUT_WIDTH);
-	    table.row(); 
-	    table.add(retryLevelButton).width(BUT_WIDTH).padTop(50);
-	    table.row();
-	    table.add(menuButton).width(BUT_WIDTH).padTop(50);
-	    
-	    shapeRenderer = new ShapeRenderer();
+        nextLevelButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (listener != null) {
+                    if (finalLevel) listener.galaxyFinished();
+                    else listener.nextLevelSelected();
+                }
+            }
+        });
 
-	    // Add widgets to the table here.
-	}
+        retryLevelButton.addListener(new ClickListener() {
 
-	public void resize (int width, int height) {
-	    stage.getViewport().update(width, height, true);
-	}
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (listener != null) listener.retryLevelSelected();
+            }
+
+        });
+
+        menuButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (listener != null) listener.mainMenuSelected();
+            }
+        });
+
+        Label headLabel = new Label("Level Complete", skin);
+        Label scoreLabel = new Label("Score: " + score, skin);
+        Label hScoreLabel = new Label("High Score = " + highScore, skin);
+
+        table.add(headLabel);
+        table.row();
+        table.add(scoreLabel);
+        table.row();
+        table.add(hScoreLabel);
+        table.row();
 
 
-	public void dispose() {
-	    stage.dispose();
-	    shapeRenderer.dispose();
-	}
+        table.add(nextLevelButton).padTop(50).width(BUT_WIDTH);
+        table.row();
+        table.add(retryLevelButton).width(BUT_WIDTH).padTop(50);
+        table.row();
+        table.add(menuButton).width(BUT_WIDTH).padTop(50);
 
-	@Override
-	public void show() {
-		Gdx.input.setInputProcessor(stage);
-	}
+        shapeRenderer = new ShapeRenderer();
 
-	@Override
-	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-	    stage.act(delta);
-	    stage.draw();
+        // Add widgets to the table here.
+    }
 
-	    table.drawDebug(shapeRenderer); // This is optional, but enables debug lines for tables.
-		
-	}
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+    }
 
-	@Override
-	public void pause() {
 
-	}
+    public void dispose() {
+        stage.dispose();
+        shapeRenderer.dispose();
+    }
 
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void show() {
+        Gdx.input.setInputProcessor(stage);
+    }
 
-	@Override
-	public void hide() {
-		Gdx.input.setInputProcessor(null);
-	}
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-	@Override
-	public void registerLevelCompleteMenuListener(LevelCompleteMenuListener listener) {
-		this.listener = listener;
-	}
+        stage.act(delta);
+        stage.draw();
+
+        table.drawDebug(shapeRenderer); // This is optional, but enables debug lines for tables.
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
+    }
+
+    @Override
+    public void registerLevelCompleteMenuListener(LevelCompleteMenuListener listener) {
+        this.listener = listener;
+    }
 }
