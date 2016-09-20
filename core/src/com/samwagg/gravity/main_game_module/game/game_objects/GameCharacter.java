@@ -15,25 +15,19 @@ public class GameCharacter extends GameObject implements Steerable<Vector2> {
 
 	protected boolean isExploding;
 
-	public GameCharacter(float screenX, float screenY, World world, Constants constants) {
-		super(screenX+constants.TILE_SIZE, screenY+constants.TILE_SIZE, constants.ATLAS.createSprite("Ship"), constants);
-		setupBody(world);
-
+	public GameCharacter(float initX, float initY, float radius, World world) {
+		super(initX, initY, radius, radius, world);
 	}
 
-	protected GameCharacter(float screenX, float screenY, World world, Sprite sprite, Constants constants) {
-		super(screenX+constants.TILE_SIZE, screenY+constants.TILE_SIZE, sprite, constants);
-		setupBody(world);
-	}
-
-	private void setupBody(World world) {
+	@Override
+	protected void setupBody(World world) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.allowSleep = false;
-		bodyDef.position.set(this.physX, this.physY);
+		bodyDef.position.set(this.initX, this.initY);
 		FixtureDef charFixtureDef = new FixtureDef();
 		CircleShape circle = new CircleShape();
-		circle.setRadius(constants.CHAR_SPRITE.getHeight()/2*constants.PHYS_SCALE);
+		circle.setRadius(height/2);
 		charFixtureDef.shape = circle;
 		charFixtureDef.density = 10f;
 		charFixtureDef.friction = 0f;
@@ -44,6 +38,11 @@ public class GameCharacter extends GameObject implements Steerable<Vector2> {
 		fixture.setUserData(this);
 
 		circle.dispose();
+	}
+
+	@Override
+	public void step(float delta) {
+		// nothing to do for GameCharacter
 	}
 
 	public void explode() {

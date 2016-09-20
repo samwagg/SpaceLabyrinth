@@ -51,11 +51,11 @@ public class Navigator {
 
 	private class GalaxySelectNavigator implements GalaxySelectCallback {
 		@Override
-		public void galaxySelected(int galaxy) {
+		public void galaxySelected(Galaxy galaxy) {
 			game.getScreen().dispose();
 			LevelSelectScreen screen = new LevelSelectScreen(game, galaxy,
-					game.getGameState().currentLevelByGalaxy.get(galaxy-1),
-					game.getGameState().maxLevelReachedByGalaxy.get(galaxy-1), game.constants);
+					game.getCurrentLevel(galaxy),
+					game.getLevelReached(galaxy));
 			screen.registerLevelSelectMenuListener(levelSelectNavigator);
 			game.setScreen(screen);
 
@@ -64,12 +64,11 @@ public class Navigator {
 
 	private class LevelSelectNavigator implements LevelSelectMenuListener {
 		@Override
-		public void levelSelected(int galaxy, int level) {
+		public void levelSelected(Galaxy galaxy, int level) {
 			game.stopMenuMusic();
-			facade = new MainGameFacade(game, galaxy, level);
+			facade = new MainGameFacade(game, game.getGameResources(), galaxy, level);
 			facade.registerMainGameExternalRequestsListener(mainGameNavigator);
 			System.out.println("level selected");
-
 		}
 
 		@Override
@@ -87,7 +86,7 @@ public class Navigator {
 		}
 
 		@Override
-		public void onGalaxyCompleted(int galaxy) {
+		public void onGalaxyCompleted(Galaxy galaxy) {
 			System.out.println("levelCompleted");
 			CreditsScreen screen = new CreditsScreen(game);
 			screen.registerCreditsMenuListener(creditsMenuNavigator);
@@ -107,7 +106,7 @@ public class Navigator {
 
 	private void openGalaxySelect() {
 		game.getScreen().dispose();
-		GalaxySelectScreen screen = new GalaxySelectScreen(game.getGameState().galaxiesUnlocked);
+		GalaxySelectScreen screen = new GalaxySelectScreen(game.getUnlockedGalaxies(), game.getLockedGalaxies());
 		game.setScreen(screen);
 		screen.registerGalaxySelectCallback(galaxySelectNavigator);
 	}

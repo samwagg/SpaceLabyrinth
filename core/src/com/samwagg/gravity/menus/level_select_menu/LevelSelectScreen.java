@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.samwagg.gravity.Constants;
+import com.samwagg.gravity.Galaxy;
 import com.samwagg.gravity.GravityGame;
 
 public class LevelSelectScreen implements Screen, LevelSelectMenu {
@@ -30,7 +31,7 @@ public class LevelSelectScreen implements Screen, LevelSelectMenu {
 
 	private final Texture background;
 	private LevelSelectMenuListener listener;
-	int galaxy;
+	Galaxy galaxy;
 	
 	Stage stage;
 	
@@ -62,12 +63,13 @@ public class LevelSelectScreen implements Screen, LevelSelectMenu {
 	
 	private final float SHIP_ANIM_DUR = .5f;
 	
-	public LevelSelectScreen(GravityGame game, int galaxy, int currentLevel, int maxLevelReached, Constants constants) {
+	public LevelSelectScreen(GravityGame game, Galaxy galaxy, int currentLevel, int maxLevelReached) {
 		this.game = game;
 		this.galaxy = galaxy;
 
 		System.out.println("Max level reached = " + maxLevelReached + " galaxy = " + galaxy);
 
+		int numLevels = galaxy.getLevels().size();
 		currentSelection = currentLevel;
 		this.maxLevelReached = maxLevelReached;
 		
@@ -82,11 +84,11 @@ public class LevelSelectScreen implements Screen, LevelSelectMenu {
 		
 	    stage = new Stage(new ExtendViewport(1600,800));
 
-		for (int i = 1; i <= constants.N_LEVELS; i++) {
+		for (int i = 0; i < numLevels; i++) {
 			System.out.println("Making icon for level " + i);
-			Sprite leveli = maxLevelReached >= i ? atlas.createSprite("Dots", i) : atlas.createSprite("Dotsr", i);
+			Sprite leveli = maxLevelReached >= i ? atlas.createSprite("Dots", i+1) : atlas.createSprite("Dotsr", i+1);
 			leveli.setScale(.25f);
-			leveli.setCenter(camera.viewportWidth*(i-.5f)*1/constants.N_LEVELS,  camera.viewportHeight* icon_pos[i-1]);
+			leveli.setCenter(camera.viewportWidth*(i+.5f)*1/numLevels,  camera.viewportHeight* icon_pos[i]);
 			levels.add(leveli);
 		}
 		
@@ -149,7 +151,7 @@ public class LevelSelectScreen implements Screen, LevelSelectMenu {
 		container.left();
 
 		
-		Sprite currentLevelSprite = levels.get(currentSelection-1);
+		Sprite currentLevelSprite = levels.get(currentSelection);
 		ship = new ShipActor(currentLevelSprite.getX() + currentLevelSprite.getWidth()*.5f, currentLevelSprite.getY() + .75f*currentLevelSprite.getHeight());
 		ship.setScale(.5f);
 	}
@@ -178,8 +180,8 @@ public class LevelSelectScreen implements Screen, LevelSelectMenu {
 	    camera.unproject(touchInput);
 	    
 	    for (int i = 0; i < levels.size(); i++) {
-	    	if (Gdx.input.justTouched() && levels.get(i).getBoundingRectangle().contains(touchInput.x, touchInput.y) && i+1 <= maxLevelReached) {
-	    		if (i == currentSelection-1) {
+	    	if (Gdx.input.justTouched() && levels.get(i).getBoundingRectangle().contains(touchInput.x, touchInput.y) && i <= maxLevelReached) {
+	    		if (i == currentSelection) {
 	    			
 	    			// only allow level select if ship is done moving
 	    			if (ship.getActions().size == 0) {
@@ -191,7 +193,7 @@ public class LevelSelectScreen implements Screen, LevelSelectMenu {
 	    			System.out.println(maxLevelReached);
 	    		    System.out.println("currentSelection = " + currentSelection);
 
-	    			currentSelection = i + 1;
+	    			currentSelection = i;
 	    			
 	    			MoveToAction moveAction = new MoveToAction();
 	    			moveAction.setDuration(SHIP_ANIM_DUR);

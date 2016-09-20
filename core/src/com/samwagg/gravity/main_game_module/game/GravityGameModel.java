@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.samwagg.gravity.GravityGame;
-import com.samwagg.gravity.ai.EnemySteeringAgent;
 import com.samwagg.gravity.main_game_module.Map;
 import com.samwagg.gravity.main_game_module.game.game_objects.*;
 
@@ -25,13 +24,13 @@ public class GravityGameModel {
 
     private List<AICharacter> enemies;
     private List<AICharacter> explodingEnemies;
-    private com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter character;
-    private List<com.samwagg.gravity.main_game_module.game.game_objects.Wall> walls;
-    private List<com.samwagg.gravity.main_game_module.game.game_objects.GravField> gravFields;
+    private GameCharacter character;
+    private List<Wall> walls;
+    private List<GravField> gravFields;
     private List<ForceCharPair> activeGravCharPairs;
-    private List<com.samwagg.gravity.main_game_module.game.game_objects.MovingWall> movingWalls;
-    private List<com.samwagg.gravity.main_game_module.game.game_objects.Explosion64> explosions;
-    private List<com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor> endSensors;
+    private List<MovingWall> movingWalls;
+    private List<Explosion> explosions;
+    private List<FinishSensor> endSensors;
 
 
     private Vector2 gravVect;
@@ -50,8 +49,11 @@ public class GravityGameModel {
     private float score;
     private boolean levelFinished;
 
-    private final float WALL_WIDTH = 128;
-    private final float WALL_HEIGHT = 128;
+    private static final float WALL_WIDTH = 6.4f;
+    private static final float WALL_HEIGHT = 6.4f;
+    private static final float CHAR_RADIUS = 3.2f;
+    private static final float EXPLOSION_DURATION = 1;
+
     private float worldWidth;
     private float worldHeight;
     private float mapHeight;
@@ -100,13 +102,13 @@ public class GravityGameModel {
 
         enemies = new ArrayList<AICharacter>();
         explodingEnemies = new ArrayList<AICharacter>();
-        walls = new ArrayList<com.samwagg.gravity.main_game_module.game.game_objects.Wall>();
-        gravFields = new ArrayList<com.samwagg.gravity.main_game_module.game.game_objects.GravField>();
-        endSensors = new ArrayList<com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor>();
+        walls = new ArrayList<Wall>();
+        gravFields = new ArrayList<GravField>();
+        endSensors = new ArrayList<FinishSensor>();
         activeGravCharPairs = new ArrayList<ForceCharPair>();
-        movingWalls = new LinkedList<com.samwagg.gravity.main_game_module.game.game_objects.MovingWall>();
+        movingWalls = new LinkedList<MovingWall>();
 
-        explosions = new LinkedList<com.samwagg.gravity.main_game_module.game.game_objects.Explosion64>();
+        explosions = new LinkedList<Explosion>();
 
 //        gravVect = new Vector2(0, -3);
 //        world.setGravity(gravVect);
@@ -150,32 +152,30 @@ public class GravityGameModel {
                     case WALL:
                         System.out.println("making wall");
                         Rectangle block = extendTile(i, i, j, j, currTile, tileArray);
-                        walls.add(new com.samwagg.gravity.main_game_module.game.game_objects.Wall(xPos, yPos - WALL_HEIGHT * (block.height - 1), block.width * WALL_WIDTH, block.height * WALL_HEIGHT,world,game.constants));
+                        walls.add(new Wall(xPos + (block.width-1)*WALL_WIDTH/2, yPos - (block.height-1)*WALL_HEIGHT/2, block.width * WALL_WIDTH, block.height * WALL_HEIGHT,world));
                         break;
                     case START:
-                        character = new com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter(xPos, yPos,world,game.constants);
+                        character = new GameCharacter(xPos, yPos, CHAR_RADIUS, world);
                         System.out.println("i = " + i + " and j = " + j);
-                        character.updatePosition();
                         System.out.println("here at char");
                         break;
                     case FORCE_RIGHT:
-                        gravFields.add(new com.samwagg.gravity.main_game_module.game.game_objects.GravField(xPos, yPos, 0,world,game.constants));
+                        gravFields.add(new GravField(xPos, yPos, WALL_WIDTH, WALL_HEIGHT , 0, world));
                         break;
                     case FORCE_UP:
-                        gravFields.add(new com.samwagg.gravity.main_game_module.game.game_objects.GravField(xPos, yPos, 90,world,game.constants));
+                        gravFields.add(new GravField(xPos, yPos, WALL_WIDTH, WALL_HEIGHT , 90, world));
                         break;
                     case FORCE_LEFT:
-                        gravFields.add(new com.samwagg.gravity.main_game_module.game.game_objects.GravField(xPos, yPos, 180,world,game.constants));
+                        gravFields.add(new GravField(xPos, yPos, WALL_WIDTH, WALL_HEIGHT , 180, world));
                         break;
                     case FORCE_DOWN:
-                        gravFields.add(new com.samwagg.gravity.main_game_module.game.game_objects.GravField(xPos, yPos, 270,world,game.constants));
+                        gravFields.add(new GravField(xPos, yPos, WALL_WIDTH, WALL_HEIGHT , 270, world));
                         break;
                     case END:
-                        endSensors.add(new com.samwagg.gravity.main_game_module.game.game_objects.FinishSensor(xPos, yPos,world,game.constants));
+                        endSensors.add(new FinishSensor(xPos, yPos, WALL_WIDTH, WALL_HEIGHT, world));
                         break;
                     case AI_START:
-                        AICharacter enemy = new AICharacter(xPos, yPos, world, game.constants);
-                        enemy.updatePosition();
+                        AICharacter enemy = new AICharacter(xPos, yPos, CHAR_RADIUS, world);
                         enemies.add(enemy);
                         break;
                     default:
@@ -234,7 +234,11 @@ public class GravityGameModel {
                 k++;
             }
 
-            movingWalls.add(new com.samwagg.gravity.main_game_module.game.game_objects.MovingWall(j * WALL_WIDTH, -i * WALL_HEIGHT - (height - 1) * WALL_HEIGHT, width * WALL_WIDTH, height * WALL_HEIGHT, new Vector2(0, 0), new Vector2(-i * WALL_HEIGHT - rangeBelow * WALL_HEIGHT - (height - 1) * WALL_HEIGHT, -i * WALL_HEIGHT + rangeAbove * WALL_HEIGHT - (height - 1) * WALL_HEIGHT),world,true, speed, game.constants));
+            movingWalls.add(new MovingWall(j * WALL_WIDTH + (width-1)*WALL_WIDTH/2, -i * WALL_HEIGHT - (height-1)*WALL_HEIGHT/2,
+                    width * WALL_WIDTH, height * WALL_HEIGHT, new Vector2(0, 0),
+                    new Vector2(-i * WALL_HEIGHT - (height-1)*WALL_HEIGHT/2 - rangeBelow * WALL_HEIGHT,
+                            -i * WALL_HEIGHT - (height-1)*WALL_HEIGHT/2 + rangeAbove * WALL_HEIGHT),
+                    world, true, speed));
         }
 
         else if (tileArray[i][j + width] == Map.GameTile.RANGE_HOR
@@ -270,7 +274,11 @@ public class GravityGameModel {
                 k++;
             }
 
-            movingWalls.add(new com.samwagg.gravity.main_game_module.game.game_objects.MovingWall(j * WALL_WIDTH, -i * WALL_HEIGHT - (height - 1) * WALL_HEIGHT, width * WALL_WIDTH, height * WALL_HEIGHT, new Vector2(j * WALL_WIDTH - rangeLeft * WALL_WIDTH, j * WALL_WIDTH + rangeRight * WALL_WIDTH), new Vector2(0, 0),world,false, speed, game.constants));
+            movingWalls.add(new MovingWall(j * WALL_WIDTH + (width-1)*WALL_WIDTH/2, -i * WALL_HEIGHT - (height-1)*WALL_WIDTH/2,
+                    width * WALL_WIDTH, height * WALL_HEIGHT,
+                    new Vector2(j * WALL_WIDTH + (width-1)*WALL_WIDTH/2 - rangeLeft * WALL_WIDTH, j * WALL_WIDTH + (width-1)*WALL_WIDTH/2 + rangeRight * WALL_WIDTH),
+                    new Vector2(0, 0),
+                    world,false, speed));
         }
     }
 
@@ -330,7 +338,7 @@ public class GravityGameModel {
             if (countDown > 0) countDown -= delta;
             else {
                 if (score < 1 && !explosionBegun) {
-                    explosions.add(new com.samwagg.gravity.main_game_module.game.game_objects.Explosion64(character.getScreenX(), character.getScreenY()));
+                    explosions.add(new Explosion(character.getX(), character.getY(), EXPLOSION_DURATION));
                     explosionBegun = true;
                     explosionEvent = true;
                     shipGone = true;
@@ -338,10 +346,9 @@ public class GravityGameModel {
                     System.out.println("Beginning explosion");
                 }
 
-                for (Iterator<Explosion64> iter = explosions.iterator(); iter.hasNext(); ) {
-                    Explosion64 exp = iter.next();
+                for (Iterator<Explosion> iter = explosions.iterator(); iter.hasNext(); ) {
+                    Explosion exp = iter.next();
                     if (exp.done()) iter.remove();
-                    System.out.println("Explosion done: " + exp.done() + "\nExplosion CurrentFrame: " + exp.getCurrentFrame());
                 }
 
                 if (score < 1 && explosions.isEmpty() || restart) {
@@ -388,6 +395,14 @@ public class GravityGameModel {
 
     private void doPhysicsStep(float deltaTime) {
         float frameTime = Math.min(deltaTime, 0.25f);
+
+        for (Explosion exp : explosions) {
+            exp.step(deltaTime);
+        }
+        for (MovingWall wall : movingWalls) {
+            wall.move();
+        }
+
         accumulator += frameTime;
         while (accumulator >= 1 / 45f) {
 
@@ -395,15 +410,12 @@ public class GravityGameModel {
 
             if (score > 0 && !levelFinished) score--;
 
-            for (com.samwagg.gravity.main_game_module.game.game_objects.MovingWall wall : movingWalls) {
-                wall.move();
-            }
             accumulator -= 1 / 45f;
         }
-        character.updatePosition();
-        for (AICharacter enemy : enemies) {
-            enemy.updatePosition();
-        }
+//        character.updatePosition();
+//        for (AICharacter enemy : enemies) {
+//            enemy.updatePosition();
+//        }
     }
 
     public void setGravity(float x, float y) {
@@ -437,27 +449,31 @@ public class GravityGameModel {
         return countDown;
     }
 
-    public com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter getCharacter() {
+    public GameCharacter getCharacter() {
         return character;
     }
 
-    public List<com.samwagg.gravity.main_game_module.game.game_objects.Wall> getWalls() {
+    public List<Wall> getWalls() {
         return walls;
     }
 
-    public List<com.samwagg.gravity.main_game_module.game.game_objects.GravField> getGravFields() {
+    public List<GravField> getGravFields() {
         return gravFields;
     }
 
-    public List<com.samwagg.gravity.main_game_module.game.game_objects.MovingWall> getMovingWalls() {
+    public List<MovingWall> getMovingWalls() {
         return movingWalls;
+    }
+
+    public World getBox2dWorld() {
+        return world;
     }
 
     public List<AICharacter> getEnemies() {
         return enemies;
     }
 
-    public List<com.samwagg.gravity.main_game_module.game.game_objects.Explosion64> getExplosions() {
+    public List<Explosion> getExplosions() {
         return explosions;
     }
 
@@ -631,7 +647,7 @@ public class GravityGameModel {
                 Vector2 normal = contact.getWorldManifold().getNormal().nor();
                 Vector2 impulseToApply = normal.scl(1000f);
                 System.out.println("ai collision " + impulseToApply);
-                explosions.add(new Explosion64(aiChar.getScreenX(), aiChar.getScreenY()));
+                explosions.add(new Explosion(aiChar.getX(), aiChar.getY(), EXPLOSION_DURATION));
                 explosionEvent = true;
                 aiChar.explode();
                 fixB.getBody().applyLinearImpulse(impulseToApply, fixB.getBody().getLocalCenter(), true);
@@ -650,7 +666,7 @@ public class GravityGameModel {
                 Vector2 normal = contact.getWorldManifold().getNormal().nor();
                 Vector2 impulseToApply = normal.scl(-1000f);
                 System.out.println("ai collision " + impulseToApply);
-                explosions.add(new Explosion64(aiChar.getScreenX(), aiChar.getScreenY()));
+                explosions.add(new Explosion(aiChar.getX(), aiChar.getY(), EXPLOSION_DURATION));
                 explosionEvent = true;
                 aiChar.explode();
                 fixA.getBody().applyLinearImpulse(impulseToApply, fixA.getBody().getLocalCenter(), true);

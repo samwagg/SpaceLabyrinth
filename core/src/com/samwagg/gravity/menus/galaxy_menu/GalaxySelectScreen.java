@@ -5,6 +5,7 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -18,73 +19,94 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.samwagg.gravity.Galaxy;
 
 public class GalaxySelectScreen implements Screen, GalaxySelector {
 
+	private GalaxySelectCallback callbackObject;
 
-	GalaxySelectCallback callbackObject;
+//	private final TextureAtlas unlockedAtlas = new TextureAtlas(Gdx.files.internal("galaxy_unlocked_pack.atlas"));
+//	private final TextureAtlas lockedAtlas = new TextureAtlas(Gdx.files.internal("galaxy_locked_pack.atlas"));
+	List<Galaxy> unlockedGalaxies;
+	List<Galaxy> lockedGalaxies;
 
-	private final TextureAtlas unlockedAtlas = new TextureAtlas(Gdx.files.internal("galaxy_unlocked_pack.atlas"));
-	private final TextureAtlas lockedAtlas = new TextureAtlas(Gdx.files.internal("galaxy_locked_pack.atlas"));
+
 
 	Array<Sprite> galaxySprites;
 	
-	List<Integer> unlockedGalaxies;
+//	List<Integer> unlockedGalaxies;
 	
 	Stage stage;
 	Container<ScrollPane> container;
-	ScrollPane pane;;
+	ScrollPane pane;
 	HorizontalGroup group;
-
 	
-	
-	public GalaxySelectScreen(List<Integer> unlockedGalaxies) {
+	public GalaxySelectScreen(List<Galaxy> unlockedGalaxies, List<Galaxy> lockedGalaxies) {
 		this.unlockedGalaxies = unlockedGalaxies;
+		this.lockedGalaxies = lockedGalaxies;
 	}
 	
 	@Override
 	public void show() {
-				
 
 	    stage = new Stage(new ExtendViewport(1000,600));
 	    Gdx.input.setInputProcessor(stage);
 		group = new HorizontalGroup();
 	    pane = new ScrollPane(group);
 		container = new Container<ScrollPane>();
-
-		int i = 1;
-		
-		AtlasRegion galaxyRegion = 	unlockedGalaxies.contains(i)? 
-									unlockedAtlas.findRegion("galaxy_unlocked", i) :
-									lockedAtlas.findRegion("galaxy_locked", i);
-
-		while (galaxyRegion != null) {
-			ImageButton button = new ImageButton(new Image(galaxyRegion).getDrawable());
-          
-			final int buttonLevel = i;
-			
+		System.out.println("num unlocked gals = " + unlockedGalaxies.size());
+		for (final Galaxy galaxy : unlockedGalaxies) {
+			ImageButton button = new ImageButton(new Image(new Texture(galaxy.getUnlockedImageFile())).getDrawable());
 			button.addListener(new ClickListener() {
-	
+
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					if (unlockedGalaxies.contains(buttonLevel) && callbackObject != null) callbackObject.galaxySelected(buttonLevel);
+					if (callbackObject != null) callbackObject.galaxySelected(galaxy);
 				}
 			});
-			
 			group.addActor(button);
-			
-			//button.setPosition((float) Math.random() * stage.getViewport().getScreenWidth(), (float) Math.random() * stage.getViewport().getScreenHeight());
-			//button.getImage().setOrigin(Align.center);
-			
-			System.out.println("Adding button");
-			
-			i++;	
-			
-			galaxyRegion = 	unlockedGalaxies.contains(i)? 
-							unlockedAtlas.findRegion("galaxy_unlocked", i) :
-							lockedAtlas.findRegion("galaxy_locked", i);
+			System.out.println("adding button clickable");
 		}
-		
+
+		for (Galaxy galaxy : lockedGalaxies) {
+			group.addActor(new ImageButton(new Image(new Texture(galaxy.getLockedImageFile())).getDrawable()));
+			System.out.println("adding button not clickable");
+
+		}
+
+//		int i = 1;
+//
+//		AtlasRegion galaxyRegion = 	unlockedGalaxies.contains(i)?
+//									unlockedAtlas.findRegion("galaxy_unlocked", i) :
+//									lockedAtlas.findRegion("galaxy_locked", i);
+//
+//		while (galaxyRegion != null) {
+//			ImageButton button = new ImageButton(new Image(galaxyRegion).getDrawable());
+//
+//			final int buttonLevel = i;
+//
+//			button.addListener(new ClickListener() {
+//
+//				@Override
+//				public void clicked(InputEvent event, float x, float y) {
+//					if (unlockedGalaxies.contains(buttonLevel) && callbackObject != null) callbackObject.galaxySelected(buttonLevel);
+//				}
+//			});
+//
+//			group.addActor(button);
+//
+//			//button.setPosition((float) Math.random() * stage.getViewport().getScreenWidth(), (float) Math.random() * stage.getViewport().getScreenHeight());
+//			//button.getImage().setOrigin(Align.center);
+//
+//			System.out.println("Adding button");
+//
+//			i++;
+//
+//			galaxyRegion = 	unlockedGalaxies.contains(i)?
+//							unlockedAtlas.findRegion("galaxy_unlocked", i) :
+//							lockedAtlas.findRegion("galaxy_locked", i);
+//		}
+//
 		stage.addActor(container);
 		container.setActor(pane);
 		container.setFillParent(true);
@@ -107,14 +129,9 @@ public class GalaxySelectScreen implements Screen, GalaxySelector {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-	    
-	    
-	    
+
 		stage.act();
 		stage.draw();
-		
-		
-		
 //		for (Actor actor: stage.getActors()) {
 //			
 //			if (((ImageButton) actor).getActions().size == 0) {
@@ -159,8 +176,6 @@ public class GalaxySelectScreen implements Screen, GalaxySelector {
 	@Override
 	public void dispose() {
 		stage.dispose();
-		lockedAtlas.dispose();
-		unlockedAtlas.dispose();
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.samwagg.gravity.Galaxy;
 
 public class Map {
 	
@@ -17,8 +18,8 @@ public class Map {
 
 	private GameTile[][] tileArray;
 		
-	public Map(int galaxy, int level) throws FileNotFoundException, MapFormatException {
-		reader = new MapReader("galaxy" + galaxy + "-" + "level" + level);
+	public Map(Galaxy galaxy, int level) throws FileNotFoundException, MapFormatException {
+		reader = new MapReader(galaxy.getLevels().get(level));
 		reader.readMap();
 		startHealth = reader.getStartHealth();
 		tileArray = reader.getGameMap();
@@ -93,8 +94,8 @@ public class Map {
 		private File textLevel;
 		private FileHandle mapFileHandle;
 		
-		private MapReader(String fileName) throws FileNotFoundException {
-			mapFileHandle = Gdx.files.internal(fileName);
+		private MapReader(FileHandle mapFileHandle) throws FileNotFoundException {
+			this.mapFileHandle = mapFileHandle;
 		}
 		
 		private void readMap() throws MapFormatException {

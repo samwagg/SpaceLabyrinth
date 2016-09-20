@@ -1,6 +1,7 @@
 package com.samwagg.gravity.main_game_module;
 
 
+import com.samwagg.gravity.Galaxy;
 import com.samwagg.gravity.GravityGame;
 import com.samwagg.gravity.main_game_module.game.*;
 import com.samwagg.gravity.main_game_module.game.GravityGameModel;
@@ -26,13 +27,13 @@ public class MainGameFacade implements MainGameControllerListener, MainGameExter
     private MainGameExternalRequestsListener listener;
 
     private int currLevel;
-    private int currGalaxy;
+    private Galaxy currGalaxy;
     private int maxLevel;
 
     //temporary, until I decide how to make this (and other properties) dynamic
     private static final int NUM_LEVELS = 7;
 
-    public MainGameFacade(GravityGame game, int galaxy, int level)  {
+    public MainGameFacade(GravityGame game, ViewResources resources, Galaxy galaxy, int level)  {
         this.game = game;
         Map map = null;
 
@@ -48,7 +49,7 @@ public class MainGameFacade implements MainGameControllerListener, MainGameExter
         }
 
         model = new GravityGameModel(game, map);
-        screen = new GravityGameScreen(model, game);
+        screen = new GravityGameScreen(resources, model, game);
         controller = new GravityGameController(model, screen);
         screen.registerUserInputListener(controller);
         controller.registerMainGameControllerListener(this);
@@ -56,7 +57,7 @@ public class MainGameFacade implements MainGameControllerListener, MainGameExter
         game.setScreenAndDispose(screen, game.getScreen());
     }
 
-    public void changeLevel(int galaxy, int level) {
+    public void changeLevel(Galaxy galaxy, int level) {
 
         if (level <= NUM_LEVELS) {
             Map map = null;
@@ -80,7 +81,7 @@ public class MainGameFacade implements MainGameControllerListener, MainGameExter
     @Override
     public void onLevelCompleted(int score) {
         game.updateGameState(currGalaxy, currLevel, score);
-        LevelCompleteScreen screen = new LevelCompleteScreen(game, score, game.getGameState().hs.galaxies.get(currGalaxy-1)[currLevel-1], currLevel == NUM_LEVELS);
+        LevelCompleteScreen screen = new LevelCompleteScreen(game, score, game.getHighScore(currGalaxy, currLevel), currLevel == NUM_LEVELS);
         game.setScreen(screen);
         screen.registerLevelCompleteMenuListener(this);
     }

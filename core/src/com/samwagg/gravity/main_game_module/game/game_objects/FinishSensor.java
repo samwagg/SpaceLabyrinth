@@ -10,18 +10,17 @@ import com.samwagg.gravity.Constants;
 
 public class FinishSensor extends GameObject {
 	
-	public FinishSensor(float x, float y, World world, Constants constants) {
+	public FinishSensor(float physX, float initY, float width, float height, World world) {
+		super(physX, initY, width, height, world);
+	}
 
-		super(x + constants.TILE_SIZE, y + constants.TILE_SIZE, constants);
-
-		float physWidth = screenWidth * constants.PHYS_SCALE;
-		float physHeight = screenHeight * constants.PHYS_SCALE;
-
+	@Override
+	protected void setupBody(World world) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(this.physX + .5f*physWidth , this.physY + .5f*physHeight);
+		bodyDef.position.set(this.initX + .5f*width , this.initY + .5f*height);
 		PolygonShape brickBox = new PolygonShape();
-		brickBox.setAsBox(physWidth*.5f, physHeight*.5f);
+		brickBox.setAsBox(width*.5f, height*.5f);
 		//ystem.out.println("brickBox " + brickBox.ge + " " + brickBox.height);
 		FixtureDef fixDef = new FixtureDef();
 		fixDef.shape = brickBox;
@@ -29,8 +28,13 @@ public class FinishSensor extends GameObject {
 		body = world.createBody(bodyDef);
 		Fixture fixture = body.createFixture(fixDef);
 		fixture.setUserData(this);
-		
-		brickBox.dispose();	
+
+		brickBox.dispose();
+	}
+
+	@Override
+	public void step(float delta) {
+		// nothing to do for FinishSensor
 	}
 
 }

@@ -12,17 +12,13 @@ public class AICharacter extends GameCharacter {
 
     public EnemySteeringAgent driver;
 
-    private Sprite pursuingSprite;
-
-    public AICharacter(float screenX, float screenY, World world, Constants constants) {
-        super(screenX, screenY, world, constants.ATLAS.createSprite("enemy"), constants);
-        pursuingSprite = constants.ATLAS.createSprite("enemy_lit");
+    public AICharacter(float physX, float physY, float radius, World world) {
+        super(physX, physY, radius, world);
         driver = new EnemySteeringAgent(physX, physY, this);
         body.getFixtureList().get(0).setUserData(this);
     }
 
     public void pursue(GameCharacter charToPursue) {
-        sprite = pursuingSprite;
         driver.pursue(charToPursue);
     }
 

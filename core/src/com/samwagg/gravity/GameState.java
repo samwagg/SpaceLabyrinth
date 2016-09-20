@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Data class holding game state information to be persisted. 
+ * Data class holding game state information to be persisted.
  */
 public class GameState implements Serializable {
 	

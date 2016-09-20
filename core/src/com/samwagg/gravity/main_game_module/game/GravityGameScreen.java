@@ -8,9 +8,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -21,12 +24,20 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.samwagg.gravity.GravityGame;
 import com.samwagg.gravity.main_game_module.Map;
 import com.samwagg.gravity.main_game_module.game.game_objects.*;
+import com.samwagg.gravity.main_game_module.game.view_objects.ExplosionDrawer;
 import com.samwagg.gravity.main_game_module.widgets.PauseMenuListener;
 import com.samwagg.gravity.main_game_module.widgets.VectorSetter;
 import com.samwagg.gravity.main_game_module.widgets.PauseMenu;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class GravityGameScreen implements Screen, MainGameView, PauseMenuListener {
 
+    private final static boolean DEBUG_RENDER = false;
+
+    private Box2DDebugRenderer debugRenderer;
 
     private OrthographicCamera camera;
     private OrthographicCamera staticCamera;
@@ -36,9 +47,20 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
     private Texture background;
     private TextureRegion backgroundReg;
     private TiledDrawable tiledBackground;
+    private TextureRegion arrowUnlitTex;
+    private TextureRegion arrowLitTex;
+    private TextureRegion shipTex;
+    private TextureRegion enemyShipUnlitTex;
+    private TextureRegion enemyShipLitTex;
+    private TextureRegion wallTex;
+    private TiledDrawable tiledWall;
     private Label countDownLabel;
-
     private Texture optionsTex;
+    private ExplosionDrawer expDrawer;
+
+    private float shipRotation;
+    private java.util.Map<AICharacter, Float> aiToRotation;
+    private java.util.Map<Explosion, Explosion64> explosionToExplosion64;
 
     private Stage stage;
     private Table table;
@@ -63,8 +85,7 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
     private MainGameViewListener listener;
     private final GravityGame game;
 
-
-//    public final float PHYS_SCALE = .05f;
+    private static final float PHYS_SCALE = .05f;
 //    public final int TILE_SIZE = 64;
 //    public final int N_LEVELS = 7;
 
@@ -80,7 +101,7 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
      * @param model
      * @param game
      */
-    public GravityGameScreen(GravityGameModel model, final GravityGame game) {
+    public GravityGameScreen(ViewResources resources, GravityGameModel model, GravityGame game) {
 //
 //        ATLAS = new TextureAtlas("pack.atlas");
 //        CHAR_SPRITE = ATLAS.createSprite("Ship");
@@ -98,6 +119,23 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         this.model = model;
 
         Gdx.graphics.setVSync(true);
+
+        debugRenderer = new Box2DDebugRenderer();
+
+        arrowLitTex = resources.getArrowLit();
+        arrowUnlitTex = resources.getArrowUnlit();
+        shipTex = resources.getShip();
+        enemyShipUnlitTex = resources.getEnemyUnlit();
+        enemyShipLitTex = resources.getEnemyLit();
+        wallTex = resources.getWall();
+        tiledWall = new TiledDrawable(wallTex);
+        expDrawer = new ExplosionDrawer();
+
+        shipRotation = 0;
+        aiToRotation = new HashMap<AICharacter, Float>();
+        for (AICharacter enemy : model.getEnemies()) {
+            aiToRotation.put(enemy, 0f);
+        }
 
         music = Gdx.audio.newMusic(Gdx.files.internal("keith.mp3"));
         music.setVolume(.2f);
@@ -146,16 +184,13 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
 
         optionsTex = new Texture(Gdx.files.internal("options.png"));
 
-
         backgroundReg = new TextureRegion(background, background.getWidth(), background.getHeight());
         tiledBackground = new TiledDrawable(backgroundReg);
 
-        camera.position.x = model.getCharacter().getScreenX();
-        camera.position.y = model.getCharacter().getScreenY();
+        camera.position.x = model.getCharacter().getX() / PHYS_SCALE;
+        camera.position.y = -model.getCharacter().getY() / PHYS_SCALE;
         camera.update();
     }
-
-
 
     @Override
     public void render(float delta) {
@@ -166,39 +201,60 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
 
-        tiledBackground.draw(game.batch, -camera.viewportWidth, -model.getWorldHeight()- camera.viewportHeight, model.getWorldWidth() + 2 * camera.viewportWidth, model.getWorldHeight() + 2 * camera.viewportHeight);
+        tiledBackground.draw(game.batch, -camera.viewportWidth, -model.getWorldHeight()/PHYS_SCALE- camera.viewportHeight, model.getWorldWidth()/PHYS_SCALE + 2 * camera.viewportWidth, model.getWorldHeight()/PHYS_SCALE + 2 * camera.viewportHeight);
 
         for (GravField field : model.getGravFields()) {
-            field.getSprite().draw(game.batch);
+            if (field.isLit()) {
+                game.batch.draw(arrowLitTex, physToScreen(field.getX(), field.getWidth()), physToScreen(field.getY(), field.getHeight()),
+                        field.getWidth()/PHYS_SCALE/2, field.getHeight()/PHYS_SCALE/2,
+                        field.getWidth()/PHYS_SCALE, field.getHeight()/PHYS_SCALE, 1, 1, field.getRotation());
+            }
+            else {
+                game.batch.draw(arrowUnlitTex, physToScreen(field.getX(), field.getWidth()), physToScreen(field.getY(), field.getHeight()),
+                        field.getWidth()/PHYS_SCALE/2, field.getHeight()/PHYS_SCALE/2,
+                        field.getWidth()/PHYS_SCALE, field.getHeight()/PHYS_SCALE, 1, 1, field.getRotation());
+            }
         }
 
         if (!model.isShipGone()) {
-            model.getCharacter().getSprite().draw(game.batch);
-            model.getCharacter().getSprite().rotate(.2f);
+            float screenWidth = model.getCharacter().getWidth()/PHYS_SCALE;
+            float screenHeight = model.getCharacter().getHeight()/PHYS_SCALE;
+            game.batch.draw(shipTex, physToScreen(model.getCharacter().getX(), model.getCharacter().getWidth()),
+                    physToScreen(model.getCharacter().getY(), model.getCharacter().getHeight()),
+                    screenWidth/2, screenHeight/2, screenWidth, screenHeight, 1, 1, shipRotation);
+            shipRotation += 1f;
         }
 
         for (AICharacter enemy : model.getEnemies()) {
-            enemy.getSprite().draw(game.batch);
+
+            TextureRegion shipTexture;
             if (enemy.isPursuing()) {
-                enemy.getSprite().rotate(1f);
+                aiToRotation.put(enemy, aiToRotation.remove(enemy) + 1);
+                shipTexture = enemyShipLitTex;
             }
+            else {
+                shipTexture = enemyShipUnlitTex;
+            }
+
+            game.batch.draw(shipTexture, physToScreen(enemy.getX(), enemy.getWidth()), physToScreen(enemy.getY(), enemy.getHeight()),
+                    0, 0, enemy.getWidth()/PHYS_SCALE/2, enemy.getHeight()/PHYS_SCALE/2, 1, 1, aiToRotation.get(enemy));
         }
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-        for (Wall wall : model.getWalls()) {
-            wall.draw(game.batch, camera);
-        }
 
-        for (MovingWall wall : model.getMovingWalls()) {
-            wall.draw(game.batch, camera);
+        for (Wall wall : model.getWalls()) {
+            drawWall(wall);
+        }
+        for (Wall wall : model.getMovingWalls()) {
+            drawWall(wall);
         }
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
-        for (Explosion64 exp : model.getExplosions()) {
-            exp.drawNextFrame(game.batch);
+        for (Explosion exp : model.getExplosions()) {
+            expDrawer.drawFrame(game.batch, exp, PHYS_SCALE);
         }
 
         game.batch.setProjectionMatrix(staticCamera.combined);
@@ -220,7 +276,6 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         else {
             Gdx.input.setInputProcessor(vSetter.getInputProcessor());
             if (listener != null) listener.vSetterState(vSetter.getMagnitude(), vSetter.getXComponent(), vSetter.getYComponent());
-
         }
 
 //        if (levelFinished) {
@@ -247,8 +302,12 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
 
         model.doLogic(delta);
 
-        camera.position.set(model.getCharacter().getScreenX(), model.getCharacter().getScreenY(), 0);
+        camera.position.set(model.getCharacter().getX()/PHYS_SCALE, model.getCharacter().getY()/PHYS_SCALE, 0);
         if (!model.isShipGone()) camera.update();
+
+        if (DEBUG_RENDER) {
+            debugRenderer.render(model.getBox2dWorld(), staticCamera.combined);
+        }
     }
 
     public void startCountdown() {
@@ -302,6 +361,7 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
     }
 
     private void onWallCollision(float force) {
+
         float volume;
         if (force < 100) volume = .1f;
         else if (force < 1000) volume = .2f;
@@ -314,6 +374,35 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         System.out.println(volume);
         System.out.println(force);
 //        collisionSound.play();
+    }
+
+    private void drawWall(Wall wall) {
+
+        float screenX = physToScreen(wall.getX(), wall.getWidth());
+        float screenY = physToScreen(wall.getY(), wall.getHeight());
+        float screenWidth = wall.getWidth() / PHYS_SCALE;
+        float screenHeight = wall.getHeight() / PHYS_SCALE;
+
+        BoundingBox testBox = new BoundingBox(new Vector3(screenX, screenY, 0),
+                new Vector3(screenX + screenWidth, screenY + screenHeight, 0));
+        if (camera.frustum.boundsInFrustum(testBox)) {
+            int xStart = (int) screenX;
+            int yStart = (int) screenY;
+            int xEnd = (int) (screenX + screenWidth);
+            int yEnd = (int) (screenY + screenHeight);
+
+//            game.batch.draw(wallTex, screenX, screenY);
+//            tiledWall.draw(game.batch, xStart, yStart, xEnd, yEnd);
+
+            tiledWall.draw(game.batch, xStart - 64, yStart + 64, screenWidth % 256 == 0 ? screenWidth + 64 : screenWidth + 128, screenHeight % 256 == 0 ? screenHeight : screenHeight - 64);
+            tiledWall.draw(game.batch, xStart + 64, yStart + 64, screenWidth % 256 == 0 ? screenWidth : screenWidth - 64, screenHeight % 256 == 0 ? screenHeight : screenHeight - 64);
+            tiledWall.draw(game.batch, xStart - 64, yStart - 64, screenWidth % 256 == 0 ? screenWidth + 64 : screenWidth + 128, screenHeight % 256 == 0 ? screenHeight + 64 : screenHeight + 128);
+            tiledWall.draw(game.batch, xStart + 64, yStart - 64, screenWidth % 256 == 0 ? screenWidth : screenWidth - 64, screenHeight % 256 == 0 ? screenHeight + 64 : screenHeight + 128);
+        }
+    }
+
+    private float physToScreen(float x, float dimen) {
+        return (x-dimen/2)/PHYS_SCALE;
     }
 
 

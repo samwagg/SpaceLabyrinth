@@ -18,45 +18,56 @@ public class GravField extends GameObject {
 //	public static final Texture G_FIELD_TEXT_LIT = new Texture(Gdx.files.internal("arrow_lit.png"));
 
 	private final float rotation;
-	
-	private final Sprite LIT_SPRITE;
-	private final Sprite UNLIT_SPRITE;
-	
-	public GravField(float screenX, float screenY, float rotation, World world, Constants constants) {
-		super(screenX, screenY, constants.createArrowUnlit(), constants);
-		UNLIT_SPRITE = sprite;
-		UNLIT_SPRITE.setX(screenX);
-		UNLIT_SPRITE.setY(screenY);
-		UNLIT_SPRITE.setRotation(rotation);
-		
-		LIT_SPRITE = constants.createArrowLit();
-		LIT_SPRITE.setX(screenX);
-		LIT_SPRITE.setY(screenY);
-		LIT_SPRITE.setRotation(rotation);
+	private boolean lit;
+
+	public GravField(float initX, float initY, float width, float height, float rotation, World world) {
+		super(initX, initY, width, height, world);
+//		UNLIT_SPRITE = sprite;
+//		UNLIT_SPRITE.setX(screenX);
+//		UNLIT_SPRITE.setY(screenY);
+//		UNLIT_SPRITE.setRotation(rotation);
+//
+//		LIT_SPRITE = constants.createArrowLit();
+//		LIT_SPRITE.setX(screenX);
+//		LIT_SPRITE.setY(screenY);
+//		LIT_SPRITE.setRotation(rotation);
 		
 		this.rotation = rotation;
+		lit = false;
 //		this.texture = G_FIELD_TEXT_UNLIT;
-		
+	}
+
+	@Override
+	public void step(float delta) {
+
+	}
+
+	@Override
+	protected void setupBody(World world) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-	    bodyDef.position.set(this.physX+.5f*constants.TILE_SIZE*2*constants.PHYS_SCALE, this.physY+.5f*constants.TILE_SIZE*2*constants.PHYS_SCALE);
-	    Body body = world.createBody(bodyDef);
+		bodyDef.position.set(this.initX, this.initY);
+		body = world.createBody(bodyDef);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.isSensor = true;
 		PolygonShape box = new PolygonShape();
-		box.setAsBox(constants.TILE_SIZE*2*constants.PHYS_SCALE*.5f, constants.TILE_SIZE*2*constants.PHYS_SCALE*.5f);
+		box.setAsBox(width*.5f, height*.5f);
 		fixtureDef.shape = box;
-		Fixture fixture = body.createFixture(fixtureDef);	
-		
+		Fixture fixture = body.createFixture(fixtureDef);
+
 		fixture.setUserData(this);
 	}
 	
 	public void light() {
-		sprite = LIT_SPRITE;
+		lit = true;
 	}
 	
 	public void unlight() {
-		sprite = UNLIT_SPRITE;
+		lit = false;
+	}
+
+	public boolean isLit() {
+		return lit;
 	}
 	
 	public float getRotation() {
