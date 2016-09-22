@@ -11,28 +11,27 @@ import com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter;
 
 // This file currently is a heavily modified version of public libgdx documentation code from here https://github.com/libgdx/gdx-ai/wiki/Steering-Behaviors
 
-// A simple steering agent for 2D.
-// Of course, for 3D (well, actually for 2.5D) you have to replace all occurrences of Vector2 with  Vector3.
+/**
+ * Encapsulation of AI steering logic for a pursuer
+ */
 public class EnemySteeringAgent implements Steerable<Vector2> {
 
     private static final SteeringAcceleration<Vector2> steeringOutput =
             new SteeringAcceleration<Vector2>(new Vector2());
 
-    Vector2 position;
-    float orientation;
-    Vector2 linearVelocity;
-    float angularVelocity;
-    float maxSpeed;
-    boolean independentFacing;
     private SteeringBehavior<Vector2> steeringBehavior;
-
     private GameCharacter vehicle;
 
-    public EnemySteeringAgent(float x, float y, GameCharacter vehicle) {
+    /**
+     * @param vehicle GameCharacter instance to steer
+     */
+    public EnemySteeringAgent(GameCharacter vehicle) {
         this.vehicle = vehicle;
-        position = new Vector2(x, y);
     }
 
+    /**
+     * @param thingToPursue
+     */
     public void pursue(Steerable<Vector2> thingToPursue) {
         Seek<Vector2> seek = new Seek<Vector2>(this, thingToPursue);
         steeringBehavior = seek;
@@ -42,17 +41,11 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
         return steeringBehavior;
     }
 
-    /* Here you should implement missing methods inherited from Steerable */
-
-    // Actual implementation depends on your coordinate system.
-    // Here we assume the y-axis is pointing upwards.
     @Override
     public float vectorToAngle(Vector2 vector) {
         return (float) Math.atan2(-vector.x, vector.y);
     }
 
-    // Actual implementation depends on your coordinate system.
-    // Here we assume the y-axis is pointing upwards.
     @Override
     public Vector2 angleToVector(Vector2 outVector, float angle) {
         outVector.x = -(float) Math.sin(angle);
@@ -62,33 +55,13 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
 
     public void update(float delta) {
         if (steeringBehavior != null) {
-            // Calculate steering acceleration
             steeringBehavior.calculateSteering(steeringOutput);
-            /*
-             * Here you might want to add a motor control layer filtering steering accelerations.
-             * 
-             * For instance, a car in a driving game has physical constraints on its movement:
-             * - it cannot turn while stationary
-             * - the faster it moves, the slower it can turn (without going into a skid)
-             * - it can brake much more quickly than it can accelerate
-             * - it only moves in the direction it is facing (ignoring power slides)
-             */
-
-            // Apply steering acceleration to move this agent
             applySteering(steeringOutput, delta);
         }
     }
 
     private void applySteering(SteeringAcceleration<Vector2> steering, float time) {
-        // Update position and linear velocity. Velocity is trimmed to maximum speed
-        //this.position.mulAdd(linearVelocity, time);
-        //this.linearVelocity.mulAdd(steering.linear, time).limit(this.getMaxLinearSpeed());
         vehicle.getBody().setLinearVelocity(vehicle.getBody().getLinearVelocity().mulAdd(steering.linear, time).limit(getMaxLinearSpeed()));
-        // Update orientation and angular velocity
-
-        //this.orientation += angularVelocity * time;
-        //this.angularVelocity += steering.angular * time;
-
     }
 
     public GameCharacter getVehicle() {

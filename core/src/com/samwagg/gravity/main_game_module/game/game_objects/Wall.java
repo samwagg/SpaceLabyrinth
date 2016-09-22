@@ -1,24 +1,26 @@
 package com.samwagg.gravity.main_game_module.game.game_objects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
-import com.samwagg.gravity.Constants;
 
+
+/**
+ * Model representation of a wall
+ */
 public class Wall extends GameObject {
 
+    /**
+     * Model coordinates correspond to Box2D coordinate system (units in meters)
+     * @param initX x coordinate for center of wall
+     * @param initY y coordinate for center of wall
+     * @param width width of wall
+     * @param height height of wall
+     * @param world
+     */
     public Wall(float initX, float initY, float width, float height, World world) {
         super(initX, initY, width, height, world);
     }

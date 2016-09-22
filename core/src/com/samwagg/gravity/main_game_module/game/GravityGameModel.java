@@ -12,9 +12,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-
 /**
- * Created by sam on 7/27/16.
+ * The logical encapsulation of the game
  */
 public class GravityGameModel {
 
@@ -32,9 +31,6 @@ public class GravityGameModel {
     private List<Explosion> explosions;
     private List<FinishSensor> endSensors;
 
-
-    private Vector2 gravVect;
-    
     private boolean shipGone;
     private boolean gamePaused;
     private boolean explosionBegun;
@@ -71,17 +67,9 @@ public class GravityGameModel {
 
     public GravityGameModel(final GravityGame game, Map map) {
         this.game = game;
-
-
-
         World.setVelocityThreshold(0);
-
-//		multiPlex = new InputMultiplexer();
-//		multiPlex.addProcessor(vSetter.getInputProcessor());
-
         this.map = map;
         startScore = map.getInitScore();
-
 
         resetLevel();
     }
@@ -110,9 +98,6 @@ public class GravityGameModel {
 
         explosions = new LinkedList<Explosion>();
 
-//        gravVect = new Vector2(0, -3);
-//        world.setGravity(gravVect);
-
         score = startScore;
         levelFinished = false;
         shipGone = false;
@@ -125,14 +110,12 @@ public class GravityGameModel {
         System.out.println(map);
         genGameObjects(tileArray);
         System.out.println(map);
-
-
     }
 
 
     /*
- * Create all game objects from map member variable.
- */
+    * Create all game objects from map member variable.
+    */
     private void genGameObjects(Map.GameTile[][] tileArray) {
         
         float xPos;
@@ -188,10 +171,6 @@ public class GravityGameModel {
                 }
             }
         }
-//        for (AICharacter enemy : enemies) {
-//            enemy.pursue(character);
-//        }
-
     }
 
     /*
@@ -332,6 +311,10 @@ public class GravityGameModel {
 
     }
 
+    /**
+     * Step game forward
+     * @param delta
+     */
     public void doLogic(float delta) {
 
         if (!gamePaused) {
@@ -374,7 +357,7 @@ public class GravityGameModel {
                         world.destroyBody(enemy.getBody());
                     }
                     else {
-                        enemy.update(delta);
+                        enemy.step(delta);
                     }
                 }
 
@@ -382,15 +365,6 @@ public class GravityGameModel {
 
             }
         }
-
-//        if (countDown > 0) {
-//            displayDialog = true;
-//            countDown -= delta;
-//        }
-//        else if (!levelFinished && !optionsClicked) {
-//            Gdx.input.setInputProcessor(vSetter.getInputProcessor());
-//            doPhysicsStep(delta);
-//        }
     }
 
     private void doPhysicsStep(float deltaTime) {
@@ -400,7 +374,7 @@ public class GravityGameModel {
             exp.step(deltaTime);
         }
         for (MovingWall wall : movingWalls) {
-            wall.move();
+            wall.step(deltaTime);
         }
 
         accumulator += frameTime;
@@ -412,16 +386,9 @@ public class GravityGameModel {
 
             accumulator -= 1 / 45f;
         }
-//        character.updatePosition();
-//        for (AICharacter enemy : enemies) {
-//            enemy.updatePosition();
-//        }
     }
 
     public void setGravity(float x, float y) {
-//        gravVect.x = x;
-//        gravVect.y = y;
-//        world.setGravity(gravVect);
         character.getBody().applyForceToCenter(x, y, true);
     }
 
@@ -546,7 +513,7 @@ public class GravityGameModel {
 
     }
 
-    /**
+    /*
      * ForceListener is a ContactListener that handles all contact events between
      */
     private class ForceListener implements ContactListener {
@@ -604,12 +571,9 @@ public class GravityGameModel {
                 onLevelCompleted();
                 return;
             }
-//            else if ( (contactedAIFix = fixA).getUserData().getClass().equals(AICharacter.class) || (contactedAIFix = fixB).getUserData().getClass().equals(AICharacter.class)) {
-//                AICharacter aiChar = (AICharacter) contactedAIFix.getUserData();
-//            }
             else return;
 
-            com.samwagg.gravity.main_game_module.game.game_objects.GravField field = (com.samwagg.gravity.main_game_module.game.game_objects.GravField) forceFix.getUserData();
+            GravField field = (GravField) forceFix.getUserData();
             field.light();
             activeGravCharPairs.add(new ForceCharPair( (GravField) forceFix.getUserData(), (GameCharacter) forcedCharFix.getUserData()));
         }

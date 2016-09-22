@@ -3,7 +3,7 @@ package com.samwagg.gravity.main_game_module;
 import com.samwagg.gravity.Galaxy;
 
 /**
- * Created by sam on 7/28/16.
+ * Must implement this interface to register with MainGameExternalRequestor and receive callbacks
  */
 public interface MainGameExternalRequestsListener {
 

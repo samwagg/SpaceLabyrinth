@@ -11,6 +11,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.samwagg.gravity.Constants;
 
+/**
+ * Model representation of the playable character. Steerable implementation required for interaction with AI
+ */
 public class GameCharacter extends GameObject implements Steerable<Vector2> {
 
     protected boolean isExploding;

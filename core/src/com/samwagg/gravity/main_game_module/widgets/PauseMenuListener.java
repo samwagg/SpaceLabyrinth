@@ -1,7 +1,7 @@
 package com.samwagg.gravity.main_game_module.widgets;
 
 /**
- * Created by sam on 7/28/16.
+ * Must implement interface to register with PauseMenu and receive callbacks
  */
 public interface PauseMenuListener {
 

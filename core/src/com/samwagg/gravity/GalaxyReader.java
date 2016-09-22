@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by sam on 9/12/16.
+ * Reads galaxy data from filesystem and constructs a Galaxy object as an internal representation. Hence,
+ * GalaxyReader defines the expected directory structure for galaxy data.
  */
 public class GalaxyReader {
 
@@ -23,6 +24,11 @@ public class GalaxyReader {
 
     private FileHandle galaxyDirectory;
 
+    /**
+     * @param galaxyDirectory directory containing the files that define a galaxy.
+     * @return
+     * @throws IOException when directory structure is unexpected or files malformed
+     */
     public Galaxy readGalaxy(FileHandle galaxyDirectory) throws IOException {
 
         String galaxyId;

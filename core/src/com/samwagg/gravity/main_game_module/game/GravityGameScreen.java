@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * View component in model-view-controller design Responsible for rendering a GravityGameModel instance
+ */
 public class GravityGameScreen implements Screen, MainGameView, PauseMenuListener {
 
     private final static boolean DEBUG_RENDER = false;
@@ -86,34 +89,12 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
     private final GravityGame game;
 
     private static final float PHYS_SCALE = .05f;
-//    public final int TILE_SIZE = 64;
-//    public final int N_LEVELS = 7;
-
-//    public final TextureAtlas ATLAS;
-//
-//    public final Sprite CHAR_SPRITE;
-//    public final Sprite ARROW_LIT_SPRITE;
-//    public final Sprite ARROW_UNLIT_SPRITE;
-//    public final TextureAtlas.AtlasRegion WALL_REGION;
 
     /**
-     *
-     * @param model
+     * @param model the model to represent graphically
      * @param game
      */
     public GravityGameScreen(ViewResources resources, GravityGameModel model, GravityGame game) {
-//
-//        ATLAS = new TextureAtlas("pack.atlas");
-//        CHAR_SPRITE = ATLAS.createSprite("Ship");
-//        WALL_REGION = ATLAS.findRegion("wall");
-//
-//        ARROW_LIT_SPRITE = ATLAS.createSprite("arrow_lit");
-//        ARROW_LIT_SPRITE.setSize(TILE_SIZE * 2, TILE_SIZE * 2);
-//        ARROW_LIT_SPRITE.setOriginCenter();
-//
-//        ARROW_UNLIT_SPRITE = ATLAS.createSprite("arrow_unlit");
-//        ARROW_UNLIT_SPRITE.setSize(TILE_SIZE * 2, TILE_SIZE * 2);
-//        ARROW_UNLIT_SPRITE.setOriginCenter();
 
         this.game = game;
         this.model = model;
@@ -150,9 +131,6 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         staticCamera.setToOrtho(false, 960, 576);
 
         vSetter = new VectorSetter(staticCamera);
-
-//		multiPlex = new InputMultiplexer();
-//		multiPlex.addProcessor(vSetter.getInputProcessor());
 
         collisionSound = Gdx.audio.newSound(Gdx.files.internal("muf_exp.wav"));
         explodeSound = Gdx.audio.newSound(Gdx.files.internal("DeathFlash.mp3"));
@@ -278,11 +256,6 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
             if (listener != null) listener.vSetterState(vSetter.getMagnitude(), vSetter.getXComponent(), vSetter.getYComponent());
         }
 
-//        if (levelFinished) {
-//            displayDialog = true;
-//            controller.levComplete((int) score);
-//        }
-
         handleInput();
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -310,10 +283,6 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
         }
     }
 
-    public void startCountdown() {
-
-    }
-
     public void displayOptionsMenu(boolean display) {
         if (display) {
             Gdx.input.setInputProcessor(pauseMenu.getStage());
@@ -328,11 +297,68 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
             }
         }
         displayOptionsMenu = display;
-
     }
 
     public boolean isOptionsMenuDisplayed() {
         return displayOptionsMenu;
+    }
+
+    public void dispose() {
+        this.background.dispose();
+        music.dispose();
+        collisionSound.dispose();
+        System.out.println("disposed");
+    }
+
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        extViewport.update(width, height);
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+        vSetter.onInputTurnedOff();
+        System.out.println("hiding");
+    }
+
+    @Override
+    public void registerUserInputListener(MainGameViewListener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void onResumeClicked() {
+        System.out.println("resume clicked"); listener.resumeClicked();
+    }
+
+    @Override
+    public void onRestartClicked() {
+        listener.restartClicked();
+    }
+
+    @Override
+    public void onMainMenuClicked() {
+        System.out.println("here!"); listener.mainMenuClicked();
+    }
+
+    private float physToScreen(float x, float dimen) {
+        return (x-dimen/2)/PHYS_SCALE;
     }
 
     private void renderVSetter() {
@@ -391,74 +417,13 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
             int xEnd = (int) (screenX + screenWidth);
             int yEnd = (int) (screenY + screenHeight);
 
-//            game.batch.draw(wallTex, screenX, screenY);
-//            tiledWall.draw(game.batch, xStart, yStart, xEnd, yEnd);
-
+            // Due to graphical artifacts at the border of the wall textures that I was unable to completely eliminate
+            // by changes in filtering, padding, etc, walls are drawn by overlaying 4 tiled patterns, each of which
+            // individually have no bordering wall tiles.
             tiledWall.draw(game.batch, xStart - 64, yStart + 64, screenWidth % 256 == 0 ? screenWidth + 64 : screenWidth + 128, screenHeight % 256 == 0 ? screenHeight : screenHeight - 64);
             tiledWall.draw(game.batch, xStart + 64, yStart + 64, screenWidth % 256 == 0 ? screenWidth : screenWidth - 64, screenHeight % 256 == 0 ? screenHeight : screenHeight - 64);
             tiledWall.draw(game.batch, xStart - 64, yStart - 64, screenWidth % 256 == 0 ? screenWidth + 64 : screenWidth + 128, screenHeight % 256 == 0 ? screenHeight + 64 : screenHeight + 128);
             tiledWall.draw(game.batch, xStart + 64, yStart - 64, screenWidth % 256 == 0 ? screenWidth : screenWidth - 64, screenHeight % 256 == 0 ? screenHeight + 64 : screenHeight + 128);
         }
-    }
-
-    private float physToScreen(float x, float dimen) {
-        return (x-dimen/2)/PHYS_SCALE;
-    }
-
-
-
-
-    public void dispose() {
-        this.background.dispose();
-        music.dispose();
-        collisionSound.dispose();
-        System.out.println("disposed");
-    }
-
-    @Override
-    public void show() {
-
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        extViewport.update(width, height);
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-        vSetter.onInputTurnedOff();
-        System.out.println("hiding");
-    }
-
-    @Override
-    public void registerUserInputListener(MainGameViewListener listener) {
-        this.listener = listener;
-    }
-
-    @Override
-    public void onResumeClicked() {
-        System.out.println("resume clicked"); listener.resumeClicked();
-    }
-
-    @Override
-    public void onRestartClicked() {
-        listener.restartClicked();
-    }
-
-    @Override
-    public void onMainMenuClicked() {
-        System.out.println("here!"); listener.mainMenuClicked();
     }
 }

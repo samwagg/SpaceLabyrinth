@@ -1,10 +1,8 @@
 package com.samwagg.gravity.main_game_module.game;
 
-import com.samwagg.gravity.main_game_module.MainGameExternalRequestsListener;
-
 /**
- * Created by sam on 7/26/16.
- * This class is a work in progress as I work on separating game logic from graphic implementation
+ * Controller as part of a model-view-controller implementation of the main game screen. Accepts input a
+ * GravityGameScreen instance and manipulates the screen and GravityGameModel object accordingly.
  */
 public class GravityGameController implements MainGameViewListener, MainGameController {
 

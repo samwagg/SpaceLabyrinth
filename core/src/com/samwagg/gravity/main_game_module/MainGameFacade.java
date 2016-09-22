@@ -14,7 +14,8 @@ import com.samwagg.gravity.menus.level_complete_menu.LevelCompleteScreen;
 import java.io.FileNotFoundException;
 
 /**
- * Created by sam on 7/28/16.
+ * Initializes, manages, and provides a simplified interface to the objects that make up the main game
+ * (which are organized according to model-view-controller)
  */
 public class MainGameFacade implements MainGameControllerListener, MainGameExternalRequestor, LevelCompleteListener,
         LevelCompleteMenuListener {
@@ -28,11 +29,16 @@ public class MainGameFacade implements MainGameControllerListener, MainGameExter
 
     private int currLevel;
     private Galaxy currGalaxy;
-    private int maxLevel;
 
     //temporary, until I decide how to make this (and other properties) dynamic
     private static final int NUM_LEVELS = 7;
 
+    /**
+     * @param game
+     * @param resources
+     * @param galaxy galaxy to play
+     * @param level level to play
+     */
     public MainGameFacade(GravityGame game, ViewResources resources, Galaxy galaxy, int level)  {
         this.game = game;
         Map map = null;
@@ -57,7 +63,14 @@ public class MainGameFacade implements MainGameControllerListener, MainGameExter
         game.setScreenAndDispose(screen, game.getScreen());
     }
 
+    /**
+     * @param galaxy
+     * @param level
+     */
     public void changeLevel(Galaxy galaxy, int level) {
+
+        currLevel = level;
+        currGalaxy = galaxy;
 
         if (level <= NUM_LEVELS) {
             Map map = null;

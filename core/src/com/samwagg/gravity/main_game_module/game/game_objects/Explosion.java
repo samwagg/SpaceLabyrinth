@@ -3,7 +3,7 @@ package com.samwagg.gravity.main_game_module.game.game_objects;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
- * Created by sam on 9/16/16.
+ * Model representation of an explosion
  */
 public class Explosion extends GameObject {
 

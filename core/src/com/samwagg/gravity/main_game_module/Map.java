@@ -11,6 +11,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.samwagg.gravity.Galaxy;
 
+/**
+ * Reads and represents a SpaceLabyrinth map via a 2d array of GameTile (inner enum)
+ */
 public class Map {
 
     private int startHealth;
@@ -18,6 +21,13 @@ public class Map {
 
     private GameTile[][] tileArray;
 
+    /**
+     * Initialize this map to a SpaceLabyrinth-formatted level file
+     * @param galaxy the Galaxy instance the level belongs to
+     * @param level the index for the level to read
+     * @throws FileNotFoundException
+     * @throws MapFormatException
+     */
     public Map(Galaxy galaxy, int level) throws FileNotFoundException, MapFormatException {
         reader = new MapReader(galaxy.getLevels().get(level));
         reader.readMap();
@@ -25,6 +35,9 @@ public class Map {
         tileArray = reader.getGameMap();
     }
 
+    /**
+     * @return copy of the tile array representation of the map
+     */
     public GameTile[][] getTileArray() {
 
         GameTile[][] tileArrayCopy = new GameTile[tileArray.length][];
@@ -36,14 +49,23 @@ public class Map {
         return tileArrayCopy;
     }
 
+    /**
+     * @return width of map (units are number of tiles)
+     */
     public int getWidth() {
         return reader.gameMap[0].length;
     }
 
+    /**
+     * @return height of map (units are number of tiles)
+     */
     public int getHeight() {
         return reader.gameMap.length;
     }
 
+    /**
+     * @return initial score for map (units currently are considered arbitrary (linearly relative))
+     */
     public int getInitScore() {
         return startHealth;
     }
@@ -265,7 +287,7 @@ public class Map {
         }
     }
 
-    public static enum GameTile {
+    public enum GameTile {
         WALL,
         EMPTY,
         FORCE_LEFT(180),

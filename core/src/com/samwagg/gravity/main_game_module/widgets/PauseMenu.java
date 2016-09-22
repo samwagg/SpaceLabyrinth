@@ -14,6 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+/**
+ * Menu overlay for main game screen
+ */
 public class PauseMenu {
 
     private PauseMenuListener listener;
@@ -86,10 +89,16 @@ public class PauseMenu {
 
     }
 
+    /**
+     * @return whether the overlay menu in/out animation is currently happening
+     */
     public boolean isTransitioning() {
         return container.getActions().size > 0;
     }
 
+    /**
+     * Request menu to display (via animation)
+     */
     public void startInTransition() {
         MoveToAction action = new MoveToAction();
         action.setPosition(0, 0);
@@ -97,6 +106,9 @@ public class PauseMenu {
         container.addAction(action);
     }
 
+    /**
+     * Request menu to cease display (via animation)
+     */
     public void startOutTransition() {
         MoveToAction action = new MoveToAction();
         action.setPosition(0, -container.getPrefHeight());
@@ -104,10 +116,16 @@ public class PauseMenu {
         container.addAction(action);
     }
 
+    /**
+     * @return libgdx Stage the menu is displaying itself on
+     */
     public Stage getStage() {
         return stage;
     }
 
+    /**
+     * @param listener PauseMenuListener instance to call back to
+     */
     public void registerPauseMenuListener(PauseMenuListener listener) {
         this.listener = listener;
     }

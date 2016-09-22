@@ -8,6 +8,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.samwagg.gravity.Constants;
 
+/**
+ * Model representation of object that signals level completion when it colides with the character
+ */
 public class FinishSensor extends GameObject {
 
     public FinishSensor(float physX, float initY, float width, float height, World world) {

@@ -1,7 +1,7 @@
 package com.samwagg.gravity.main_game_module.game;
 
 /**
- * Created by sam on 7/29/16.
+ * Implement to listen for MainGameController callbacks
  */
 public interface MainGameControllerListener {
 

@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.samwagg.gravity.main_game_module.game.game_objects.Explosion;
 
+/**
+ * Responsible for drawing an explosion by frame
+ */
 public class ExplosionDrawer {
 
     private static final int TOTAL_FRAMES = 32;

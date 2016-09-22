@@ -6,27 +6,42 @@ import com.samwagg.gravity.Constants;
 import com.samwagg.gravity.ai.EnemySteeringAgent;
 
 /**
- * Created by sam on 8/10/16.
+ * Model representation of an ai entity. Composed of an EnemeySteeringAgent, this class interprets game state to instruct
+ * the EnemySteeringAgent instance how to behave. AICharacter is circular
  */
 public class AICharacter extends GameCharacter {
 
-    public EnemySteeringAgent driver;
+    private EnemySteeringAgent driver;
 
-    public AICharacter(float physX, float physY, float radius, World world) {
-        super(physX, physY, radius, world);
-        driver = new EnemySteeringAgent(physX, physY, this);
+    /**
+     * Model coordinates correspond to Box2D coordinate system (units in meters)
+     * @param initX x coordinate for center of object
+     * @param initY y coordinate for center of object
+     * @param radius
+     * @param world
+     */
+    public AICharacter(float initX, float initY, float radius, World world) {
+        super(initX, initY, radius, world);
+        driver = new EnemySteeringAgent(this);
         body.getFixtureList().get(0).setUserData(this);
     }
 
+    /**
+     * @param charToPursue
+     */
     public void pursue(GameCharacter charToPursue) {
         driver.pursue(charToPursue);
     }
 
+    /**
+     * @return whether this instance is currently pursuing something
+     */
     public boolean isPursuing() {
         return driver.getSteeringBehavior() != null;
     }
 
-    public void update(float delta) {
+    @Override
+    public void step(float delta) {
         driver.update(delta);
     }
 }
