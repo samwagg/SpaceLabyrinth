@@ -38,7 +38,6 @@ public class GravityGameModel {
     private boolean restart;
     private float crashForce;
 
-
     private Map map;
     private float startScore;
 
@@ -510,7 +509,6 @@ public class GravityGameModel {
             this.force = force;
             this.character = character;
         }
-
     }
 
     /*
