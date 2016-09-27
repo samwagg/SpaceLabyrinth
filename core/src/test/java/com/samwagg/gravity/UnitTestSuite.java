@@ -7,7 +7,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     GalaxyReaderTest.class,
     GalaxyStateTest.class,
-    GalaxyTest.class
 })
 /**
  * Created by sam on 9/25/16.
