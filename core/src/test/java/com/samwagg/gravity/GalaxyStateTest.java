@@ -15,10 +15,12 @@ public class GalaxyStateTest {
 
     private final static String TEST_PREF_NAME = "test-prefs";
 
-
     private  HeadlessApplication app = null;
     private  Game mockGame = Mockito.mock(Game.class);
 
+    /*
+     * Necessary because class is a wrapper around libgdx Preferences, which are only available when an application is running
+     */
     @Before
     public void before() {
         app = new HeadlessApplication(mockGame);
