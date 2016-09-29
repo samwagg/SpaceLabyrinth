@@ -1,6 +1,7 @@
 package com.samwagg.gravity.main_game_module.game.game_objects;
 
 import com.badlogic.gdx.ai.steer.Steerable;
+import com.badlogic.gdx.ai.utils.Location;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -54,6 +55,16 @@ public class GameCharacter extends GameObject implements Steerable<Vector2> {
 
     public boolean isExploding() {
         return isExploding;
+    }
+
+    @Override
+    public float getZeroLinearSpeedThreshold() {
+        return 0;
+    }
+
+    @Override
+    public void setZeroLinearSpeedThreshold(float value) {
+
     }
 
     @Override
@@ -117,6 +128,11 @@ public class GameCharacter extends GameObject implements Steerable<Vector2> {
     }
 
     @Override
+    public void setOrientation(float orientation) {
+
+    }
+
+    @Override
     public Vector2 getLinearVelocity() {
         // TODO Auto-generated method stub
         return getBody().getLinearVelocity();
@@ -146,12 +162,6 @@ public class GameCharacter extends GameObject implements Steerable<Vector2> {
 
     }
 
-    @Override
-    public Vector2 newVector() {
-        // TODO Auto-generated method stub
-        return new Vector2();
-    }
-
     public float vectorToAngle(Vector2 vector) {
         return (float) Math.atan2(-vector.x, vector.y);
     }
@@ -161,6 +171,11 @@ public class GameCharacter extends GameObject implements Steerable<Vector2> {
         outVector.x = -(float) Math.sin(angle);
         outVector.y = (float) Math.cos(angle);
         return outVector;
+    }
+
+    @Override
+    public Location<Vector2> newLocation() {
+        return null;
     }
 
 

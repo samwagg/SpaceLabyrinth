@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.ai.steer.behaviors.Seek;
+import com.badlogic.gdx.ai.utils.Location;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.samwagg.gravity.main_game_module.game.game_objects.GameCharacter;
@@ -53,6 +54,11 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
         return outVector;
     }
 
+    @Override
+    public Location<Vector2> newLocation() {
+        return null;
+    }
+
     public void update(float delta) {
         if (steeringBehavior != null) {
             steeringBehavior.calculateSteering(steeringOutput);
@@ -66,6 +72,16 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
 
     public GameCharacter getVehicle() {
         return vehicle;
+    }
+
+    @Override
+    public float getZeroLinearSpeedThreshold() {
+        return 0;
+    }
+
+    @Override
+    public void setZeroLinearSpeedThreshold(float value) {
+
     }
 
     @Override
@@ -129,6 +145,11 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
     }
 
     @Override
+    public void setOrientation(float orientation) {
+
+    }
+
+    @Override
     public Vector2 getLinearVelocity() {
         // TODO Auto-generated method stub
         return vehicle.getBody().getLinearVelocity();
@@ -156,11 +177,5 @@ public class EnemySteeringAgent implements Steerable<Vector2> {
     public void setTagged(boolean tagged) {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public Vector2 newVector() {
-        // TODO Auto-generated method stub
-        return new Vector2();
     }
 }
