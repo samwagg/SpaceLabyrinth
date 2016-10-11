@@ -16,7 +16,7 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 /**
- * Created by sam on 9/25/16.
+ * Unit tests for GalaxyReader are in progress and not yet complete
  */
 public class GalaxyReaderTest {
 

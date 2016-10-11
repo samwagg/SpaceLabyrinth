@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.samwagg.gravity.Constants;
 
-public class GravField extends GameObject {
+public class  GravField extends GameObject {
 
 //	public static final Texture G_FIELD_TEXT_UNLIT = new Texture(Gdx.files.internal("arrow_unlit.png"));
 //	public static final Texture G_FIELD_TEXT_LIT = new Texture(Gdx.files.internal("arrow_lit.png"));

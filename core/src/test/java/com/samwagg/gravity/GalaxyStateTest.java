@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 /**
- * Created by sam on 9/25/16.
+ * Unit tests for GalaxyState are in progress and not yet complete
  */
 public class GalaxyStateTest {
 

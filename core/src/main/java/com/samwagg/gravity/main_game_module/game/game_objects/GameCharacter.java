@@ -44,6 +44,10 @@ public class GameCharacter extends GameObject implements Steerable<Vector2> {
         circle.dispose();
     }
 
+    public void applyForce(float xComponent, float yComponent) {
+        body.applyForceToCenter(xComponent, yComponent, true);
+    }
+
     @Override
     public void step(float delta) {
         // nothing to do for GameCharacter

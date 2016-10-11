@@ -63,7 +63,6 @@ public class GravityGameScreen implements Screen, MainGameView, PauseMenuListene
 
     private float shipRotation;
     private java.util.Map<AICharacter, Float> aiToRotation;
-    private java.util.Map<Explosion, Explosion64> explosionToExplosion64;
 
     private Stage stage;
     private Table table;

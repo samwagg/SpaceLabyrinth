@@ -342,7 +342,7 @@ public class GravityGameModel {
                 float gravFieldDirection;
                 for (ForceCharPair pair : activeGravCharPairs) {
                     gravFieldDirection = pair.force.getRotation() * (float) Math.PI / 180;
-                    pair.character.getBody().applyForceToCenter((float) (200 * Math.cos(gravFieldDirection)), (float) (200 * Math.sin(gravFieldDirection)), true);
+                    pair.character.applyForce((float) (200 * Math.cos(gravFieldDirection)), (float) (200 * Math.sin(gravFieldDirection)));
                 }
 
                 AICharacter enemy;

@@ -8,7 +8,5 @@ import org.junit.runners.Suite;
     GalaxyReaderTest.class,
     GalaxyStateTest.class,
 })
-/**
- * Created by sam on 9/25/16.
- */
+
 public class UnitTestSuite {}
